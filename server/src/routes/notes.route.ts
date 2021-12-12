@@ -3,6 +3,7 @@ import NotesController from "../controllers/notes.controller";
 import { NoteCreateDto, NoteUpdateDto } from "../dtos/notes.dto";
 import { Routes } from "../interfaces/routes.interface";
 import validationMiddleware from "../middlewares/validation.middleware";
+import passport from "passport";
 
 class NotesRoute implements Routes {
   public path = "/notes";
@@ -10,6 +11,7 @@ class NotesRoute implements Routes {
   public notesController = new NotesController();
 
   constructor() {
+    this.router.use(passport.authenticate("jwt", { session: false }));
     this.initializeRoutes();
   }
 

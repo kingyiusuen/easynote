@@ -66,27 +66,7 @@ class AuthController {
       const expiresIn = 60 * 60;
       const token = jwt.sign(dataStoredInToken, secretKey, { expiresIn });
 
-      // Create cookie
-      const cookie = `Authorization=${token}; HttpOnly; Max-Age=${expiresIn};`;
-
-      res.setHeader("Set-Cookie", [cookie]);
-      res.status(200).json(findUser);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  public logout = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const userData = req.body as User;
-      const findUser = await this.userRepository.findOne({
-        username: userData.username,
-        password: userData.password,
-      });
-      if (!findUser) throw new HttpException(409, "User does not exist");
-
-      res.setHeader("Set-Cookie", ["Authorization=; Max-age=0"]);
-      res.status(200).json(findUser);
+      res.status(200).json({ token });
     } catch (error) {
       next(error);
     }
