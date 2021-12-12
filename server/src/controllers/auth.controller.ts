@@ -16,7 +16,7 @@ class AuthController {
 
   public signup = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userData: UserCreateDto = req.body;
+      const userData = req.body as UserCreateDto;
 
       // Check if user already exists
       const findUser = await this.userRepository.findOne({
@@ -44,7 +44,7 @@ class AuthController {
 
   public login = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userData: UserCreateDto = req.body;
+      const userData = req.body as UserCreateDto;
 
       // Check if user exists
       const findUser = await this.userRepository.findOne({
@@ -62,7 +62,7 @@ class AuthController {
 
       // Create token
       const dataStoredInToken: DataStoredInToken = { id: findUser.id };
-      const secretKey = process.env.JWT_SECRET!;
+      const secretKey = process.env.JWT_SECRET;
       const expiresIn = 60 * 60;
       const token = jwt.sign(dataStoredInToken, secretKey, { expiresIn });
 
@@ -76,13 +76,9 @@ class AuthController {
     }
   };
 
-  public logout = async (
-    req: Request<{}, {}, User>,
-    res: Response,
-    next: NextFunction
-  ) => {
+  public logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userData = req.body;
+      const userData = req.body as User;
       const findUser = await this.userRepository.findOne({
         username: userData.username,
         password: userData.password,

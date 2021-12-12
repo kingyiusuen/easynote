@@ -14,7 +14,7 @@ class App {
     this.env = process.env.NODE_ENV || "development";
   }
 
-  public async init(routes: Routes[]) {
+  public init(routes: Routes[]) {
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
     this.initializeErrorHandling();

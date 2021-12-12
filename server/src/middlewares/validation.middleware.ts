@@ -1,21 +1,25 @@
-import { plainToInstance } from "class-transformer";
+import { ClassConstructor, plainToInstance } from "class-transformer";
 import { validate, ValidationError } from "class-validator";
 import { RequestHandler } from "express";
 import { HttpException } from "../exceptions/HttpException";
 
 const validationMiddleware = (
-  type: any,
+  type: ClassConstructor<unknown>,
   value: "body" | "query" | "params" = "body",
   skipMissingProperties = false,
   whitelist = true,
   forbidNonWhitelisted = true
 ): RequestHandler => {
-  return (req, _, next) => {
-    validate(plainToInstance(type, req[value]), {
-      skipMissingProperties,
-      whitelist,
-      forbidNonWhitelisted,
-    }).then((errors: ValidationError[]) => {
+  return async (req, _, next) => {
+    try {
+      const errors: ValidationError[] = await validate(
+        plainToInstance(type, req[value]) as object,
+        {
+          skipMissingProperties,
+          whitelist,
+          forbidNonWhitelisted,
+        }
+      );
       if (errors.length > 0) {
         const message = errors
           .map((error: ValidationError) => error.constraints)
@@ -24,7 +28,9 @@ const validationMiddleware = (
       } else {
         next();
       }
-    });
+    } catch (error) {
+      next(new HttpException(500, "Something went wrong"));
+    }
   };
 };
 

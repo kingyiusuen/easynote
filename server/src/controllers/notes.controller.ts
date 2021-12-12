@@ -27,7 +27,7 @@ class NotesController {
     next: NextFunction
   ) => {
     try {
-      const noteId: string = req.params.id;
+      const noteId = req.params.id;
       const findNote = await this.noteRepository.findOne({
         id: noteId,
       });
@@ -46,7 +46,7 @@ class NotesController {
     next: NextFunction
   ) => {
     try {
-      const noteData: NoteCreateDto = req.body;
+      const noteData = req.body as NoteCreateDto;
 
       const createNoteData = this.noteRepository.create({
         ...noteData,
@@ -67,8 +67,8 @@ class NotesController {
     next: NextFunction
   ) => {
     try {
-      const noteId: string = req.params.id;
-      const noteData: NoteUpdateDto = req.body;
+      const noteId = req.params.id;
+      const noteData = req.body as NoteUpdateDto;
       const updateNoteData = await this.noteRepository.update(noteId, {
         ...noteData,
         updatedAt: new Date(),
@@ -86,7 +86,7 @@ class NotesController {
     next: NextFunction
   ) => {
     try {
-      const noteId: string = req.params.id;
+      const noteId = req.params.id;
       const deleteNoteData = await this.noteRepository.delete(noteId);
 
       res.status(200).json(deleteNoteData);

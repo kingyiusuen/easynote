@@ -32,7 +32,7 @@ class NotebooksController {
     next: NextFunction
   ) => {
     try {
-      const notebookId: string = req.params.id;
+      const notebookId = req.params.id;
       const findNotebook = await this.notebookRepository.findOne({
         id: notebookId,
       });
@@ -54,7 +54,7 @@ class NotebooksController {
     next: NextFunction
   ) => {
     try {
-      const notebookData: NotebookCreateDto = req.body;
+      const notebookData = req.body as NotebookCreateDto;
       const findNotebook = await this.notebookRepository.findOne(notebookData);
       if (findNotebook)
         throw new HttpException(
@@ -81,8 +81,8 @@ class NotebooksController {
     next: NextFunction
   ) => {
     try {
-      const notebookId: string = req.params.id;
-      const notebookData: NotebookUpdateDto = req.body;
+      const notebookId = req.params.id;
+      const notebookData = req.body as NotebookUpdateDto;
       const updateNotebookData = await this.notebookRepository.update(
         notebookId,
         { ...notebookData, updatedAt: new Date() }
@@ -100,7 +100,7 @@ class NotebooksController {
     next: NextFunction
   ) => {
     try {
-      const notebookId: string = req.params.id;
+      const notebookId = req.params.id;
       const deleteNotebookData = await this.notebookRepository.delete(
         notebookId
       );
