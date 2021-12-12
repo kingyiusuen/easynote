@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
 import { Notebook } from "./Notebook";
 
 @Entity()
@@ -16,5 +22,9 @@ export class Note {
   updatedAt!: Date;
 
   @ManyToOne(() => Notebook)
+  @JoinColumn({ name: "notebookId" })
   notebook!: Notebook;
+
+  @Column({ nullable: true })
+  notebookId?: string;
 }

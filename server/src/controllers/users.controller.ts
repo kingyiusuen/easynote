@@ -11,7 +11,9 @@ class UsersController {
 
   public getUsers = async (_: Request, res: Response, next: NextFunction) => {
     try {
-      const findAllUsersData: User[] = await this.userRepository.find();
+      const findAllUsersData: User[] = await this.userRepository.find({
+        relations: ["notebooks", "notebooks.notes"],
+      });
       res.status(200).json(findAllUsersData);
     } catch (error) {
       next(error);

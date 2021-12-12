@@ -4,6 +4,7 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  JoinColumn,
 } from "typeorm";
 import { User } from "./User";
 import { Note } from "./Note";
@@ -22,8 +23,12 @@ export class Notebook {
   @Column({ type: "timestamptz" })
   updatedAt!: Date;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user) => user.notebooks)
+  @JoinColumn({ name: "authorId" })
   author!: User;
+
+  @Column({ nullable: true })
+  authorId?: string;
 
   @OneToMany(() => Note, (note) => note.notebook)
   notes!: Note[];
