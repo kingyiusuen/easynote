@@ -18,6 +18,6 @@ export class User {
   @Column({ type: "timestamptz" })
   updatedAt!: Date;
 
-  @OneToMany(() => Notebook, (notebook) => notebook.author)
+  @OneToMany(() => Notebook, (notebook) => notebook.user)
   notebooks!: Notebook[];
 }

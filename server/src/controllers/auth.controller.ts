@@ -36,7 +36,7 @@ class AuthController {
       // Save user in database
       await this.userRepository.save(signupUserData);
 
-      res.status(201).json(signupUserData);
+      res.status(201).json({ message: "Signup successful" });
     } catch (error) {
       next(error);
     }
@@ -61,12 +61,16 @@ class AuthController {
         throw new HttpException(409, "Password not matching");
 
       // Create token
-      const dataStoredInToken: DataStoredInToken = { id: findUser.id };
+      const dataStoredInToken: DataStoredInToken = {
+        id: findUser.id,
+        username: findUser.username,
+      };
       const secretKey = process.env.JWT_SECRET;
       const expiresIn = 60 * 60;
       const token = jwt.sign(dataStoredInToken, secretKey, { expiresIn });
 
-      res.status(200).json({ token });
+      const user = { id: findUser.id, username: findUser.username };
+      res.status(200).json({ user, token });
     } catch (error) {
       next(error);
     }

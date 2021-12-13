@@ -7,7 +7,7 @@ export class NotebookCreateDto {
 
   @IsNotEmpty()
   @IsString()
-  public authorId!: string;
+  public userId!: string;
 }
 
 export class NotebookUpdateDto {

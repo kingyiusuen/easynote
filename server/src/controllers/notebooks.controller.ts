@@ -33,9 +33,7 @@ class NotebooksController {
   ) => {
     try {
       const notebookId = req.params.id;
-      const findNotebook = await this.notebookRepository.findOne({
-        id: notebookId,
-      });
+      const findNotebook = await this.notebookRepository.findOne(notebookId);
       if (!findNotebook)
         throw new HttpException(
           409,

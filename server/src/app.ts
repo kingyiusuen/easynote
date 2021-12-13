@@ -58,7 +58,7 @@ class App {
           if (findUser) {
             return done(null, findUser);
           } else {
-            return done(null, false, { error: "User does not exist" });
+            return done(null, false, { message: "User does not exist" });
           }
         } catch (error) {
           console.log(error);

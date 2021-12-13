@@ -24,11 +24,11 @@ export class Notebook {
   updatedAt!: Date;
 
   @ManyToOne(() => User, (user) => user.notebooks)
-  @JoinColumn({ name: "authorId" })
-  author!: User;
+  @JoinColumn({ name: "userId" })
+  user!: User;
 
   @Column({ nullable: true })
-  authorId?: string;
+  userId?: string;
 
   @OneToMany(() => Note, (note) => note.notebook)
   notes!: Note[];
