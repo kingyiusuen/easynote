@@ -1,7 +1,7 @@
-import { NoteReadDto } from "./notes.dto";
+import { Note } from "../types";
 
 export interface NotebookCreateDto {
-  authorId: string;
+  userId: string;
   name: string;
 }
 
@@ -12,5 +12,5 @@ export interface NotebookUpdateDto {
 export interface NotebookReadDto {
   id: string;
   name: string;
-  notes: NoteReadDto[];
+  notes: Note[];
 }

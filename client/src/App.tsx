@@ -1,22 +1,21 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { useReduxSelector } from "./hooks";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import { RootState } from "./store";
 import GlobalStyle from "./styles/global";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.session.isAuthenticated
+  const isAuthenticated = useReduxSelector(
+    (state) => state.auth.isAuthenticated
   );
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
 const PublicRoute = ({ children }: { children: JSX.Element }) => {
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.session.isAuthenticated
+  const isAuthenticated = useReduxSelector(
+    (state) => state.auth.isAuthenticated
   );
   return isAuthenticated ? <Navigate to="/" /> : children;
 };

@@ -9,3 +9,7 @@ export interface Notebook {
   name: string;
   notes: Note[];
 }
+
+export class ErrorResponse {
+  constructor(public message: string) {}
+}

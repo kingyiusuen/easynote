@@ -11,7 +11,8 @@ const Wrapper = styled.button`
   background-color: ${({ disabled }) => (disabled ? "#6d7a9d" : "#394053")};
 
   &:hover {
-    background-color: #313647;
+    background-color: ${({ disabled }) => (disabled ? "#6d7a9d" : "#313647")};
+    cursor: ${({ disabled }) => (disabled ? "wait" : "pointer")};
   }
 `;
 

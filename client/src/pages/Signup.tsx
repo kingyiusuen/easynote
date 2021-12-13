@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { signup } from "../reducers/sessionReducer";
-import { UserCreateDto } from "../dtos/users.dto";
-import { RootState } from "../store";
+import { useDispatch } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
+import {
+  setLoginSignupError,
+  signup,
+  UsernamePassword,
+} from "../actions/auth.action";
 import Input from "../components/shared/Input";
 import ErrorMessage from "../components/AuthPage/ErrorMessage";
 import Footer from "../components/AuthPage/Footer";
@@ -12,15 +14,26 @@ import Form from "../components/AuthPage/Form";
 import Header from "../components/AuthPage/Header";
 import SubmitButton from "../components/AuthPage/SubmitButton";
 import PageContainer from "../components/AuthPage/PageContainer";
+import { useReduxSelector } from "../hooks";
 
 const Signup = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
-  const handleSignup = (userData: UserCreateDto) => {
+  const handleSignup = (userData: UsernamePassword) => {
+    setIsLoading(true);
     dispatch(signup(userData));
+    setIsLoading(false);
   };
 
-  const isLoading = useSelector((state: RootState) => state.session.isLoading);
+  // Clear error message when switch form
+  const location = useLocation();
+  useEffect(() => {
+    dispatch(setLoginSignupError(""));
+  }, [location, dispatch]);
+
+  // Get current error message
+  const serverError = useReduxSelector((state) => state.auth.error);
 
   const {
     register,
@@ -38,11 +51,11 @@ const Signup = () => {
             required: "Username is required",
             minLength: {
               value: 3,
-              message: "Username must be 3 to 70 characters long",
+              message: "Username must be 3 to 30 characters long",
             },
             maxLength: {
-              value: 70,
-              message: "Username must be 3 to 70 characters long",
+              value: 30,
+              message: "Username must be 3 to 30 characters long",
             },
           })}
         />
@@ -68,6 +81,7 @@ const Signup = () => {
           <ErrorMessage>{errors.password.message}</ErrorMessage>
         )}
         <SubmitButton disabled={isLoading}>Sign Up</SubmitButton>
+        {serverError && <ErrorMessage>{serverError}</ErrorMessage>}
       </Form>
       <Footer>
         Already have an account? <Link to="/login">Login</Link>

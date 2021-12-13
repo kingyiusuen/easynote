@@ -1,22 +1,7 @@
-import axios from "axios";
 import { NotebookCreateDto, NotebookUpdateDto } from "../dtos/notebooks.dto";
+import createAxiosInstance from "../utils/createAxiosInstance";
 
-export class ErrorResponse {
-  constructor(public message: string) {}
-}
-
-const api = axios.create({
-  baseURL: "/notebooks",
-});
-
-api.interceptors.response.use(
-  function (response) {
-    return response;
-  },
-  function (err) {
-    return Promise.reject(new ErrorResponse(err.response.data.message));
-  }
-);
+const api = createAxiosInstance("/notebooks");
 
 export const create = async (notebookData: NotebookCreateDto) => {
   return await api.post(`/`, notebookData);
