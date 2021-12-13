@@ -2,10 +2,9 @@ import jwtDecode, { JwtPayload } from "jwt-decode";
 import axios from "axios";
 import * as authService from "../services/auth.service";
 import { AppThunk } from "../store";
-import { ErrorResponse } from "../types";
 
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
-export const SET_LOGIN_SIGNUP_ERROR = "SET_LOGIN_SIGNUP_ERROR";
+export const SET_AUTH_ERROR_MESSAGE = "SET_AUTH_ERROR_MESSAGE";
 
 export interface DataStoredInToken {
   id: string;
@@ -30,8 +29,8 @@ export const setCurrentUser = (user: DataStoredInToken | null) => ({
   payload: user,
 });
 
-export const setLoginSignupError = (message: string) => ({
-  type: SET_LOGIN_SIGNUP_ERROR,
+export const setAuthErrorMessage = (message: string) => ({
+  type: SET_AUTH_ERROR_MESSAGE,
   payload: message,
 });
 
@@ -42,11 +41,10 @@ export const signup =
       await authService.signup(userData);
       dispatch(login(userData));
     } catch (error) {
-      if (error instanceof ErrorResponse) {
-        dispatch(setLoginSignupError(error.message));
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        dispatch(setAuthErrorMessage(error.response.data.message));
       } else {
-        dispatch(setLoginSignupError("Something went wrong"));
-        console.log(error);
+        dispatch(setAuthErrorMessage("Something went wrong"));
       }
     }
   };
@@ -62,11 +60,10 @@ export const login =
       const decoded = jwtDecode<JwtPayload & DataStoredInToken>(token);
       dispatch(setCurrentUser({ id: decoded.id, username: decoded.username }));
     } catch (error) {
-      if (error instanceof ErrorResponse) {
-        dispatch(setLoginSignupError(error.message));
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        dispatch(setAuthErrorMessage(error.response.data.message));
       } else {
-        dispatch(setLoginSignupError("Something went wrong"));
-        console.log(error);
+        dispatch(setAuthErrorMessage("Something went wrong"));
       }
     }
   };

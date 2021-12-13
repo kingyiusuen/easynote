@@ -1,7 +1,7 @@
 import {
   DataStoredInToken,
   SET_CURRENT_USER,
-  SET_LOGIN_SIGNUP_ERROR,
+  SET_AUTH_ERROR_MESSAGE,
 } from "../actions/auth.action";
 
 interface ISetCurrentUserAction {
@@ -9,12 +9,12 @@ interface ISetCurrentUserAction {
   payload: DataStoredInToken | null;
 }
 
-interface ISetLoginSignupErrorAction {
-  type: typeof SET_LOGIN_SIGNUP_ERROR;
+interface IsetAuthErrorMessageAction {
+  type: typeof SET_AUTH_ERROR_MESSAGE;
   payload: string;
 }
 
-type IAction = ISetCurrentUserAction | ISetLoginSignupErrorAction;
+type IAction = ISetCurrentUserAction | IsetAuthErrorMessageAction;
 
 interface Istate {
   isAuthenticated: boolean;
@@ -36,7 +36,7 @@ const authReducer = (state: Istate = initialState, action: IAction) => {
         isAuthenticated: !!action.payload,
         user: action.payload,
       };
-    case SET_LOGIN_SIGNUP_ERROR:
+    case SET_AUTH_ERROR_MESSAGE:
       return {
         ...state,
         error: action.payload,

@@ -1,15 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import MuiDialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useForm } from "react-hook-form";
 import ContainedButton from "./ContainedButton";
 import OutlinedButton from "./OutlinedButton";
 import Input from "../shared/Input";
-import ErrorMessage from "../shared/ErrorMessage";
 import { createNotebook } from "../../actions/notes.action";
 import { useReduxSelector } from "../../hooks";
 import { useDispatch } from "react-redux";
@@ -32,29 +30,25 @@ interface Props {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-interface FormData {
-  notebookName: string;
-}
-
 const CreateNotebookDialog = ({ open, setOpen }: Props) => {
+  const [value, setValue] = useState("");
+
   const handleClose = () => {
+    setValue("");
     setOpen(false);
   };
 
   const dispatch = useDispatch();
   const user = useReduxSelector((state) => state.auth.user);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
+    setValue(event.currentTarget.value);
+  };
 
-  const handleCreateNotebook = (formData: FormData) => {
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     if (user) {
-      dispatch(
-        createNotebook({ userId: user.id, name: formData.notebookName })
-      );
+      dispatch(createNotebook({ userId: user.id, name: value }));
       handleClose();
     }
   };
@@ -63,26 +57,24 @@ const CreateNotebookDialog = ({ open, setOpen }: Props) => {
     <div>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Create new notebook</DialogTitle>
-        <form onSubmit={handleSubmit(handleCreateNotebook)}>
-          <DialogContent>
-            <DialogContentText>
-              Notebooks are useful for grouping notes around a common topic.
-            </DialogContentText>
-            <Input
-              placeholder="Notebook name"
-              {...register("notebookName", {
-                required: "Notebook name is required",
-              })}
-            />
-            {errors.notebookName && (
-              <ErrorMessage>{errors.notebookName.message}</ErrorMessage>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <OutlinedButton onClick={handleClose}>Cancel</OutlinedButton>
-            <ContainedButton type="submit">Create</ContainedButton>
-          </DialogActions>
-        </form>
+        <DialogContent>
+          <DialogContentText>
+            Notebooks are useful for grouping notes around a common topic.
+          </DialogContentText>
+          <Input placeholder="Notebook name" onChange={handleChange} />
+        </DialogContent>
+        <DialogActions>
+          <OutlinedButton type="button" onClick={handleClose}>
+            Cancel
+          </OutlinedButton>
+          <ContainedButton
+            type="submit"
+            disabled={value === ""}
+            onClick={handleSubmit}
+          >
+            Create
+          </ContainedButton>
+        </DialogActions>
       </Dialog>
     </div>
   );

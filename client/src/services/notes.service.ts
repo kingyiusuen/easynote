@@ -1,7 +1,7 @@
+import axios from "axios";
 import { NoteCreateDto, NoteUpdateDto } from "../dtos/notes.dto";
-import createAxiosInstance from "../utils/createAxiosInstance";
 
-const api = createAxiosInstance("/notes");
+const api = axios.create({ baseURL: "/notes" });
 
 export const create = async (noteData: NoteCreateDto) => {
   return await api.post(`/`, noteData);

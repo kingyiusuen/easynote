@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import {
   login,
-  setLoginSignupError,
+  setAuthErrorMessage,
   UsernamePassword,
 } from "../actions/auth.action";
 import Input from "../components/shared/Input";
@@ -29,7 +29,7 @@ const Login = () => {
   // Clear error message when switch form
   const location = useLocation();
   useEffect(() => {
-    dispatch(setLoginSignupError(""));
+    dispatch(setAuthErrorMessage(""));
   }, [location, dispatch]);
 
   // Get current error message

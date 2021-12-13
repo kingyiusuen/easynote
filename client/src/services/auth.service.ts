@@ -1,7 +1,7 @@
+import axios from "axios";
 import { UsernamePassword } from "../actions/auth.action";
-import createAxiosInstance from "../utils/createAxiosInstance";
 
-const api = createAxiosInstance("/");
+const api = axios.create({ baseURL: "/" });
 
 export const login = async (userData: UsernamePassword) => {
   return await api.post("/login", userData);

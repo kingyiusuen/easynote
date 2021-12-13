@@ -1,6 +1,6 @@
-import createAxiosInstance from "../utils/createAxiosInstance";
+import axios from "axios";
 
-const api = createAxiosInstance("/users");
+const api = axios.create({ baseURL: "/users" });
 
 export const getUserNotebooks = async (userId: string) => {
   return await api.get(`/${userId}/notebooks`);

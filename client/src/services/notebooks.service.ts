@@ -1,7 +1,7 @@
+import axios from "axios";
 import { NotebookCreateDto, NotebookUpdateDto } from "../dtos/notebooks.dto";
-import createAxiosInstance from "../utils/createAxiosInstance";
 
-const api = createAxiosInstance("/notebooks");
+const api = axios.create({ baseURL: "/notebooks" });
 
 export const create = async (notebookData: NotebookCreateDto) => {
   return await api.post(`/`, notebookData);

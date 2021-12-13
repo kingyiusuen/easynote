@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import {
-  setLoginSignupError,
+  setAuthErrorMessage,
   signup,
   UsernamePassword,
 } from "../actions/auth.action";
@@ -29,7 +29,7 @@ const Signup = () => {
   // Clear error message when switch form
   const location = useLocation();
   useEffect(() => {
-    dispatch(setLoginSignupError(""));
+    dispatch(setAuthErrorMessage(""));
   }, [location, dispatch]);
 
   // Get current error message

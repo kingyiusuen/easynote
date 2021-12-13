@@ -10,6 +10,6 @@ export interface Notebook {
   notes: Note[];
 }
 
-export class ErrorResponse {
+export class ApiError {
   constructor(public message: string) {}
 }
