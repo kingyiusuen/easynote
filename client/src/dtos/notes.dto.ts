@@ -3,5 +3,6 @@ export interface NoteCreateDto {
 }
 
 export interface NoteUpdateDto {
+  title: string;
   content: string;
 }

@@ -6,6 +6,7 @@ import { BiBook } from "react-icons/bi";
 import { CgNotes } from "react-icons/cg";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { Notebook } from "../../types";
+import { useReduxSelector } from "../../hooks";
 import FormDialog from "./Dialog";
 
 const Wrapper = styled.div`
@@ -129,6 +130,7 @@ const ListHeading = ({ icon, text, buttonIcon }: ListHeadingProps) => {
 const Nav = () => {
   const [activeNotebookId, setActiveNotebookId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+  const notebooks = useReduxSelector((state) => state.notes.notebooks);
 
   return (
     <Wrapper>
@@ -167,9 +169,3 @@ const Nav = () => {
 };
 
 export default Nav;
-
-const notebooks: Notebook[] = [
-  { id: "1", name: "Blog", notes: [] },
-  { id: "2", name: "Work", notes: [] },
-  { id: "3", name: "School", notes: [] },
-];

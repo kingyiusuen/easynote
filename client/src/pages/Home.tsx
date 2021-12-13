@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
 import Nav from "../components/Nav/Nav";
 import NoteList from "../components/NoteList";
 import Editor from "../components/Editor";
+import { useReduxSelector } from "../hooks";
+import { fetchUserNotebooks } from "../actions/notes.action";
 
-const Wrapper = styled.div`
+const Container = styled.div`
   display: grid;
   grid-template-rows: 100vh;
   grid-template-columns: 200px 300px calc(100vw - 200px - 300px);
@@ -15,12 +18,22 @@ const Wrapper = styled.div`
 `;
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const user = useReduxSelector((state) => state.auth.user);
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchUserNotebooks(user.id));
+    }
+  }, []);
+
+  //const notebooks = useReduxSelector((state) => state.notes.notebooks);
+
   return (
-    <Wrapper>
+    <Container>
       <Nav />
       <NoteList />
       <Editor />
-    </Wrapper>
+    </Container>
   );
 };
 

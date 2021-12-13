@@ -1,39 +1,48 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import * as userService from "../services/users.service";
-import { UserReadNotebookDto } from "../dtos/users.dto";
-import { ErrorResponse } from "../types";
-import { NotebookReadDto } from "../dtos/notebooks.dto";
+import { NOTES_ACTIONS } from "../actions/notes.action";
 
-export const getNotebooks = createAsyncThunk<
-  UserReadNotebookDto,
-  string,
-  { rejectValue: ErrorResponse }
->("note/getNotebooks", async (userId, { rejectWithValue }) => {
-  try {
-    const response = await userService.getUserNotebooks(userId);
-    return response.data;
-  } catch (err) {
-    return rejectWithValue(err as ErrorResponse);
-  }
-});
-
-interface IinitialState {
-  notebooks: NotebookReadDto[];
+interface Note {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-const initialState: IinitialState = {
-  notebooks: [],
+interface Notebook {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  notes: Note[];
+}
+
+interface IAction {
+  type: typeof NOTES_ACTIONS.FETCH_USER_NOTEBOOKS;
+  payload: Notebook[] | null;
+}
+
+interface Istate {
+  notebooks: Notebook[] | null;
+  activeNotebookId: null;
+  activeNoteId: null;
+}
+
+const initialState = {
+  notebooks: null,
+  activeNotebookId: null,
+  activeNoteId: null,
 };
 
-const noteSlice = createSlice({
-  name: "note",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder.addCase(getNotebooks.fulfilled, (state, action) => {
-      state.notebooks = action.payload.notebooks;
-    });
-  },
-});
+const notesReducer = (state: Istate = initialState, action: IAction) => {
+  switch (action.type) {
+    case NOTES_ACTIONS.FETCH_USER_NOTEBOOKS:
+      return {
+        ...state,
+        notebooks: action.payload,
+      };
+    default:
+      return state;
+  }
+};
 
-export default noteSlice.reducer;
+export default notesReducer;
