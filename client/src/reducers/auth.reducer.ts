@@ -6,16 +6,12 @@ import {
 
 interface ISetCurrentUserAction {
   type: typeof SET_CURRENT_USER;
-  payload: {
-    user: DataStoredInToken | null;
-  };
+  payload: DataStoredInToken | null;
 }
 
 interface ISetLoginSignupErrorAction {
   type: typeof SET_LOGIN_SIGNUP_ERROR;
-  payload: {
-    message: string;
-  };
+  payload: string;
 }
 
 type IAction = ISetCurrentUserAction | ISetLoginSignupErrorAction;
@@ -26,24 +22,24 @@ interface Istate {
   error: string;
 }
 
-const INITIAL_STATE = {
+const initialState = {
   isAuthenticated: false,
   user: null,
   error: "",
 };
 
-const authReducer = (state: Istate = INITIAL_STATE, action: IAction) => {
+const authReducer = (state: Istate = initialState, action: IAction) => {
   switch (action.type) {
     case SET_CURRENT_USER:
       return {
         ...state,
-        isAuthenticated: !action.payload.user,
-        user: action.payload.user,
+        isAuthenticated: !!action.payload,
+        user: action.payload,
       };
     case SET_LOGIN_SIGNUP_ERROR:
       return {
         ...state,
-        error: action.payload.message,
+        error: action.payload,
       };
     default:
       return state;

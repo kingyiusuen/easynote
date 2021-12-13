@@ -1,4 +1,4 @@
-import jwtDecode from "jwt-decode";
+import jwtDecode, { JwtPayload } from "jwt-decode";
 import axios from "axios";
 import * as authService from "../services/auth.service";
 import { AppThunk } from "../store";
@@ -32,7 +32,7 @@ export const setCurrentUser = (user: DataStoredInToken | null) => ({
 
 export const setLoginSignupError = (message: string) => ({
   type: SET_LOGIN_SIGNUP_ERROR,
-  payload: { message },
+  payload: message,
 });
 
 export const signup =
@@ -59,7 +59,8 @@ export const login =
       const token = response.data.token;
       localStorage.setItem("jwtToken", token);
       setAuthToken(token);
-      dispatch(setCurrentUser(jwtDecode(token)));
+      const decoded = jwtDecode<JwtPayload & DataStoredInToken>(token);
+      dispatch(setCurrentUser({ id: decoded.id, username: decoded.username }));
     } catch (error) {
       if (error instanceof ErrorResponse) {
         dispatch(setLoginSignupError(error.message));
