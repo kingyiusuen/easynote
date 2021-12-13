@@ -1,4 +1,5 @@
 import {
+  CREATE_NOTEBOOK,
   FETCH_USER_NOTEBOOKS,
   SET_ACTIVE_NOTEBOOK_ID,
 } from "../actions/notes.action";
@@ -21,7 +22,7 @@ interface Notebook {
 
 interface IFetchUserNotebooksAction {
   type: typeof FETCH_USER_NOTEBOOKS;
-  payload: Notebook[] | null;
+  payload: Notebook[];
 }
 
 interface ISetActiveNotebookIdAction {
@@ -29,16 +30,24 @@ interface ISetActiveNotebookIdAction {
   payload: string;
 }
 
-type IAction = IFetchUserNotebooksAction | ISetActiveNotebookIdAction;
+interface ICreateNotebookAction {
+  type: typeof CREATE_NOTEBOOK;
+  payload: Notebook;
+}
+
+type IAction =
+  | IFetchUserNotebooksAction
+  | ISetActiveNotebookIdAction
+  | ICreateNotebookAction;
 
 interface Istate {
-  notebooks: Notebook[] | null;
+  notebooks: Notebook[];
   activeNotebookId: string;
   activeNoteId: string | null;
 }
 
 const initialState: Istate = {
-  notebooks: null,
+  notebooks: <Notebook[]>[],
   activeNotebookId: "all",
   activeNoteId: null,
 };
@@ -54,6 +63,12 @@ const notesReducer = (state: Istate = initialState, action: IAction) => {
       return {
         ...state,
         activeNotebookId: action.payload,
+      };
+    case CREATE_NOTEBOOK:
+      return {
+        ...state,
+        notebooks: [...state.notebooks, action.payload],
+        activeNotebookId: action.payload.id,
       };
     default:
       return state;

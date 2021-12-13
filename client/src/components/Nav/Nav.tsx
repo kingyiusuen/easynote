@@ -7,7 +7,7 @@ import { CgNotes } from "react-icons/cg";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { Notebook } from "../../types";
 import { useReduxSelector } from "../../hooks";
-import FormDialog from "./Dialog";
+import FormDialog from "./CreateNotebookDialog";
 import { useDispatch } from "react-redux";
 import { setActiveNotebookId } from "../../actions/notes.action";
 

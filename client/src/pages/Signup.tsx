@@ -8,7 +8,7 @@ import {
   UsernamePassword,
 } from "../actions/auth.action";
 import Input from "../components/shared/Input";
-import ErrorMessage from "../components/AuthPage/ErrorMessage";
+import ErrorMessage from "../components/shared/ErrorMessage";
 import Footer from "../components/AuthPage/Footer";
 import Form from "../components/AuthPage/Form";
 import Header from "../components/AuthPage/Header";
