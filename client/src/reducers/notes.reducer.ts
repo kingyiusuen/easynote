@@ -5,7 +5,7 @@ import {
   SET_NOTES_ERROR_MESSAGE,
 } from "../actions/notes.action";
 
-interface Note {
+export interface Note {
   id: string;
   title: string;
   content: string;
@@ -13,7 +13,7 @@ interface Note {
   updatedAt: string;
 }
 
-interface Notebook {
+export interface Notebook {
   id: string;
   name: string;
   createdAt: string;

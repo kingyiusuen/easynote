@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { AiOutlineSortAscending } from "react-icons/ai";
 import { HiOutlinePencilAlt, HiOutlineFilter } from "react-icons/hi";
-import NotePreview from "./NotePreview";
-import { scrollable, baseIconButton } from "../styles/mixins";
+import NotePreview from "../NotePreview";
+import NoNotesMessage from "./NoNotesMessage";
+import { scrollable, baseIconButton } from "../../styles/mixins";
+import { Note } from "../../reducers/notes.reducer";
 
 const Wrapper = styled.div`
   user-select: none;
@@ -75,34 +77,8 @@ const List = styled.div`
   height: calc(100vh - 54px - 50px);
 `;
 
-const NoteList = () => {
+const NoteList = ({ notes }: { notes: Note[] }) => {
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
-
-  const notes = [
-    {
-      id: "1",
-      content:
-        "<p>Lesson learnt while building my React Native mobile app</p><p>I'm developing a Markdown note-taking app and it is not easy</p>",
-      title: "",
-    },
-    {
-      id: "3",
-      content:
-        "<p>I don't like doing this</p><p>I'm developing a Markdown note-taking app and it is not easy</p>",
-      title: "",
-    },
-  ];
-
-  notes.map((note, index) => {
-    const content = notes[index].content;
-    const searchTerm = "</p>";
-    const firstOccurrenceIndex = content.indexOf(searchTerm);
-    const title = content.substring(
-      0,
-      firstOccurrenceIndex + searchTerm.length
-    );
-    notes[index].title = title;
-  });
 
   return (
     <Wrapper>
@@ -123,17 +99,20 @@ const NoteList = () => {
           <Input type="text" placeholder="Filter" />
         </SearchBar>
       </SearchBarWrapper>
-      <List>
-        {notes &&
-          notes.map((note) => (
-            <NotePreview
-              key={note.id}
-              note={note}
-              setActiveNoteId={setActiveNoteId}
-              $active={activeNoteId === note.id}
-            />
-          ))}
-      </List>
+      {notes && (
+        <List>
+          {notes &&
+            notes.map((note) => (
+              <NotePreview
+                key={note.id}
+                note={note}
+                setActiveNoteId={setActiveNoteId}
+                $active={activeNoteId === note.id}
+              />
+            ))}
+        </List>
+      )}
+      <NoNotesMessage />
     </Wrapper>
   );
 };

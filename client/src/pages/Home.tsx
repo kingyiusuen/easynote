@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import Nav from "../components/Nav/Nav";
-import NoteList from "../components/NoteList";
+import NoteList from "../components/NoteList/NoteList";
 import Editor from "../components/Editor";
 import PreLoader from "../components/PreLoader/PreLoader";
 import { useReduxSelector } from "../hooks";
@@ -21,14 +21,22 @@ const Container = styled.div`
 const Home = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
+
   const user = useReduxSelector((state) => state.auth.user);
+  const notebooks = useReduxSelector((state) => state.notes.notebooks);
+  const activeNotebookId = useReduxSelector(
+    (state) => state.notes.activeNotebookId
+  );
+  const notes = notebooks.filter(
+    (notebook) => notebook.id === activeNotebookId
+  )[0]?.notes;
+  //const activeNoteId = useReduxSelector((state) => state.notes.activeNoteId);
+
   useEffect(() => {
     if (user) {
       setIsLoading(true);
       dispatch(fetchUserNotebooks(user.id));
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
+      setTimeout(() => setIsLoading(false), 500);
     }
   }, []);
 
@@ -37,7 +45,7 @@ const Home = () => {
   ) : (
     <Container>
       <Nav />
-      <NoteList />
+      <NoteList notes={notes} />
       <Editor />
     </Container>
   );
