@@ -27,13 +27,34 @@ const QuillEditor = styled(ReactQuill)`
   }
 
   .ql-container.ql-snow {
-    height: calc(100vh - 42px);
+    height: calc(100vh - 62px - 40px); // Minus header height and toolbar height
     border: none;
     font-size: 16px !important;
   }
 
+  .ql-editor.ql-blank::before {
+    font-style: normal;
+    opacity: 0.5;
+  }
+
   .ql-editor {
     ${scrollable}
+  }
+`;
+
+const Header = styled.div`
+  height: 62px;
+`;
+
+const TitleInput = styled.input`
+  border: none;
+  width: 100%;
+  font-size: 32px;
+  padding: 12px 15px;
+  font-weight: 500;
+
+  &:focus {
+    outline: none;
   }
 `;
 
@@ -54,7 +75,19 @@ const Editor = () => {
     ],
   };
 
-  return <QuillEditor modules={modules} value={value} onChange={logChange} />;
+  return (
+    <div>
+      <Header>
+        <TitleInput type="text" placeholder="Title" />
+      </Header>
+      <QuillEditor
+        modules={modules}
+        placeholder="Start writing here"
+        value={value}
+        onChange={logChange}
+      />
+    </div>
+  );
 };
 
 export default Editor;
