@@ -13,5 +13,9 @@ export class NoteCreateDto {
 export class NoteUpdateDto {
   @IsNotEmpty()
   @IsString()
+  public title!: string;
+
+  @IsNotEmpty()
+  @IsString()
   public content!: string;
 }

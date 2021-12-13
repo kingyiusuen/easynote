@@ -18,6 +18,7 @@ const main = async () => {
     username: "postgres",
     password: "postgres",
     database: "easynote",
+    synchronize: true,
     entities: [User, Notebook, Note],
   });
   console.log("Database connected");
