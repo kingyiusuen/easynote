@@ -12,10 +12,10 @@ export class Note {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column()
+  @Column({ default: "" })
   title!: string;
 
-  @Column("text")
+  @Column("text", { default: "" })
   content!: string;
 
   @Column({ type: "timestamptz" })
