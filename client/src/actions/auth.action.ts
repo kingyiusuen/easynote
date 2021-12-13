@@ -9,12 +9,16 @@ export const SET_AUTH_ERROR_MESSAGE = "SET_AUTH_ERROR_MESSAGE";
 export interface DataStoredInToken {
   id: string;
   username: string;
+  iat: number;
+  exp: number;
 }
 
 export interface UsernamePassword {
   username: string;
   password: string;
 }
+
+export type CustomJwtPayload = JwtPayload & DataStoredInToken;
 
 export const setAuthToken = (token: string) => {
   if (token) {
@@ -24,7 +28,9 @@ export const setAuthToken = (token: string) => {
   }
 };
 
-export const setCurrentUser = (user: DataStoredInToken | null) => ({
+export const setCurrentUser = (
+  user: { id: string; username: string } | null
+) => ({
   type: SET_CURRENT_USER,
   payload: user,
 });
@@ -57,7 +63,7 @@ export const login =
       const token = response.data.token;
       localStorage.setItem("jwtToken", token);
       setAuthToken(token);
-      const decoded = jwtDecode<JwtPayload & DataStoredInToken>(token);
+      const decoded = jwtDecode<CustomJwtPayload>(token);
       dispatch(setCurrentUser({ id: decoded.id, username: decoded.username }));
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data?.message) {

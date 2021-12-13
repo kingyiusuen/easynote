@@ -1,12 +1,13 @@
 import React from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { useReduxSelector } from "./hooks";
+import { useReduxSelector, useRestoreSession } from "./hooks";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import GlobalStyle from "./styles/global";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+  useRestoreSession();
   const isAuthenticated = useReduxSelector(
     (state) => state.auth.isAuthenticated
   );
@@ -14,6 +15,7 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 };
 
 const PublicRoute = ({ children }: { children: JSX.Element }) => {
+  useRestoreSession();
   const isAuthenticated = useReduxSelector(
     (state) => state.auth.isAuthenticated
   );

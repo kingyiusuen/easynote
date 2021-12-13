@@ -2,6 +2,7 @@ import {
   CREATE_NOTEBOOK,
   FETCH_USER_NOTEBOOKS,
   SET_ACTIVE_NOTEBOOK_ID,
+  SET_NOTES_ERROR_MESSAGE,
 } from "../actions/notes.action";
 
 interface Note {
@@ -35,21 +36,29 @@ interface ICreateNotebookAction {
   payload: Notebook;
 }
 
+interface ISetNotesErrorMessage {
+  type: typeof SET_NOTES_ERROR_MESSAGE;
+  payload: string;
+}
+
 type IAction =
   | IFetchUserNotebooksAction
   | ISetActiveNotebookIdAction
-  | ICreateNotebookAction;
+  | ICreateNotebookAction
+  | ISetNotesErrorMessage;
 
 interface Istate {
   notebooks: Notebook[];
   activeNotebookId: string;
   activeNoteId: string | null;
+  error: string;
 }
 
 const initialState: Istate = {
   notebooks: <Notebook[]>[],
   activeNotebookId: "all",
   activeNoteId: null,
+  error: "",
 };
 
 const notesReducer = (state: Istate = initialState, action: IAction) => {
@@ -69,6 +78,11 @@ const notesReducer = (state: Istate = initialState, action: IAction) => {
         ...state,
         notebooks: [...state.notebooks, action.payload],
         activeNotebookId: action.payload.id,
+      };
+    case SET_NOTES_ERROR_MESSAGE:
+      return {
+        ...state,
+        error: action.payload,
       };
     default:
       return state;

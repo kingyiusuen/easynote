@@ -10,8 +10,9 @@ import { useReduxSelector } from "../../hooks";
 import FormDialog from "./CreateNotebookDialog";
 import { useDispatch } from "react-redux";
 import { setActiveNotebookId } from "../../actions/notes.action";
+import { logout } from "../../actions/auth.action";
 
-const Wrapper = styled.div`
+const Container = styled.div`
   background-color: var(--nav-background);
   user-select: none;
 `;
@@ -125,6 +126,7 @@ const ListHeading = ({ icon, text, buttonIcon }: ListHeadingProps) => {
 };
 
 const Nav = () => {
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const activeNotebookId = useReduxSelector(
     (state) => state.notes.activeNotebookId
@@ -133,7 +135,7 @@ const Nav = () => {
   const user = useReduxSelector((state) => state.auth.user);
 
   return (
-    <Wrapper>
+    <Container>
       <List>
         <ListItem
           icon={<CgNotes />}
@@ -157,12 +159,12 @@ const Nav = () => {
       </List>
       <Footer>
         <span>{user?.username}</span>
-        <IconButton title="Logout">
+        <IconButton title="Logout" onClick={() => dispatch(logout())}>
           <RiLogoutCircleRLine />
         </IconButton>
       </Footer>
       <FormDialog open={open} setOpen={setOpen} />
-    </Wrapper>
+    </Container>
   );
 };
 
