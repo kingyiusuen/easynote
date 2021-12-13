@@ -26,8 +26,6 @@ const Home = () => {
     }
   }, []);
 
-  //const notebooks = useReduxSelector((state) => state.notes.notebooks);
-
   return (
     <Container>
       <Nav />

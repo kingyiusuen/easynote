@@ -8,6 +8,8 @@ import { RiLogoutCircleRLine } from "react-icons/ri";
 import { Notebook } from "../../types";
 import { useReduxSelector } from "../../hooks";
 import FormDialog from "./Dialog";
+import { useDispatch } from "react-redux";
+import { setActiveNotebookId } from "../../actions/notes.action";
 
 const Wrapper = styled.div`
   background-color: var(--nav-background);
@@ -81,7 +83,6 @@ const Footer = styled.div`
 
 interface ListItemProps {
   icon?: React.ReactNode;
-  setActiveNotebookId: React.Dispatch<React.SetStateAction<string | null>>;
   notebook: Notebook;
   $active: boolean;
   $indent?: boolean;
@@ -92,15 +93,11 @@ interface ListItemWrapper {
   $indent?: boolean;
 }
 
-const ListItem = ({
-  icon,
-  notebook,
-  setActiveNotebookId,
-  $active,
-  $indent,
-}: ListItemProps) => {
+const ListItem = ({ icon, notebook, $active, $indent }: ListItemProps) => {
+  const dispatch = useDispatch();
+
   const handleClick = () => {
-    setActiveNotebookId(notebook.id);
+    dispatch(setActiveNotebookId(notebook.id));
   };
 
   return (
@@ -128,18 +125,20 @@ const ListHeading = ({ icon, text, buttonIcon }: ListHeadingProps) => {
 };
 
 const Nav = () => {
-  const [activeNotebookId, setActiveNotebookId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+  const activeNotebookId = useReduxSelector(
+    (state) => state.notes.activeNotebookId
+  );
   const notebooks = useReduxSelector((state) => state.notes.notebooks);
+  const user = useReduxSelector((state) => state.auth.user);
 
   return (
     <Wrapper>
       <List>
         <ListItem
           icon={<CgNotes />}
-          setActiveNotebookId={setActiveNotebookId}
-          notebook={{ id: "1000", name: "All Notes", notes: [] }}
-          $active={activeNotebookId === "1000"}
+          notebook={{ id: "all", name: "All Notes", notes: [] }}
+          $active={activeNotebookId === "all"}
         />
         <ListHeading
           icon={<BiBook />}
@@ -150,7 +149,6 @@ const Nav = () => {
           notebooks.map((notebook) => (
             <ListItem
               key={notebook.id}
-              setActiveNotebookId={setActiveNotebookId}
               notebook={notebook}
               $active={activeNotebookId === notebook.id}
               $indent
@@ -158,7 +156,7 @@ const Nav = () => {
           ))}
       </List>
       <Footer>
-        <span>john_doe</span>
+        <span>{user?.username}</span>
         <IconButton title="Logout">
           <RiLogoutCircleRLine />
         </IconButton>
