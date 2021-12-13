@@ -21,8 +21,15 @@ const validationMiddleware = (
         }
       );
       if (errors.length > 0) {
+        console.log(errors);
         const message = errors
-          .map((error: ValidationError) => error.constraints)
+          .map((error: ValidationError) => {
+            if (error.constraints) {
+              return Object.values(error.constraints).join(", ");
+            } else {
+              return "";
+            }
+          })
           .join(", ");
         next(new HttpException(400, message));
       } else {
