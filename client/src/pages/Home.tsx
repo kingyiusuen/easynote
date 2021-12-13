@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import Nav from "../components/Nav/Nav";
 import NoteList from "../components/NoteList";
 import Editor from "../components/Editor";
+import PreLoader from "../components/PreLoader/PreLoader";
 import { useReduxSelector } from "../hooks";
 import { fetchUserNotebooks } from "../actions/notes.action";
 
@@ -19,14 +20,21 @@ const Container = styled.div`
 
 const Home = () => {
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(true);
   const user = useReduxSelector((state) => state.auth.user);
   useEffect(() => {
     if (user) {
+      setIsLoading(true);
       dispatch(fetchUserNotebooks(user.id));
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     }
   }, []);
 
-  return (
+  return isLoading ? (
+    <PreLoader />
+  ) : (
     <Container>
       <Nav />
       <NoteList />
