@@ -23,9 +23,18 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const user = useReduxSelector((state) => state.auth.user);
-  const noteIds = useReduxSelector(
-    (state) => state.notebook.entities[state.notebook.activeId]?.noteIds
-  );
+  const activeNotebookId = useReduxSelector((state) => state.notebook.activeId);
+  let noteIds: string[];
+  if (activeNotebookId === "all") {
+    const listsOfNoteIds = useReduxSelector((state) =>
+      state.notebook.ids.map((id) => state.notebook.entities[id].noteIds)
+    );
+    noteIds = Array.prototype.concat(...listsOfNoteIds);
+  } else {
+    noteIds = useReduxSelector(
+      (state) => state.notebook.entities[activeNotebookId]?.noteIds
+    );
+  }
   const activeNoteId = useReduxSelector((state) => state.note.activeId);
 
   useEffect(() => {

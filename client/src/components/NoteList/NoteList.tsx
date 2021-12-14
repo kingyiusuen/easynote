@@ -83,7 +83,14 @@ const NoteList = ({ noteIds }: { noteIds: string[] }) => {
   const dispatch = useDispatch();
   const activeNoteId = useReduxSelector((state) => state.note.activeId);
   const activeNotebookId = useReduxSelector((state) => state.notebook.activeId);
-  const noteEntities = useReduxSelector((state) => state.note.entities);
+  const notes = useReduxSelector((state) => state.note.entities);
+  const sortedNoteIds = noteIds
+    ?.slice()
+    .sort(
+      (id1, id2) =>
+        Date.parse(notes[id1].updatedAt) - Date.parse(notes[id2].updatedAt)
+    )
+    .reverse();
 
   const handleCreateNoteClick = () => {
     dispatch(createNote(activeNotebookId));
@@ -108,13 +115,13 @@ const NoteList = ({ noteIds }: { noteIds: string[] }) => {
           <Input type="text" placeholder="Filter" />
         </SearchBar>
       </SearchBarWrapper>
-      {noteIds?.length ? (
+      {sortedNoteIds?.length ? (
         <List>
-          {noteIds &&
-            noteIds.map((id) => (
+          {sortedNoteIds &&
+            sortedNoteIds.map((id) => (
               <NoteListItem
                 key={id}
-                note={noteEntities[id]}
+                note={notes[id]}
                 $active={activeNoteId === id}
               />
             ))}
