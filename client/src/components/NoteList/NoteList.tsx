@@ -9,17 +9,64 @@ import { useReduxSelector } from "../../hooks";
 import { useDispatch } from "react-redux";
 import { createNote } from "../../actions/notes.action";
 
+const NoteList = ({ noteIds }: { noteIds: string[] }) => {
+  const dispatch = useDispatch();
+  const activeNoteId = useReduxSelector((state) => state.note.activeId);
+  const activeNotebookId = useReduxSelector((state) => state.notebook.activeId);
+  const notes = useReduxSelector((state) => state.note.entities);
+  const sortedNoteIds = noteIds
+    ?.slice()
+    .sort(
+      (id1, id2) =>
+        Date.parse(notes[id1].updatedAt) - Date.parse(notes[id2].updatedAt)
+    )
+    .reverse();
+
+  const handleCreateNoteClick = () => {
+    dispatch(createNote(activeNotebookId));
+  };
+
+  return (
+    <Wrapper>
+      <Header>
+        <IconButton>
+          <AiOutlineSortAscending />
+        </IconButton>
+        <Heading>All Notes</Heading>
+        <IconButton title="Create New Note" onClick={handleCreateNoteClick}>
+          <HiOutlinePencilAlt />
+        </IconButton>
+      </Header>
+      <SearchBarWrapper>
+        <SearchBar>
+          <HiOutlineFilter />
+          <Input type="text" placeholder="Filter" />
+        </SearchBar>
+      </SearchBarWrapper>
+      {sortedNoteIds?.length ? (
+        <List>
+          {sortedNoteIds &&
+            sortedNoteIds.map((id) => (
+              <NoteListItem
+                key={id}
+                note={notes[id]}
+                $active={activeNoteId === id}
+              />
+            ))}
+        </List>
+      ) : (
+        <NoNotesMessage />
+      )}
+    </Wrapper>
+  );
+};
+
+export default NoteList;
+
 const Wrapper = styled.div`
   user-select: none;
   color: #282a2c;
   background-color: #f5f5f4;
-`;
-
-const IconWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 28px;
-  color: #bbbcbd;
 `;
 
 const IconButton = styled.button`
@@ -56,7 +103,7 @@ const SearchBar = styled.div`
   background-color: white;
   border-radius: 4px;
 
-  & ${IconWrapper} {
+  & > svg {
     font-size: 22px;
     color: #c4c5c6;
     margin: 4px 8px;
@@ -78,59 +125,3 @@ const List = styled.div`
   ${scrollable};
   height: calc(100vh - 54px - 50px);
 `;
-
-const NoteList = ({ noteIds }: { noteIds: string[] }) => {
-  const dispatch = useDispatch();
-  const activeNoteId = useReduxSelector((state) => state.note.activeId);
-  const activeNotebookId = useReduxSelector((state) => state.notebook.activeId);
-  const notes = useReduxSelector((state) => state.note.entities);
-  const sortedNoteIds = noteIds
-    ?.slice()
-    .sort(
-      (id1, id2) =>
-        Date.parse(notes[id1].updatedAt) - Date.parse(notes[id2].updatedAt)
-    )
-    .reverse();
-
-  const handleCreateNoteClick = () => {
-    dispatch(createNote(activeNotebookId));
-  };
-
-  return (
-    <Wrapper>
-      <Header>
-        <IconButton>
-          <AiOutlineSortAscending />
-        </IconButton>
-        <Heading>All Notes</Heading>
-        <IconButton title="Create New Note" onClick={handleCreateNoteClick}>
-          <HiOutlinePencilAlt />
-        </IconButton>
-      </Header>
-      <SearchBarWrapper>
-        <SearchBar>
-          <IconWrapper>
-            <HiOutlineFilter />
-          </IconWrapper>
-          <Input type="text" placeholder="Filter" />
-        </SearchBar>
-      </SearchBarWrapper>
-      {sortedNoteIds?.length ? (
-        <List>
-          {sortedNoteIds &&
-            sortedNoteIds.map((id) => (
-              <NoteListItem
-                key={id}
-                note={notes[id]}
-                $active={activeNoteId === id}
-              />
-            ))}
-        </List>
-      ) : (
-        <NoNotesMessage />
-      )}
-    </Wrapper>
-  );
-};
-
-export default NoteList;

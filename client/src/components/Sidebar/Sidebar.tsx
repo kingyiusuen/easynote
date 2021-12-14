@@ -3,13 +3,13 @@ import styled from "styled-components";
 import { flexCenter, scrollable, baseIconButton } from "../../styles/mixins";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BiBook } from "react-icons/bi";
-import { CgNotes } from "react-icons/cg";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { useReduxSelector } from "../../hooks";
 import FormDialog from "./CreateNotebookDialog";
 import { useDispatch } from "react-redux";
-import { setActiveNotebookId } from "../../actions/notebooks.action";
 import { logout } from "../../actions/auth.action";
+import AllNotesOption from "./AllNotesOption";
+import NotebookOption from "./NotebookOption";
 
 const Container = styled.div`
   background-color: var(--sidebar-background);
@@ -25,27 +25,6 @@ const List = styled.div`
   ${scrollable};
   padding: 18px 0;
   height: calc(100vh - 60px);
-`;
-
-const ListItemWrapper = styled.div<ListItemWrapper>`
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 0 12px;
-  height: 36px;
-  color: var(--sidebar-text-normal);
-  ${({ $active }) =>
-    $active && "background-color: var(--sidebar-background-active);"}
-
-  ${({ $indent }) => $indent && "padding-left: 44px;"}
-
-  &:hover {
-    cursor: pointer;
-    background-color: ${({ $active }) =>
-      $active
-        ? "var(--sidebar-background-active)"
-        : "var(--sidebar-background-hover)"};
-  }
 `;
 
 const TextWrapper = styled.span`
@@ -83,40 +62,6 @@ const Footer = styled.div`
   background-color: #0c0f13;
 `;
 
-interface ListItemProps {
-  icon?: React.ReactNode;
-  notebookId: string;
-  notebookName: string;
-  $active: boolean;
-  $indent?: boolean;
-}
-
-interface ListItemWrapper {
-  $active: boolean;
-  $indent?: boolean;
-}
-
-const ListItem = ({
-  icon,
-  notebookId,
-  notebookName,
-  $active,
-  $indent,
-}: ListItemProps) => {
-  const dispatch = useDispatch();
-
-  const handleClick = () => {
-    dispatch(setActiveNotebookId(notebookId));
-  };
-
-  return (
-    <ListItemWrapper onClick={handleClick} $indent={$indent} $active={$active}>
-      {icon && <IconWrapper>{icon}</IconWrapper>}
-      <TextWrapper>{notebookName}</TextWrapper>
-    </ListItemWrapper>
-  );
-};
-
 interface ListHeadingProps {
   icon: React.ReactNode;
   text: string;
@@ -142,12 +87,7 @@ const Sidebar = () => {
   return (
     <Container>
       <List>
-        <ListItem
-          icon={<CgNotes />}
-          notebookId="all"
-          notebookName="All Notes"
-          $active={notebooks.activeId === "all"}
-        />
+        <AllNotesOption $active={notebooks.activeId === "all"} />
         <ListHeading
           icon={<BiBook />}
           text="Notebooks"
@@ -155,12 +95,10 @@ const Sidebar = () => {
         />
         {notebooks.ids &&
           notebooks.ids.map((id) => (
-            <ListItem
+            <NotebookOption
               key={id}
-              notebookId={notebooks.entities[id].id}
-              notebookName={notebooks.entities[id].name}
+              notebook={notebooks.entities[id]}
               $active={notebooks.activeId === id}
-              $indent
             />
           ))}
       </List>

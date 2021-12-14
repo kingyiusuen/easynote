@@ -13,19 +13,6 @@ import ErrorMessage from "../shared/ErrorMessage";
 import { createNotebook } from "../../actions/notebooks.action";
 import { useReduxSelector } from "../../hooks";
 
-const Dialog = styled(MuiDialog)`
-  user-select: none;
-
-  ${Input} {
-    margin-top: 12px;
-    width: 100%;
-  }
-
-  .MuiDialogActions-root {
-    margin-right: 12px;
-  }
-`;
-
 interface Props {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -90,3 +77,16 @@ const CreateNotebookDialog = ({ open, setOpen }: Props) => {
 };
 
 export default CreateNotebookDialog;
+
+const Dialog = styled(MuiDialog)`
+  user-select: none;
+
+  ${Input} {
+    margin-top: 12px;
+    width: 100%;
+  }
+
+  .MuiDialogActions-root {
+    margin-right: 12px;
+  }
+`;

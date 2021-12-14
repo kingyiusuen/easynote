@@ -8,16 +8,6 @@ import PreLoader from "../components/PreLoader/PreLoader";
 import { useReduxSelector } from "../hooks";
 import { fetchUserNotebooks } from "../actions/notebooks.action";
 
-const Container = styled.div`
-  display: grid;
-  grid-template-rows: 100vh;
-  grid-template-columns: 200px 300px calc(100vw - 200px - 300px);
-
-  @media (min-width: 1050px) {
-    grid-template-columns: 240px 380px calc(100vw - 240px - 380px);
-  }
-`;
-
 const Home = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
@@ -57,3 +47,13 @@ const Home = () => {
 };
 
 export default Home;
+
+const Container = styled.div`
+  display: grid;
+  grid-template-rows: 100vh;
+  grid-template-columns: 200px 300px calc(100vw - 200px - 300px);
+
+  @media (min-width: 1050px) {
+    grid-template-columns: 240px 380px calc(100vw - 240px - 380px);
+  }
+`;

@@ -3,6 +3,20 @@ import styled from "styled-components";
 import { FaPen } from "react-icons/fa";
 import { flexCenter } from "../../styles/mixins";
 
+const Header = () => {
+  return (
+    <Container>
+      <IconWrapper>
+        <FaPen />
+      </IconWrapper>
+      <Heading>Easynote</Heading>
+      <Subheading>Make note-taking easy</Subheading>
+    </Container>
+  );
+};
+
+export default Header;
+
 const Container = styled.div`
   ${flexCenter}
   flex-direction: column;
@@ -25,17 +39,3 @@ const IconWrapper = styled.div`
   height: 60px;
   ${flexCenter}
 `;
-
-const Header = () => {
-  return (
-    <Container>
-      <IconWrapper>
-        <FaPen />
-      </IconWrapper>
-      <Heading>Easynote</Heading>
-      <Subheading>Make note-taking easy</Subheading>
-    </Container>
-  );
-};
-
-export default Header;

@@ -7,60 +7,6 @@ import { scrollable } from "../../styles/mixins";
 import { useReduxSelector } from "../../hooks";
 import { useDispatch } from "react-redux";
 
-const QuillEditor = styled(ReactQuill)`
-    &:focus {
-      outline: none;
-    }
-  }
-
-  .quill {
-    overflow: hidden;
-  }
-
-  .ql-toolbar.ql-snow {
-    border: none;
-    
-    .ql-formats {
-      margin-right: 0;
-  
-      @media (min-width: 1050px) {
-        margin-right: 15px;
-      }
-    }
-  }
-
-  .ql-container.ql-snow {
-    height: calc(100vh - 62px - 40px); // Minus header height and toolbar height
-    border: none;
-    font-size: 16px !important;
-  }
-
-  .ql-editor.ql-blank::before {
-    font-style: normal;
-    opacity: 0.5;
-  }
-
-  .ql-editor {
-    ${scrollable}
-  }
-`;
-
-const Header = styled.div`
-  height: 62px;
-`;
-
-const TitleInput = styled.input`
-  border: none;
-  width: 100%;
-  font-size: 32px;
-  padding: 12px 15px;
-  font-weight: 500;
-
-  &:focus {
-    outline: none;
-  }
-`;
-
 interface Props {
   noteId: string;
 }
@@ -129,3 +75,57 @@ const Editor = ({ noteId }: Props) => {
 };
 
 export default Editor;
+
+const QuillEditor = styled(ReactQuill)`
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .quill {
+    overflow: hidden;
+  }
+
+  .ql-toolbar.ql-snow {
+    border: none;
+    
+    .ql-formats {
+      margin-right: 0;
+  
+      @media (min-width: 1050px) {
+        margin-right: 15px;
+      }
+    }
+  }
+
+  .ql-container.ql-snow {
+    height: calc(100vh - 62px - 40px); // Minus header height and toolbar height
+    border: none;
+    font-size: 16px !important;
+  }
+
+  .ql-editor.ql-blank::before {
+    font-style: normal;
+    opacity: 0.5;
+  }
+
+  .ql-editor {
+    ${scrollable}
+  }
+`;
+
+const Header = styled.div`
+  height: 62px;
+`;
+
+const TitleInput = styled.input`
+  border: none;
+  width: 100%;
+  font-size: 32px;
+  padding: 12px 15px;
+  font-weight: 500;
+
+  &:focus {
+    outline: none;
+  }
+`;

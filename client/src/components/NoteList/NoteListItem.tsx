@@ -8,6 +8,35 @@ import { truncatedText } from "../../styles/mixins";
 import { setActiveNoteId } from "../../actions/notes.action";
 import stripHTML from "../../utils/stripHTML";
 
+interface WrapperProps {
+  $active: boolean;
+}
+
+interface ComponentProps {
+  note: Note;
+  $active: boolean;
+}
+
+const NoteListItem = ({ note, $active }: ComponentProps) => {
+  const dispatch = useDispatch();
+  const handleClick = () => {
+    dispatch(setActiveNoteId(note.id));
+  };
+
+  return (
+    <Wrapper onClick={handleClick} $active={$active}>
+      <Title>{note.title ? note.title : "Untitled"}</Title>
+      <Content>{stripHTML(note.content)}</Content>
+      <Timestamp>{timeago.format(note.updatedAt)}</Timestamp>
+      <IconWrapper $active={$active}>
+        <FaTrashAlt />
+      </IconWrapper>
+    </Wrapper>
+  );
+};
+
+export default NoteListItem;
+
 const IconWrapper = styled.div<WrapperProps>`
   position: absolute;
   font-size: 20px;
@@ -57,32 +86,3 @@ const Timestamp = styled.div`
   color: #828384;
   font-size: 12px;
 `;
-
-interface WrapperProps {
-  $active: boolean;
-}
-
-interface NotePreviewProps {
-  note: Note;
-  $active: boolean;
-}
-
-const NotePreview = ({ note, $active }: NotePreviewProps) => {
-  const dispatch = useDispatch();
-  const handleClick = () => {
-    dispatch(setActiveNoteId(note.id));
-  };
-
-  return (
-    <Wrapper onClick={handleClick} $active={$active}>
-      <Title>{note.title ? note.title : "Untitled"}</Title>
-      <Content>{stripHTML(note.content)}</Content>
-      <Timestamp>{timeago.format(note.updatedAt)}</Timestamp>
-      <IconWrapper $active={$active}>
-        <FaTrashAlt />
-      </IconWrapper>
-    </Wrapper>
-  );
-};
-
-export default NotePreview;
