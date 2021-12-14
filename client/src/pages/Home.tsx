@@ -6,13 +6,13 @@ import NoteList from "../components/NoteList/NoteList";
 import Editor from "../components/Editor/Editor";
 import PreLoader from "../components/PreLoader/PreLoader";
 import { useReduxSelector } from "../hooks";
-import { fetchUserNotebooks } from "../actions/notebooks.action";
+import { fetchUserNotebooks } from "../actions/session.action";
 
 const Home = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const user = useReduxSelector((state) => state.auth.user);
+  const user = useReduxSelector((state) => state.session.user);
   const activeNotebookId = useReduxSelector((state) => state.notebook.activeId);
   let noteIds: string[];
   if (activeNotebookId === "all") {

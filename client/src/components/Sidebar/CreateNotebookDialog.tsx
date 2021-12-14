@@ -23,7 +23,7 @@ const CreateNotebookDialog = ({ open, setOpen }: Props) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [inputValue, setInputValue] = useState("");
 
-  const user = useReduxSelector((state) => state.auth.user);
+  const user = useReduxSelector((state) => state.session.user);
 
   const handleClose = () => {
     setInputValue("");

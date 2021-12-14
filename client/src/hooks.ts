@@ -5,7 +5,7 @@ import {
   logout,
   setAuthToken,
   setCurrentUser,
-} from "./actions/auth.action";
+} from "./actions/session.action";
 import type { RootState } from "./store";
 
 export const useReduxSelector: TypedUseSelectorHook<RootState> = useSelector;

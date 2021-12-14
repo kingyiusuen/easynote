@@ -7,7 +7,7 @@ import { RiLogoutCircleRLine } from "react-icons/ri";
 import { useReduxSelector } from "../../hooks";
 import CreateNotebookDialog from "./CreateNotebookDialog";
 import { useDispatch } from "react-redux";
-import { logout } from "../../actions/auth.action";
+import { logout } from "../../actions/session.action";
 import AllNotesOption from "./AllNotesOption";
 import NotebookOption from "./NotebookOption";
 
@@ -82,7 +82,7 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const notebooks = useReduxSelector((state) => state.notebook);
-  const user = useReduxSelector((state) => state.auth.user);
+  const user = useReduxSelector((state) => state.session.user);
 
   return (
     <Container>

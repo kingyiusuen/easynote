@@ -1,5 +1,5 @@
 import axios from "axios";
-import { UsernamePassword } from "../actions/auth.action";
+import { UsernamePassword } from "../actions/session.action";
 
 export const login = async (userData: UsernamePassword) => {
   return await axios.post("/login", userData);

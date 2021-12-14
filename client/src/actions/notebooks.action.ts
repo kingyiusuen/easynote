@@ -1,14 +1,13 @@
 import axios from "axios";
 import { Dispatch } from "redux";
 import { AppThunk } from "../store";
-import { Note, NoteIdEntityMap, Notebook, NotebookIdEntityMap } from "../types";
+import { Notebook, NotebookIdEntityMap } from "../types";
 import { CreateNoteAction } from "./notes.action";
-import * as userService from "../services/users.service";
 import * as notebookService from "../services/notebooks.service";
 
 /* Action names */
 export enum NOTEBOOK_ACTIONS {
-  FETCH_USER_NOTEBOOKS = "FETCH_USER_NOTEBOOKS",
+  INITIALIZE_NOTEBOOKS = "INITIALIZE_NOTEBOOKS",
   CREATE_NOTEBOOK = "CREATE_NOTEBOOK",
   RENAME_NOTEBOOK = "RENAME_NOTEBOOK",
   DELETE_NOTEBOOK = "DELETE_NOTEBOOK",
@@ -16,19 +15,19 @@ export enum NOTEBOOK_ACTIONS {
 }
 
 /* Action types */
-export type FetchUserNotebooksAction = {
-  type: NOTEBOOK_ACTIONS.FETCH_USER_NOTEBOOKS;
+export type InitializeNotebooksAction = {
+  type: NOTEBOOK_ACTIONS.INITIALIZE_NOTEBOOKS;
   payload: {
-    noteIdEntityMap: NoteIdEntityMap;
-    notebookIdEntityMap: NotebookIdEntityMap;
-    noteIds: string[];
-    notebookIds: string[];
+    ids: string[];
+    entities: NotebookIdEntityMap;
   };
 };
 
 export type SetActiveNotebookIdAction = {
   type: NOTEBOOK_ACTIONS.SET_ACTIVE_NOTEBOOK_ID;
-  payload: string;
+  payload: {
+    id: string;
+  };
 };
 
 export type CreateNotebookAction = {
@@ -50,7 +49,7 @@ export type DeleteNotebookAction = {
 
 export type NotebookActionType =
   | CreateNoteAction
-  | FetchUserNotebooksAction
+  | InitializeNotebooksAction
   | SetActiveNotebookIdAction
   | CreateNotebookAction
   | RenameNotebookAction
@@ -66,51 +65,7 @@ export interface NotebookRenameDto {
   name: string;
 }
 
-/* Interfaces for data received from server  */
-export interface FetchUserNotebooksResponse {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  userId: string;
-  notes: Note[];
-}
-[];
-
 /* Action creators */
-export const fetchUserNotebooks =
-  (userId: string): AppThunk =>
-  async (dispatch: Dispatch) => {
-    try {
-      const response = await userService.getUserNotebooks(userId);
-      const unnormalizedNotebooks: FetchUserNotebooksResponse[] = response.data;
-      const notebookIdEntityMap: NotebookIdEntityMap = {};
-      const notebookIds: string[] = [];
-      const noteIdEntityMap: NoteIdEntityMap = {};
-      const noteIds: string[] = [];
-      unnormalizedNotebooks.forEach((unnormalizedNotebook) => {
-        const noteIdsForCurrentNotebook: string[] = [];
-        unnormalizedNotebook.notes.forEach((note: Note) => {
-          noteIdEntityMap[note.id] = note;
-          noteIdsForCurrentNotebook.push(note.id);
-        });
-        noteIds.push(...noteIdsForCurrentNotebook);
-        notebookIdEntityMap[unnormalizedNotebook.id] = {
-          ...unnormalizedNotebook,
-          noteIds: noteIdsForCurrentNotebook,
-        };
-        notebookIds.push(unnormalizedNotebook.id);
-      });
-
-      dispatch({
-        type: NOTEBOOK_ACTIONS.FETCH_USER_NOTEBOOKS,
-        payload: { notebookIdEntityMap, notebookIds, noteIdEntityMap, noteIds },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
 export const createNotebook =
   (
     notebookData: NotebookCreateDto,
@@ -186,5 +141,5 @@ export const removeNotebook =
 
 export const setActiveNotebookId = (notebookId: string) => ({
   type: NOTEBOOK_ACTIONS.SET_ACTIVE_NOTEBOOK_ID,
-  payload: notebookId,
+  payload: { id: notebookId },
 });

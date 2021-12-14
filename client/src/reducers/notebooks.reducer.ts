@@ -22,16 +22,16 @@ const notebookReducer = (
   action: NotebookActionType
 ) => {
   switch (action.type) {
-    case NOTEBOOK_ACTIONS.FETCH_USER_NOTEBOOKS:
+    case NOTEBOOK_ACTIONS.INITIALIZE_NOTEBOOKS:
       return {
         ...state,
-        ids: action.payload.notebookIds,
-        entities: action.payload.notebookIdEntityMap,
+        ids: action.payload.ids,
+        entities: action.payload.entities,
       };
     case NOTEBOOK_ACTIONS.SET_ACTIVE_NOTEBOOK_ID:
       return {
         ...state,
-        activeId: action.payload,
+        activeId: action.payload.id,
       };
     case NOTEBOOK_ACTIONS.CREATE_NOTEBOOK:
       return {

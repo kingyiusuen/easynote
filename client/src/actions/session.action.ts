@@ -1,7 +1,12 @@
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import axios from "axios";
+import { Dispatch } from "redux";
 import * as authService from "../services/auth.service";
+import * as userService from "../services/users.service";
+import { NOTE_ACTIONS } from "./notes.action";
+import { NOTEBOOK_ACTIONS } from "./notebooks.action";
 import { AppThunk } from "../store";
+import { Note, NotebookIdEntityMap, NoteIdEntityMap } from "../types";
 
 /* Action names */
 export enum AUTH_ACTIONS {
@@ -57,6 +62,17 @@ export interface DataStoredInToken {
 
 export type CustomJwtPayload = JwtPayload & DataStoredInToken;
 
+/* Interfaces for data received from server  */
+export interface FetchUserNotebooksResponse {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  userId: string;
+  notes: Note[];
+}
+[];
+
 /* Action creators */
 export const signup =
   (userData: UsernamePassword): AppThunk =>
@@ -97,3 +113,41 @@ export const logout = (): AppThunk => (dispatch) => {
   setAuthToken("");
   dispatch(setCurrentUser(null));
 };
+
+export const fetchUserNotebooks =
+  (userId: string): AppThunk =>
+  async (dispatch: Dispatch) => {
+    try {
+      const response = await userService.getUserNotebooks(userId);
+      const unnormalizedNotebooks: FetchUserNotebooksResponse[] = response.data;
+      const notebookIdEntityMap: NotebookIdEntityMap = {};
+      const notebookIds: string[] = [];
+      const noteIdEntityMap: NoteIdEntityMap = {};
+      const noteIds: string[] = [];
+      unnormalizedNotebooks.forEach((unnormalizedNotebook) => {
+        const noteIdsForCurrentNotebook: string[] = [];
+        unnormalizedNotebook.notes.forEach((note: Note) => {
+          noteIdEntityMap[note.id] = note;
+          noteIdsForCurrentNotebook.push(note.id);
+        });
+        noteIds.push(...noteIdsForCurrentNotebook);
+        const { notes: _, ...rest } = unnormalizedNotebook;
+        notebookIdEntityMap[unnormalizedNotebook.id] = {
+          ...rest,
+          noteIds: noteIdsForCurrentNotebook,
+        };
+        notebookIds.push(unnormalizedNotebook.id);
+      });
+
+      dispatch({
+        type: NOTEBOOK_ACTIONS.INITIALIZE_NOTEBOOKS,
+        payload: { ids: notebookIds, entities: notebookIdEntityMap },
+      });
+      dispatch({
+        type: NOTE_ACTIONS.INITIALIZE_NOTES,
+        payload: { ids: noteIds, entities: noteIdEntityMap },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };

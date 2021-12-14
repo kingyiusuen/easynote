@@ -9,7 +9,7 @@ import GlobalStyle from "./styles/global";
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   useRestoreSession();
   const isAuthenticated = useReduxSelector(
-    (state) => state.auth.isAuthenticated
+    (state) => state.session.isAuthenticated
   );
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
@@ -17,7 +17,7 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 const PublicRoute = ({ children }: { children: JSX.Element }) => {
   useRestoreSession();
   const isAuthenticated = useReduxSelector(
-    (state) => state.auth.isAuthenticated
+    (state) => state.session.isAuthenticated
   );
   return isAuthenticated ? <Navigate to="/" /> : children;
 };

@@ -21,7 +21,7 @@ const DeleteNotebookDialog = ({ open, setOpen }: DialogProps) => {
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState("");
 
-  const user = useReduxSelector((state) => state.auth.user);
+  const user = useReduxSelector((state) => state.session.user);
   const activeNotebookId = useReduxSelector((state) => state.notebook.activeId);
 
   const handleClose = () => {

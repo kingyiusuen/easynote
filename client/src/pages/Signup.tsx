@@ -6,7 +6,7 @@ import {
   setAuthErrorMessage,
   signup,
   UsernamePassword,
-} from "../actions/auth.action";
+} from "../actions/session.action";
 import Input from "../components/shared/Input";
 import ErrorMessage from "../components/shared/ErrorMessage";
 import Footer from "../components/AuthPage/Footer";
@@ -33,7 +33,7 @@ const Signup = () => {
   }, [location, dispatch]);
 
   // Get current error message
-  const serverError = useReduxSelector((state) => state.auth.error);
+  const serverError = useReduxSelector((state) => state.session.error);
 
   const {
     register,

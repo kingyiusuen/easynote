@@ -1,14 +1,12 @@
 import { Dispatch } from "redux";
 import * as noteService from "../services/notes.service";
 import { AppThunk } from "../store";
-import {
-  FetchUserNotebooksAction,
-  SetActiveNotebookIdAction,
-} from "./notebooks.action";
-import { Note } from "../types";
+import { SetActiveNotebookIdAction } from "./notebooks.action";
+import { Note, NoteIdEntityMap } from "../types";
 
 /* Action names */
 export enum NOTE_ACTIONS {
+  INITIALIZE_NOTES = "INITIALIZE_NOTES",
   CREATE_NOTE = "CREATE_NOTE",
   REMOVE_NOTE = "REMOVE_NOTE",
   UPDATE_NOTE = "UPDATE_NOTE",
@@ -16,6 +14,14 @@ export enum NOTE_ACTIONS {
 }
 
 /* Action types */
+export type InitializeNotesAction = {
+  type: NOTE_ACTIONS.INITIALIZE_NOTES;
+  payload: {
+    ids: string[];
+    entities: NoteIdEntityMap;
+  };
+};
+
 export type CreateNoteAction = {
   type: NOTE_ACTIONS.CREATE_NOTE;
   payload: Note;
@@ -28,11 +34,13 @@ export type UpdateNoteAction = {
 
 export type SetActiveNoteId = {
   type: NOTE_ACTIONS.SET_ACTIVE_NOTE_ID;
-  payload: string;
+  payload: {
+    id: string;
+  };
 };
 
 export type NoteActionType =
-  | FetchUserNotebooksAction
+  | InitializeNotesAction
   | SetActiveNotebookIdAction
   | CreateNoteAction
   | UpdateNoteAction
@@ -79,5 +87,5 @@ export const updateNote =
 
 export const setActiveNoteId = (noteId: string) => ({
   type: NOTE_ACTIONS.SET_ACTIVE_NOTE_ID,
-  payload: noteId,
+  payload: { id: noteId },
 });

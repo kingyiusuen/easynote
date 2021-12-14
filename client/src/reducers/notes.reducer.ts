@@ -19,16 +19,16 @@ const noteReducer = (
   action: NoteActionType
 ) => {
   switch (action.type) {
-    case NOTEBOOK_ACTIONS.FETCH_USER_NOTEBOOKS:
-      return {
-        ...state,
-        ids: action.payload.noteIds,
-        entities: action.payload.noteIdEntityMap,
-      };
     case NOTEBOOK_ACTIONS.SET_ACTIVE_NOTEBOOK_ID:
       return {
         ...state,
         activeId: "",
+      };
+    case NOTE_ACTIONS.INITIALIZE_NOTES:
+      return {
+        ...state,
+        ids: action.payload.ids,
+        entities: action.payload.entities,
       };
     case NOTE_ACTIONS.CREATE_NOTE: {
       return {
@@ -46,7 +46,7 @@ const noteReducer = (
     case NOTE_ACTIONS.SET_ACTIVE_NOTE_ID:
       return {
         ...state,
-        activeId: action.payload,
+        activeId: action.payload.id,
       };
     default:
       return state;

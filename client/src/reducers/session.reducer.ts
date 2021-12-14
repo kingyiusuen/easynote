@@ -2,7 +2,7 @@ import {
   DataStoredInToken,
   AuthActionType,
   AUTH_ACTIONS,
-} from "../actions/auth.action";
+} from "../actions/session.action";
 
 interface AuthStore {
   isAuthenticated: boolean;
@@ -16,7 +16,7 @@ const initialState = {
   error: "",
 };
 
-const authReducer = (
+const sessionReducer = (
   state: AuthStore = initialState,
   action: AuthActionType
 ) => {
@@ -37,4 +37,4 @@ const authReducer = (
   }
 };
 
-export default authReducer;
+export default sessionReducer;
