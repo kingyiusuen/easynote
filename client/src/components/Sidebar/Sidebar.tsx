@@ -12,7 +12,7 @@ import { setActiveNotebookId } from "../../actions/notebooks.action";
 import { logout } from "../../actions/auth.action";
 
 const Container = styled.div`
-  background-color: var(--nav-background);
+  background-color: var(--sidebar-background);
   user-select: none;
 `;
 
@@ -33,16 +33,18 @@ const ListItemWrapper = styled.div<ListItemWrapper>`
   gap: 7px;
   padding: 0 12px;
   height: 36px;
-  color: var(--nav-text-normal);
+  color: var(--sidebar-text-normal);
   ${({ $active }) =>
-    $active && "background-color: var(--nav-background-active);"}
+    $active && "background-color: var(--sidebar-background-active);"}
 
   ${({ $indent }) => $indent && "padding-left: 44px;"}
 
   &:hover {
     cursor: pointer;
     background-color: ${({ $active }) =>
-      $active ? "var(--nav-background-active)" : "var(--nav-background-hover)"};
+      $active
+        ? "var(--sidebar-background-active)"
+        : "var(--sidebar-background-hover)"};
   }
 `;
 
@@ -56,17 +58,17 @@ const ListHeadingWrapper = styled.div`
   gap: 7px;
   padding: 0 12px;
   height: 36px;
-  color: var(--nav-text-muted);
+  color: var(--sidebar-text-muted);
 `;
 
 const IconButton = styled.button`
   ${baseIconButton}
   font-size: 20px;
   margin-left: auto;
-  color: var(--nav-text-muted);
+  color: var(--sidebar-text-muted);
 
   &:hover {
-    color: var(--nav-text-normal);
+    color: var(--sidebar-text-normal);
   }
 `;
 
@@ -77,7 +79,7 @@ const Footer = styled.div`
   font-size: 14px;
   height: 60px;
   padding: 0px 24px;
-  color: var(--nav-text-normal);
+  color: var(--sidebar-text-normal);
   background-color: #0c0f13;
 `;
 
@@ -131,7 +133,7 @@ const ListHeading = ({ icon, text, buttonIcon }: ListHeadingProps) => {
   );
 };
 
-const Nav = () => {
+const Sidebar = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const notebooks = useReduxSelector((state) => state.notebook);
@@ -173,4 +175,4 @@ const Nav = () => {
   );
 };
 
-export default Nav;
+export default Sidebar;

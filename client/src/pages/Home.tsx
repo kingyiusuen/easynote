@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-import Nav from "../components/Nav/Nav";
+import Sidebar from "../components/Sidebar/Sidebar";
 import NoteList from "../components/NoteList/NoteList";
 import Editor from "../components/Editor/Editor";
 import PreLoader from "../components/PreLoader/PreLoader";
@@ -49,7 +49,7 @@ const Home = () => {
     <PreLoader />
   ) : (
     <Container>
-      <Nav />
+      <Sidebar />
       <NoteList noteIds={noteIds} />
       {activeNoteId && <Editor key={activeNoteId} noteId={activeNoteId} />}
     </Container>

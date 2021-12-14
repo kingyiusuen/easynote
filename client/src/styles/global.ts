@@ -14,11 +14,11 @@ export default createGlobalStyle`
     --border-color: #ececec;
     --scrollbar-thin-thumb: #c4c5c6;
     --scrollbar-thin-track: transparent;
-    --nav-text-normal: #c2c3c4;
-    --nav-text-muted: #7e7e7e;
-    --nav-background: #161a21;
-    --nav-background-hover: #20242e;
-    --nav-background-active: #394053;
+    --sidebar-text-normal: #c2c3c4;
+    --sidebar-text-muted: #7e7e7e;
+    --sidebar-background: #161a21;
+    --sidebar-background-hover: #20242e;
+    --sidebar-background-active: #394053;
     --danger: #cc4539;
   }
 
