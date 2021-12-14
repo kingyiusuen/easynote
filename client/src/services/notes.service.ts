@@ -1,16 +1,16 @@
 import axios from "axios";
 import { NoteCreateDto, NoteUpdateDto } from "../dtos/notes.dto";
 
-const api = axios.create({ baseURL: "/notes" });
+const baseURL = "/notes";
 
 export const create = async (noteData: NoteCreateDto) => {
-  return await api.post(`/`, noteData);
+  return await axios.post(`${baseURL}/`, noteData);
 };
 
 export const update = async (noteId: string, noteData: NoteUpdateDto) => {
-  return await api.put(`/${noteId}`, noteData);
+  return await axios.put(`${baseURL}/${noteId}`, noteData);
 };
 
 export const remove = async (noteId: string) => {
-  return await api.delete(`/${noteId}`);
+  return await axios.delete(`${baseURL}/${noteId}`);
 };

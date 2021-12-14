@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const api = axios.create({ baseURL: "/users" });
+const baseURL = "/users";
 
 export const getUserNotebooks = async (userId: string) => {
-  return await api.get(`/${userId}/notebooks`);
+  return await axios.get(`${baseURL}/${userId}/notebooks`);
 };
