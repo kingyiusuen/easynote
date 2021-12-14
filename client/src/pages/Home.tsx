@@ -6,7 +6,7 @@ import NoteList from "../components/NoteList/NoteList";
 import Editor from "../components/Editor";
 import PreLoader from "../components/PreLoader/PreLoader";
 import { useReduxSelector } from "../hooks";
-import { fetchUserNotebooks } from "../actions/notes.action";
+import { fetchUserNotebooks } from "../actions/notebooks.action";
 
 const Container = styled.div`
   display: grid;
@@ -23,14 +23,9 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const user = useReduxSelector((state) => state.auth.user);
-  const notebooks = useReduxSelector((state) => state.notes.notebooks);
-  const activeNotebookId = useReduxSelector(
-    (state) => state.notes.activeNotebookId
+  const noteIds = useReduxSelector(
+    (state) => state.notebook.entities[state.notebook.activeId]?.noteIds
   );
-  const notes = notebooks.filter(
-    (notebook) => notebook.id === activeNotebookId
-  )[0]?.notes;
-  //const activeNoteId = useReduxSelector((state) => state.notes.activeNoteId);
 
   useEffect(() => {
     if (user) {
@@ -45,7 +40,7 @@ const Home = () => {
   ) : (
     <Container>
       <Nav />
-      <NoteList notes={notes} />
+      <NoteList noteIds={noteIds} />
       <Editor />
     </Container>
   );

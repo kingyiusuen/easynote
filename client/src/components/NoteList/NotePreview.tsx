@@ -1,8 +1,11 @@
 import React from "react";
-import styled from "styled-components";
 import { FaTrashAlt } from "react-icons/fa";
-import { Note } from "../types";
-import { truncatedText } from "../styles/mixins";
+import { useDispatch } from "react-redux";
+import styled from "styled-components";
+import * as timeago from "timeago.js";
+import { Note } from "../../types";
+import { truncatedText } from "../../styles/mixins";
+import { setActiveNoteId } from "../../actions/notes.action";
 
 const IconWrapper = styled.div<WrapperProps>`
   position: absolute;
@@ -21,6 +24,7 @@ const IconWrapper = styled.div<WrapperProps>`
 const Wrapper = styled.div<WrapperProps>`
   font-size: 15px;
   padding: 16px;
+  height: 102px;
   border-bottom: 1px solid var(--border-color);
   background-color: ${({ $active }) => $active && "#d3d1d1"};
   position: relative;
@@ -43,7 +47,14 @@ const Title = styled.div`
 
 const Content = styled.div`
   color: #828384;
+  margin-bottom: 10px;
+  min-height: 18px;
   ${truncatedText}
+`;
+
+const Timestamp = styled.div`
+  color: #828384;
+  font-size: 12px;
 `;
 
 interface WrapperProps {
@@ -52,19 +63,20 @@ interface WrapperProps {
 
 interface NotePreviewProps {
   note: Note;
-  setActiveNoteId: React.Dispatch<React.SetStateAction<string | null>>;
   $active: boolean;
 }
 
-const NotePreview = ({ note, setActiveNoteId, $active }: NotePreviewProps) => {
+const NotePreview = ({ note, $active }: NotePreviewProps) => {
+  const dispatch = useDispatch();
   const handleClick = () => {
-    setActiveNoteId(note.id);
+    dispatch(setActiveNoteId(note.id));
   };
 
   return (
     <Wrapper onClick={handleClick} $active={$active}>
-      <Title>{note.title}</Title>
+      <Title>{note.title ? note.title : "Untitled"}</Title>
       <Content>{note.content}</Content>
+      <Timestamp>{timeago.format(note.updatedAt)}</Timestamp>
       <IconWrapper $active={$active}>
         <FaTrashAlt />
       </IconWrapper>

@@ -10,10 +10,7 @@ import ContainedButton from "./ContainedButton";
 import OutlinedButton from "./OutlinedButton";
 import Input from "../shared/Input";
 import ErrorMessage from "../shared/ErrorMessage";
-import {
-  createNotebook,
-  setNotesErrorMessage,
-} from "../../actions/notes.action";
+import { createNotebook } from "../../actions/notebooks.action";
 import { useReduxSelector } from "../../hooks";
 
 const Dialog = styled(MuiDialog)`
@@ -36,14 +33,14 @@ interface Props {
 
 const CreateNotebookDialog = ({ open, setOpen }: Props) => {
   const dispatch = useDispatch();
+  const [errorMessage, setErrorMessage] = useState("");
   const [inputValue, setInputValue] = useState("");
 
   const user = useReduxSelector((state) => state.auth.user);
-  const serverError = useReduxSelector((state) => state.notes.error);
 
   const handleClose = () => {
     setInputValue("");
-    setNotesErrorMessage("");
+    setErrorMessage("");
     setOpen(false);
   };
 
@@ -55,7 +52,11 @@ const CreateNotebookDialog = ({ open, setOpen }: Props) => {
     event.preventDefault();
     if (user) {
       dispatch(
-        createNotebook({ userId: user.id, name: inputValue }, handleClose)
+        createNotebook(
+          { userId: user.id, name: inputValue },
+          handleClose,
+          setErrorMessage
+        )
       );
     }
   };
@@ -69,7 +70,7 @@ const CreateNotebookDialog = ({ open, setOpen }: Props) => {
             Notebooks are useful for grouping notes around a common topic.
           </DialogContentText>
           <Input placeholder="Notebook name" onChange={handleChange} />
-          {serverError && <ErrorMessage>{serverError}</ErrorMessage>}
+          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         </DialogContent>
         <DialogActions>
           <OutlinedButton type="button" onClick={handleClose}>

@@ -1,31 +1,57 @@
 import { Dispatch } from "redux";
-import { NotebookCreateDto } from "../dtos/notebooks.dto";
+import * as noteService from "../services/notes.service";
 import { AppThunk } from "../store";
-import * as userService from "../services/users.service";
-import * as notebookService from "../services/notebooks.service";
-import axios from "axios";
+import { FetchUserNotebooksAction } from "./notebooks.action";
+import { Note } from "../types";
 
-export const FETCH_USER_NOTEBOOKS = "FETCH_USER_NOTEBOOKS";
-export const CREATE_NOTEBOOK = "CREATE_NOTEBOOK";
-export const RENAME_NOTEBOOK = "RENAME_NOTEBOOK";
-export const REMOVE_NOTEBOOK = "REMOVE_NOTEBOOK";
-export const SET_ACTIVE_NOTEBOOK_ID = "SET_ACTIVE_NOTEBOOK_ID";
-export const CREATE_NOTE = "CREATE_NOTE";
-export const REMOVE_NOTE = "REMOVE_NOTE";
-export const UPDATE_NOTE = "UPDATE_NOTE";
-export const SET_NOTES_ERROR_MESSAGE = "SET_NOTES_ERROR_MESSAGE";
-
-interface ICallbackFunction {
-  (): void;
+/* Action names */
+export enum NOTE_ACTIONS {
+  CREATE_NOTE = "CREATE_NOTE",
+  REMOVE_NOTE = "REMOVE_NOTE",
+  UPDATE_NOTE = "UPDATE_NOTE",
+  SET_ACTIVE_NOTE_ID = "SET_ACTIVE_NOTE_ID",
 }
 
-export const fetchUserNotebooks =
-  (userId: string): AppThunk =>
+/* Action types */
+type CreateNoteAction = {
+  type: NOTE_ACTIONS.CREATE_NOTE;
+  payload: Note;
+};
+
+type UpdateNoteAction = {
+  type: NOTE_ACTIONS.UPDATE_NOTE;
+  payload: Note;
+};
+
+type SetActiveNoteId = {
+  type: NOTE_ACTIONS.SET_ACTIVE_NOTE_ID;
+  payload: string;
+};
+
+export type NoteActionType =
+  | FetchUserNotebooksAction
+  | CreateNoteAction
+  | UpdateNoteAction
+  | SetActiveNoteId;
+
+/* Interfaces for data coming into action creators */
+export interface NoteCreateDto {
+  notebookId: string;
+}
+
+export interface NoteUpdateDto {
+  title: string;
+  content: string;
+}
+
+/* Action creators */
+export const createNote =
+  (notebookId: string): AppThunk =>
   async (dispatch: Dispatch) => {
     try {
-      const response = await userService.getUserNotebooks(userId);
+      const response = await noteService.create({ notebookId });
       dispatch({
-        type: FETCH_USER_NOTEBOOKS,
+        type: NOTE_ACTIONS.CREATE_NOTE,
         payload: response.data,
       });
     } catch (error) {
@@ -33,34 +59,21 @@ export const fetchUserNotebooks =
     }
   };
 
-export const setActiveNotebookId = (notebookId: string) => ({
-  type: SET_ACTIVE_NOTEBOOK_ID,
-  payload: notebookId,
-});
-
-export const createNotebook =
-  (notebookData: NotebookCreateDto, callback: ICallbackFunction): AppThunk =>
+export const updateNote =
+  (noteId: string, updateNoteData: NoteUpdateDto): AppThunk =>
   async (dispatch: Dispatch) => {
     try {
-      const response = await notebookService.create(notebookData);
+      const response = await noteService.update(noteId, updateNoteData);
       dispatch({
-        type: CREATE_NOTEBOOK,
-        payload: {
-          ...response.data,
-          notes: [],
-        },
+        type: NOTE_ACTIONS.UPDATE_NOTE,
+        payload: response.data,
       });
-      callback();
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.data?.message) {
-        dispatch(setNotesErrorMessage(error.response.data.message));
-      } else {
-        dispatch(setNotesErrorMessage("Something went wrong"));
-      }
+      console.log(error);
     }
   };
 
-export const setNotesErrorMessage = (message: string) => ({
-  type: SET_NOTES_ERROR_MESSAGE,
-  payload: message,
+export const setActiveNoteId = (noteId: string) => ({
+  type: NOTE_ACTIONS.SET_ACTIVE_NOTE_ID,
+  payload: noteId,
 });

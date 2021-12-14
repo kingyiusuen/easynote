@@ -1,5 +1,8 @@
 import axios from "axios";
-import { NotebookCreateDto, NotebookUpdateDto } from "../dtos/notebooks.dto";
+import {
+  NotebookCreateDto,
+  NotebookUpdateDto,
+} from "../actions/notebooks.action";
 
 const baseURL = "/notebooks";
 

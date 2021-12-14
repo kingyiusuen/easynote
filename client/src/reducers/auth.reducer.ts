@@ -1,22 +1,10 @@
 import {
   DataStoredInToken,
-  SET_CURRENT_USER,
-  SET_AUTH_ERROR_MESSAGE,
+  AuthActionType,
+  AUTH_ACTIONS,
 } from "../actions/auth.action";
 
-interface ISetCurrentUserAction {
-  type: typeof SET_CURRENT_USER;
-  payload: DataStoredInToken | null;
-}
-
-interface IsetAuthErrorMessageAction {
-  type: typeof SET_AUTH_ERROR_MESSAGE;
-  payload: string;
-}
-
-type IAction = ISetCurrentUserAction | IsetAuthErrorMessageAction;
-
-interface Istate {
+interface AuthStore {
   isAuthenticated: boolean;
   user: DataStoredInToken | null;
   error: string;
@@ -28,15 +16,18 @@ const initialState = {
   error: "",
 };
 
-const authReducer = (state: Istate = initialState, action: IAction) => {
+const authReducer = (
+  state: AuthStore = initialState,
+  action: AuthActionType
+) => {
   switch (action.type) {
-    case SET_CURRENT_USER:
+    case AUTH_ACTIONS.SET_CURRENT_USER:
       return {
         ...state,
         isAuthenticated: !!action.payload,
         user: action.payload,
       };
-    case SET_AUTH_ERROR_MESSAGE:
+    case AUTH_ACTIONS.SET_AUTH_ERROR_MESSAGE:
       return {
         ...state,
         error: action.payload,

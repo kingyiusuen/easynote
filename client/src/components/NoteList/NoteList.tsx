@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { AiOutlineSortAscending } from "react-icons/ai";
 import { HiOutlinePencilAlt, HiOutlineFilter } from "react-icons/hi";
-import NotePreview from "../NotePreview";
+import NotePreview from "./NotePreview";
 import NoNotesMessage from "./NoNotesMessage";
 import { scrollable, baseIconButton } from "../../styles/mixins";
-import { Note } from "../../reducers/notes.reducer";
+import { useReduxSelector } from "../../hooks";
+import { useDispatch } from "react-redux";
+import { createNote } from "../../actions/notes.action";
 
 const Wrapper = styled.div`
   user-select: none;
@@ -77,8 +79,15 @@ const List = styled.div`
   height: calc(100vh - 54px - 50px);
 `;
 
-const NoteList = ({ notes }: { notes: Note[] }) => {
-  const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
+const NoteList = ({ noteIds }: { noteIds: string[] }) => {
+  const dispatch = useDispatch();
+  const activeNoteId = useReduxSelector((state) => state.note.activeId);
+  const activeNotebookId = useReduxSelector((state) => state.notebook.activeId);
+  const noteEntities = useReduxSelector((state) => state.note.entities);
+
+  const handleCreateNoteClick = () => {
+    dispatch(createNote(activeNotebookId));
+  };
 
   return (
     <Wrapper>
@@ -87,7 +96,7 @@ const NoteList = ({ notes }: { notes: Note[] }) => {
           <AiOutlineSortAscending />
         </IconButton>
         <Heading>All Notes</Heading>
-        <IconButton title="Create New Note">
+        <IconButton title="Create New Note" onClick={handleCreateNoteClick}>
           <HiOutlinePencilAlt />
         </IconButton>
       </Header>
@@ -99,20 +108,20 @@ const NoteList = ({ notes }: { notes: Note[] }) => {
           <Input type="text" placeholder="Filter" />
         </SearchBar>
       </SearchBarWrapper>
-      {notes && (
+      {noteIds?.length ? (
         <List>
-          {notes &&
-            notes.map((note) => (
+          {noteIds &&
+            noteIds.map((id) => (
               <NotePreview
-                key={note.id}
-                note={note}
-                setActiveNoteId={setActiveNoteId}
-                $active={activeNoteId === note.id}
+                key={id}
+                note={noteEntities[id]}
+                $active={activeNoteId === id}
               />
             ))}
         </List>
+      ) : (
+        <NoNotesMessage />
       )}
-      <NoNotesMessage />
     </Wrapper>
   );
 };

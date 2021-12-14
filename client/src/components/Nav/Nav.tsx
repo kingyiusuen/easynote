@@ -5,11 +5,10 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BiBook } from "react-icons/bi";
 import { CgNotes } from "react-icons/cg";
 import { RiLogoutCircleRLine } from "react-icons/ri";
-import { Notebook } from "../../types";
 import { useReduxSelector } from "../../hooks";
 import FormDialog from "./CreateNotebookDialog";
 import { useDispatch } from "react-redux";
-import { setActiveNotebookId } from "../../actions/notes.action";
+import { setActiveNotebookId } from "../../actions/notebooks.action";
 import { logout } from "../../actions/auth.action";
 
 const Container = styled.div`
@@ -84,7 +83,8 @@ const Footer = styled.div`
 
 interface ListItemProps {
   icon?: React.ReactNode;
-  notebook: Notebook;
+  notebookId: string;
+  notebookName: string;
   $active: boolean;
   $indent?: boolean;
 }
@@ -94,17 +94,23 @@ interface ListItemWrapper {
   $indent?: boolean;
 }
 
-const ListItem = ({ icon, notebook, $active, $indent }: ListItemProps) => {
+const ListItem = ({
+  icon,
+  notebookId,
+  notebookName,
+  $active,
+  $indent,
+}: ListItemProps) => {
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    dispatch(setActiveNotebookId(notebook.id));
+    dispatch(setActiveNotebookId(notebookId));
   };
 
   return (
     <ListItemWrapper onClick={handleClick} $indent={$indent} $active={$active}>
       {icon && <IconWrapper>{icon}</IconWrapper>}
-      <TextWrapper>{notebook.name}</TextWrapper>
+      <TextWrapper>{notebookName}</TextWrapper>
     </ListItemWrapper>
   );
 };
@@ -128,10 +134,7 @@ const ListHeading = ({ icon, text, buttonIcon }: ListHeadingProps) => {
 const Nav = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const activeNotebookId = useReduxSelector(
-    (state) => state.notes.activeNotebookId
-  );
-  const notebooks = useReduxSelector((state) => state.notes.notebooks);
+  const notebooks = useReduxSelector((state) => state.notebook);
   const user = useReduxSelector((state) => state.auth.user);
 
   return (
@@ -139,20 +142,22 @@ const Nav = () => {
       <List>
         <ListItem
           icon={<CgNotes />}
-          notebook={{ id: "all", name: "All Notes", notes: [] }}
-          $active={activeNotebookId === "all"}
+          notebookId="all"
+          notebookName="All Notes"
+          $active={notebooks.activeId === "all"}
         />
         <ListHeading
           icon={<BiBook />}
           text="Notebooks"
           buttonIcon={<AiOutlinePlusCircle onClick={() => setOpen(true)} />}
         />
-        {notebooks &&
-          notebooks.map((notebook) => (
+        {notebooks.ids &&
+          notebooks.ids.map((id) => (
             <ListItem
-              key={notebook.id}
-              notebook={notebook}
-              $active={activeNotebookId === notebook.id}
+              key={id}
+              notebookId={notebooks.entities[id].id}
+              notebookName={notebooks.entities[id].name}
+              $active={notebooks.activeId === id}
               $indent
             />
           ))}

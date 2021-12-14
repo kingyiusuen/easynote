@@ -59,6 +59,10 @@ const TitleInput = styled.input`
 `;
 
 const Editor = () => {
+  //const activeNotebookId = useReduxSelector(state => state.notebook.activeNotebookId)
+  //const activeNoteId = useReduxSelector(state => state.notebook.activeNoteId)
+  //const note = useReduxSelector(state => state.notebook.notebooks[activeNotebookId].notes)
+
   const [value, setValue] = useState("");
 
   const logChange = (value: string) => {

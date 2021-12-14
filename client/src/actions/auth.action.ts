@@ -3,22 +3,24 @@ import axios from "axios";
 import * as authService from "../services/auth.service";
 import { AppThunk } from "../store";
 
-export const SET_CURRENT_USER = "SET_CURRENT_USER";
-export const SET_AUTH_ERROR_MESSAGE = "SET_AUTH_ERROR_MESSAGE";
-
-export interface DataStoredInToken {
-  id: string;
-  username: string;
-  iat: number;
-  exp: number;
+/* Action names */
+export enum AUTH_ACTIONS {
+  SET_CURRENT_USER = "SET_CURRENT_USER",
+  SET_AUTH_ERROR_MESSAGE = "SET_AUTH_ERROR_MESSAGE",
 }
 
-export interface UsernamePassword {
-  username: string;
-  password: string;
-}
+/* Action types */
+export type SetCurrentUserAction = {
+  type: AUTH_ACTIONS.SET_CURRENT_USER;
+  payload: DataStoredInToken | null;
+};
 
-export type CustomJwtPayload = JwtPayload & DataStoredInToken;
+export type SetAuthErrorMessageAction = {
+  type: AUTH_ACTIONS.SET_AUTH_ERROR_MESSAGE;
+  payload: string;
+};
+
+export type AuthActionType = SetCurrentUserAction | SetAuthErrorMessageAction;
 
 export const setAuthToken = (token: string) => {
   if (token) {
@@ -31,15 +33,31 @@ export const setAuthToken = (token: string) => {
 export const setCurrentUser = (
   user: { id: string; username: string } | null
 ) => ({
-  type: SET_CURRENT_USER,
+  type: AUTH_ACTIONS.SET_CURRENT_USER,
   payload: user,
 });
 
 export const setAuthErrorMessage = (message: string) => ({
-  type: SET_AUTH_ERROR_MESSAGE,
+  type: AUTH_ACTIONS.SET_AUTH_ERROR_MESSAGE,
   payload: message,
 });
 
+/* Interfaces for data coming into action creators */
+export interface UsernamePassword {
+  username: string;
+  password: string;
+}
+
+export interface DataStoredInToken {
+  id: string;
+  username: string;
+  iat: number;
+  exp: number;
+}
+
+export type CustomJwtPayload = JwtPayload & DataStoredInToken;
+
+/* Action creators */
 export const signup =
   (userData: UsernamePassword): AppThunk =>
   async (dispatch) => {

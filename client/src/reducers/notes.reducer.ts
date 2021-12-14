@@ -1,92 +1,51 @@
-import {
-  CREATE_NOTEBOOK,
-  FETCH_USER_NOTEBOOKS,
-  SET_ACTIVE_NOTEBOOK_ID,
-  SET_NOTES_ERROR_MESSAGE,
-} from "../actions/notes.action";
+import { NOTE_ACTIONS, NoteActionType } from "../actions/notes.action";
+import { NOTEBOOK_ACTIONS } from "../actions/notebooks.action";
+import { NoteIdEntityMap } from "../types";
 
-export interface Note {
-  id: string;
-  title: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
+interface NoteStore {
+  ids: string[];
+  entities: NoteIdEntityMap;
+  activeId: string;
 }
 
-export interface Notebook {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  notes: Note[];
-}
-
-interface IFetchUserNotebooksAction {
-  type: typeof FETCH_USER_NOTEBOOKS;
-  payload: Notebook[];
-}
-
-interface ISetActiveNotebookIdAction {
-  type: typeof SET_ACTIVE_NOTEBOOK_ID;
-  payload: string;
-}
-
-interface ICreateNotebookAction {
-  type: typeof CREATE_NOTEBOOK;
-  payload: Notebook;
-}
-
-interface ISetNotesErrorMessage {
-  type: typeof SET_NOTES_ERROR_MESSAGE;
-  payload: string;
-}
-
-type IAction =
-  | IFetchUserNotebooksAction
-  | ISetActiveNotebookIdAction
-  | ICreateNotebookAction
-  | ISetNotesErrorMessage;
-
-interface Istate {
-  notebooks: Notebook[];
-  activeNotebookId: string;
-  activeNoteId: string | null;
-  error: string;
-}
-
-const initialState: Istate = {
-  notebooks: <Notebook[]>[],
-  activeNotebookId: "all",
-  activeNoteId: null,
-  error: "",
+const initialState = {
+  ids: [],
+  entities: {},
+  activeId: "",
 };
 
-const notesReducer = (state: Istate = initialState, action: IAction) => {
+const noteReducer = (
+  state: NoteStore = initialState,
+  action: NoteActionType
+) => {
   switch (action.type) {
-    case FETCH_USER_NOTEBOOKS:
+    case NOTEBOOK_ACTIONS.FETCH_USER_NOTEBOOKS:
       return {
         ...state,
-        notebooks: action.payload,
+        ids: action.payload.noteIds,
+        entities: action.payload.noteIdEntityMap,
       };
-    case SET_ACTIVE_NOTEBOOK_ID:
+    case NOTE_ACTIONS.CREATE_NOTE: {
       return {
-        ...state,
-        activeNotebookId: action.payload,
+        ids: [...state.ids, action.payload.id],
+        entities: { ...state.entities, [action.payload.id]: action.payload },
+        activeId: action.payload.id,
       };
-    case CREATE_NOTEBOOK:
+    }
+    case NOTE_ACTIONS.UPDATE_NOTE: {
       return {
         ...state,
-        notebooks: [...state.notebooks, action.payload],
-        activeNotebookId: action.payload.id,
+        entities: { ...state.entities, [action.payload.id]: action.payload },
       };
-    case SET_NOTES_ERROR_MESSAGE:
+    }
+    case NOTE_ACTIONS.SET_ACTIVE_NOTE_ID:
       return {
         ...state,
-        error: action.payload,
+        activeNoteId: action.payload,
       };
     default:
       return state;
   }
 };
 
-export default notesReducer;
+export default noteReducer;
