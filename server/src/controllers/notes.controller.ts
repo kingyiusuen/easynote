@@ -69,10 +69,14 @@ class NotesController {
     try {
       const noteId = req.params.id;
       const noteData = req.body as NoteUpdateDto;
-      const updateNoteData = await this.noteRepository.update(noteId, {
-        ...noteData,
-        updatedAt: new Date(),
-      });
+      const updateNoteData = await this.noteRepository
+        .createQueryBuilder()
+        .update(Note)
+        .set({ ...noteData, updatedAt: new Date() })
+        .where("id = :id", { id: noteId })
+        .returning("*")
+        .execute()
+        .then((response) => response.raw[0]);
 
       res.status(200).json(updateNoteData);
     } catch (error) {
