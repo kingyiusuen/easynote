@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import MuiDialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
@@ -10,20 +9,21 @@ import ContainedButton from "../shared/ContainedButton";
 import OutlinedButton from "../shared/OutlinedButton";
 import Input from "../shared/Input";
 import ErrorMessage from "../shared/ErrorMessage";
-import { createNotebook } from "../../actions/notebooks.action";
+import { renameNotebook } from "../../actions/notebooks.action";
 import { useReduxSelector } from "../../hooks";
 
-interface Props {
+interface DialogProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const CreateNotebookDialog = ({ open, setOpen }: Props) => {
+const RenameNotebookDialog = ({ open, setOpen }: DialogProps) => {
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState("");
   const [inputValue, setInputValue] = useState("");
 
   const user = useReduxSelector((state) => state.auth.user);
+  const activeNotebookId = useReduxSelector((state) => state.notebook.activeId);
 
   const handleClose = () => {
     setInputValue("");
@@ -39,8 +39,9 @@ const CreateNotebookDialog = ({ open, setOpen }: Props) => {
     event.preventDefault();
     if (user) {
       dispatch(
-        createNotebook(
-          { userId: user.id, name: inputValue },
+        renameNotebook(
+          activeNotebookId,
+          { name: inputValue },
           handleClose,
           setErrorMessage
         )
@@ -49,39 +50,38 @@ const CreateNotebookDialog = ({ open, setOpen }: Props) => {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Create new notebook</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          Notebooks are useful for grouping notes around a common topic.
-        </DialogContentText>
-        <Input placeholder="Notebook name" onChange={handleChange} />
-        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-      </DialogContent>
-      <DialogActions>
-        <OutlinedButton type="button" onClick={handleClose}>
-          Cancel
-        </OutlinedButton>
-        <ContainedButton
-          type="submit"
-          disabled={inputValue === ""}
-          onClick={handleSubmit}
-        >
-          Create
-        </ContainedButton>
-      </DialogActions>
-    </Dialog>
+    <div>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Rename notebook</DialogTitle>
+        <DialogContent>
+          <Input placeholder="Notebook name" onChange={handleChange} />
+          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+        </DialogContent>
+        <DialogActions>
+          <OutlinedButton type="button" onClick={handleClose}>
+            Cancel
+          </OutlinedButton>
+          <ContainedButton
+            type="submit"
+            disabled={inputValue === ""}
+            onClick={handleSubmit}
+          >
+            Continue
+          </ContainedButton>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
 };
 
-export default CreateNotebookDialog;
+export default RenameNotebookDialog;
 
 const Dialog = styled(MuiDialog)`
   user-select: none;
 
   ${Input} {
     margin-top: 12px;
-    width: 100%;
+    width: 400px;
   }
 
   .MuiDialogActions-root {

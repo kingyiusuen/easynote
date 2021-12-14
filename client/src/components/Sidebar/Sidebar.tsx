@@ -5,7 +5,7 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BiBook } from "react-icons/bi";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { useReduxSelector } from "../../hooks";
-import FormDialog from "./CreateNotebookDialog";
+import CreateNotebookDialog from "./CreateNotebookDialog";
 import { useDispatch } from "react-redux";
 import { logout } from "../../actions/auth.action";
 import AllNotesOption from "./AllNotesOption";
@@ -108,7 +108,7 @@ const Sidebar = () => {
           <RiLogoutCircleRLine />
         </IconButton>
       </Footer>
-      <FormDialog open={open} setOpen={setOpen} />
+      <CreateNotebookDialog open={open} setOpen={setOpen} />
     </Container>
   );
 };

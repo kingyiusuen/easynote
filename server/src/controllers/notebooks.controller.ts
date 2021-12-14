@@ -81,10 +81,14 @@ class NotebooksController {
     try {
       const notebookId = req.params.id;
       const notebookData = req.body as NotebookUpdateDto;
-      const updateNotebookData = await this.notebookRepository.update(
-        notebookId,
-        { ...notebookData, updatedAt: new Date() }
-      );
+      const updateNotebookData = await this.notebookRepository
+        .createQueryBuilder()
+        .update(Notebook)
+        .set({ ...notebookData, updatedAt: new Date() })
+        .where("id = :id", { id: notebookId })
+        .returning("*")
+        .execute()
+        .then((response) => response.raw[0]);
 
       res.status(200).json(updateNotebookData);
     } catch (error) {

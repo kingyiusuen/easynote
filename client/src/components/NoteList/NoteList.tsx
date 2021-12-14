@@ -1,16 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import { AiOutlineSortAscending } from "react-icons/ai";
-import { HiOutlinePencilAlt, HiOutlineFilter } from "react-icons/hi";
+import { HiOutlineFilter } from "react-icons/hi";
+import Header from "./Header";
 import NoteListItem from "./NoteListItem";
 import NoNotesMessage from "./NoNotesMessage";
-import { scrollable, baseIconButton } from "../../styles/mixins";
+import { scrollable } from "../../styles/mixins";
 import { useReduxSelector } from "../../hooks";
-import { useDispatch } from "react-redux";
-import { createNote } from "../../actions/notes.action";
 
 const NoteList = ({ noteIds }: { noteIds: string[] }) => {
-  const dispatch = useDispatch();
   const activeNoteId = useReduxSelector((state) => state.note.activeId);
   const activeNotebookId = useReduxSelector((state) => state.notebook.activeId);
   const notes = useReduxSelector((state) => state.note.entities);
@@ -22,21 +19,9 @@ const NoteList = ({ noteIds }: { noteIds: string[] }) => {
     )
     .reverse();
 
-  const handleCreateNoteClick = () => {
-    dispatch(createNote(activeNotebookId));
-  };
-
   return (
     <Wrapper>
-      <Header>
-        <IconButton>
-          <AiOutlineSortAscending />
-        </IconButton>
-        <Heading>All Notes</Heading>
-        <IconButton title="Create New Note" onClick={handleCreateNoteClick}>
-          <HiOutlinePencilAlt />
-        </IconButton>
-      </Header>
+      <Header activeNotebookId={activeNotebookId} />
       <SearchBarWrapper>
         <SearchBar>
           <HiOutlineFilter />
@@ -67,29 +52,6 @@ const Wrapper = styled.div`
   user-select: none;
   color: #282a2c;
   background-color: #f5f5f4;
-`;
-
-const IconButton = styled.button`
-  ${baseIconButton}
-  font-size: 28px;
-  color: #bbbcbd;
-
-  &:hover {
-    color: #9b9a9a;
-  }
-`;
-
-const Header = styled.div`
-  padding: 0 16px;
-  height: 54px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Heading = styled.h2`
-  font-weight: 400;
-  font-size: 22px;
 `;
 
 const SearchBarWrapper = styled.div`

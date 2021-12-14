@@ -11,7 +11,7 @@ export enum NOTEBOOK_ACTIONS {
   FETCH_USER_NOTEBOOKS = "FETCH_USER_NOTEBOOKS",
   CREATE_NOTEBOOK = "CREATE_NOTEBOOK",
   RENAME_NOTEBOOK = "RENAME_NOTEBOOK",
-  REMOVE_NOTEBOOK = "REMOVE_NOTEBOOK",
+  DELETE_NOTEBOOK = "DELETE_NOTEBOOK",
   SET_ACTIVE_NOTEBOOK_ID = "SET_ACTIVE_NOTEBOOK_ID",
 }
 
@@ -36,11 +36,25 @@ export type CreateNotebookAction = {
   payload: Notebook;
 };
 
+export type RenameNotebookAction = {
+  type: NOTEBOOK_ACTIONS.RENAME_NOTEBOOK;
+  payload: Notebook;
+};
+
+export type DeleteNotebookAction = {
+  type: NOTEBOOK_ACTIONS.DELETE_NOTEBOOK;
+  payload: {
+    id: string;
+  };
+};
+
 export type NotebookActionType =
   | CreateNoteAction
   | FetchUserNotebooksAction
   | SetActiveNotebookIdAction
-  | CreateNotebookAction;
+  | CreateNotebookAction
+  | RenameNotebookAction
+  | DeleteNotebookAction;
 
 /* Interfaces for data coming into action creators */
 export interface NotebookCreateDto {
@@ -48,7 +62,7 @@ export interface NotebookCreateDto {
   name: string;
 }
 
-export interface NotebookUpdateDto {
+export interface NotebookRenameDto {
   name: string;
 }
 
@@ -112,6 +126,53 @@ export const createNotebook =
           ...response.data,
           notes: [],
         },
+      });
+      callbackOnSuccess();
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        callbackOnFailure(error.response.data.message);
+      } else {
+        callbackOnFailure("Something went wrong");
+      }
+    }
+  };
+
+export const renameNotebook =
+  (
+    notebookId: string,
+    notebookData: NotebookRenameDto,
+    callbackOnSuccess: () => void,
+    callbackOnFailure: React.Dispatch<React.SetStateAction<string>>
+  ): AppThunk =>
+  async (dispatch: Dispatch) => {
+    try {
+      const response = await notebookService.update(notebookId, notebookData);
+      dispatch({
+        type: NOTEBOOK_ACTIONS.RENAME_NOTEBOOK,
+        payload: response.data,
+      });
+      callbackOnSuccess();
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        callbackOnFailure(error.response.data.message);
+      } else {
+        callbackOnFailure("Something went wrong");
+      }
+    }
+  };
+
+export const removeNotebook =
+  (
+    notebookId: string,
+    callbackOnSuccess: () => void,
+    callbackOnFailure: React.Dispatch<React.SetStateAction<string>>
+  ): AppThunk =>
+  async (dispatch: Dispatch) => {
+    try {
+      await notebookService.remove(notebookId);
+      dispatch({
+        type: NOTEBOOK_ACTIONS.DELETE_NOTEBOOK,
+        payload: { id: notebookId },
       });
       callbackOnSuccess();
     } catch (error) {

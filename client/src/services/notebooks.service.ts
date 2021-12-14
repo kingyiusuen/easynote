@@ -1,7 +1,7 @@
 import axios from "axios";
 import {
   NotebookCreateDto,
-  NotebookUpdateDto,
+  NotebookRenameDto,
 } from "../actions/notebooks.action";
 
 const baseURL = "/notebooks";
@@ -12,7 +12,7 @@ export const create = async (notebookData: NotebookCreateDto) => {
 
 export const update = async (
   notebookId: string,
-  notebookData: NotebookUpdateDto
+  notebookData: NotebookRenameDto
 ) => {
   return await axios.put(`${baseURL}/${notebookId}`, notebookData);
 };

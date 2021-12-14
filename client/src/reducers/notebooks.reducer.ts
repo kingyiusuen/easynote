@@ -35,11 +35,30 @@ const notebookReducer = (
       };
     case NOTEBOOK_ACTIONS.CREATE_NOTEBOOK:
       return {
-        ...state,
         ids: [...state.ids, action.payload.id],
         entities: { ...state.entities, [action.payload.id]: action.payload },
         activeId: action.payload.id,
       };
+    case NOTEBOOK_ACTIONS.RENAME_NOTEBOOK:
+      return {
+        ...state,
+        entities: {
+          ...state.entities,
+          [action.payload.id]: {
+            ...state.entities[action.payload.id],
+            name: action.payload.name,
+            updatedAt: action.payload.updatedAt,
+          },
+        },
+      };
+    case NOTEBOOK_ACTIONS.DELETE_NOTEBOOK: {
+      const { [action.payload.id]: _, ...rest } = state.entities;
+      return {
+        ids: state.ids.filter((id) => id !== action.payload.id),
+        entities: rest,
+        activeId: "all",
+      };
+    }
     case NOTE_ACTIONS.CREATE_NOTE:
       return {
         ...state,
