@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -81,35 +81,32 @@ const Editor = ({ noteId }: Props) => {
   const dispatch = useDispatch();
   const note = useReduxSelector((state) => state.note.entities[noteId]);
 
-  const [isSaved, setIsSaved] = useState(true);
+  const isFirstRun = useRef(true);
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content);
 
   const handleTitleChange = (event: React.FormEvent<HTMLInputElement>) => {
     setTitle(event.currentTarget.value);
-    setIsSaved(false);
-    console.log("changed");
   };
 
   const handleContentChange = (content: string) => {
     setContent(content);
-    setIsSaved(false);
-    console.log("changed");
   };
 
   // Autosaving
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (!isSaved) {
+      if (isFirstRun.current) {
+        isFirstRun.current = false;
+      } else {
         dispatch(updateNote(noteId, { title, content }));
-        setIsSaved(true);
       }
     }, AUTOSAVE_INTERVAL);
 
     return () => {
       clearTimeout(timer);
     };
-  }, [isSaved]);
+  }, [title, content]);
 
   return (
     <div>
