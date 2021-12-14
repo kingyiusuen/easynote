@@ -6,6 +6,7 @@ import * as timeago from "timeago.js";
 import { Note } from "../../types";
 import { truncatedText } from "../../styles/mixins";
 import { setActiveNoteId } from "../../actions/notes.action";
+import stripHTML from "../../utils/stripHTML";
 
 const IconWrapper = styled.div<WrapperProps>`
   position: absolute;
@@ -75,7 +76,7 @@ const NotePreview = ({ note, $active }: NotePreviewProps) => {
   return (
     <Wrapper onClick={handleClick} $active={$active}>
       <Title>{note.title ? note.title : "Untitled"}</Title>
-      <Content>{note.content}</Content>
+      <Content>{stripHTML(note.content)}</Content>
       <Timestamp>{timeago.format(note.updatedAt)}</Timestamp>
       <IconWrapper $active={$active}>
         <FaTrashAlt />

@@ -41,7 +41,7 @@ const noteReducer = (
     case NOTE_ACTIONS.SET_ACTIVE_NOTE_ID:
       return {
         ...state,
-        activeNoteId: action.payload,
+        activeId: action.payload,
       };
     default:
       return state;

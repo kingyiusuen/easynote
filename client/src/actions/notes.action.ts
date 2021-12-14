@@ -63,10 +63,10 @@ export const updateNote =
   (noteId: string, updateNoteData: NoteUpdateDto): AppThunk =>
   async (dispatch: Dispatch) => {
     try {
-      const response = await noteService.update(noteId, updateNoteData);
+      await noteService.update(noteId, updateNoteData);
       dispatch({
         type: NOTE_ACTIONS.UPDATE_NOTE,
-        payload: response.data,
+        payload: { ...updateNoteData, id: noteId },
       });
     } catch (error) {
       console.log(error);

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import Nav from "../components/Nav/Nav";
 import NoteList from "../components/NoteList/NoteList";
-import Editor from "../components/Editor";
+import Editor from "../components/Editor/Editor";
 import PreLoader from "../components/PreLoader/PreLoader";
 import { useReduxSelector } from "../hooks";
 import { fetchUserNotebooks } from "../actions/notebooks.action";
@@ -26,6 +26,7 @@ const Home = () => {
   const noteIds = useReduxSelector(
     (state) => state.notebook.entities[state.notebook.activeId]?.noteIds
   );
+  const activeNoteId = useReduxSelector((state) => state.note.activeId);
 
   useEffect(() => {
     if (user) {
@@ -41,7 +42,7 @@ const Home = () => {
     <Container>
       <Nav />
       <NoteList noteIds={noteIds} />
-      <Editor />
+      {activeNoteId && <Editor key={activeNoteId} noteId={activeNoteId} />}
     </Container>
   );
 };

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { AiOutlineSortAscending } from "react-icons/ai";
 import { HiOutlinePencilAlt, HiOutlineFilter } from "react-icons/hi";
-import NotePreview from "./NotePreview";
+import NoteListItem from "./NoteListItem";
 import NoNotesMessage from "./NoNotesMessage";
 import { scrollable, baseIconButton } from "../../styles/mixins";
 import { useReduxSelector } from "../../hooks";
@@ -112,7 +112,7 @@ const NoteList = ({ noteIds }: { noteIds: string[] }) => {
         <List>
           {noteIds &&
             noteIds.map((id) => (
-              <NotePreview
+              <NoteListItem
                 key={id}
                 note={noteEntities[id]}
                 $active={activeNoteId === id}
