@@ -1,7 +1,10 @@
 import { Dispatch } from "redux";
 import * as noteService from "../services/notes.service";
 import { AppThunk } from "../store";
-import { FetchUserNotebooksAction } from "./notebooks.action";
+import {
+  FetchUserNotebooksAction,
+  SetActiveNotebookIdAction,
+} from "./notebooks.action";
 import { Note } from "../types";
 
 /* Action names */
@@ -13,23 +16,24 @@ export enum NOTE_ACTIONS {
 }
 
 /* Action types */
-type CreateNoteAction = {
+export type CreateNoteAction = {
   type: NOTE_ACTIONS.CREATE_NOTE;
   payload: Note;
 };
 
-type UpdateNoteAction = {
+export type UpdateNoteAction = {
   type: NOTE_ACTIONS.UPDATE_NOTE;
   payload: Note;
 };
 
-type SetActiveNoteId = {
+export type SetActiveNoteId = {
   type: NOTE_ACTIONS.SET_ACTIVE_NOTE_ID;
   payload: string;
 };
 
 export type NoteActionType =
   | FetchUserNotebooksAction
+  | SetActiveNotebookIdAction
   | CreateNoteAction
   | UpdateNoteAction
   | SetActiveNoteId;
@@ -63,10 +67,10 @@ export const updateNote =
   (noteId: string, updateNoteData: NoteUpdateDto): AppThunk =>
   async (dispatch: Dispatch) => {
     try {
-      await noteService.update(noteId, updateNoteData);
+      const response = await noteService.update(noteId, updateNoteData);
       dispatch({
         type: NOTE_ACTIONS.UPDATE_NOTE,
-        payload: { ...updateNoteData, id: noteId },
+        payload: response.data,
       });
     } catch (error) {
       console.log(error);

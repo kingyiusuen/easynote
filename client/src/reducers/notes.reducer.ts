@@ -25,6 +25,11 @@ const noteReducer = (
         ids: action.payload.noteIds,
         entities: action.payload.noteIdEntityMap,
       };
+    case NOTEBOOK_ACTIONS.SET_ACTIVE_NOTEBOOK_ID:
+      return {
+        ...state,
+        activeId: "",
+      };
     case NOTE_ACTIONS.CREATE_NOTE: {
       return {
         ids: [...state.ids, action.payload.id],

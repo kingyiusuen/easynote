@@ -2,6 +2,7 @@ import {
   NOTEBOOK_ACTIONS,
   NotebookActionType,
 } from "../actions/notebooks.action";
+import { NOTE_ACTIONS } from "../actions/notes.action";
 import { NotebookIdEntityMap } from "../types";
 
 interface NotebookStore {
@@ -38,6 +39,20 @@ const notebookReducer = (
         ids: [...state.ids, action.payload.id],
         entities: { ...state.entities, [action.payload.id]: action.payload },
         activeId: action.payload.id,
+      };
+    case NOTE_ACTIONS.CREATE_NOTE:
+      return {
+        ...state,
+        entities: {
+          ...state.entities,
+          [action.payload.notebookId]: {
+            ...state.entities[action.payload.notebookId],
+            noteIds: [
+              ...state.entities[action.payload.notebookId].noteIds,
+              action.payload.id,
+            ],
+          },
+        },
       };
     default:
       return state;

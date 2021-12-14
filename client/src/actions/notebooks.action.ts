@@ -2,6 +2,7 @@ import axios from "axios";
 import { Dispatch } from "redux";
 import { AppThunk } from "../store";
 import { Note, NoteIdEntityMap, Notebook, NotebookIdEntityMap } from "../types";
+import { CreateNoteAction } from "./notes.action";
 import * as userService from "../services/users.service";
 import * as notebookService from "../services/notebooks.service";
 
@@ -36,6 +37,7 @@ export type CreateNotebookAction = {
 };
 
 export type NotebookActionType =
+  | CreateNoteAction
   | FetchUserNotebooksAction
   | SetActiveNotebookIdAction
   | CreateNotebookAction;
