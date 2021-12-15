@@ -10,7 +10,7 @@ import OutlinedButton from "../shared/OutlinedButton";
 import Input from "../shared/Input";
 import ErrorMessage from "../shared/ErrorMessage";
 import { renameNotebook } from "../../actions/notebooks.action";
-import { useReduxSelector } from "../../hooks";
+import { useGetActiveNotebookId, useReduxSelector } from "../../hooks";
 
 interface DialogProps {
   open: boolean;
@@ -23,7 +23,7 @@ const RenameNotebookDialog = ({ open, setOpen }: DialogProps) => {
   const [inputValue, setInputValue] = useState("");
 
   const user = useReduxSelector((state) => state.session.user);
-  const activeNotebookId = useReduxSelector((state) => state.notebook.activeId);
+  const activeNotebookId = useGetActiveNotebookId();
 
   const handleClose = () => {
     setInputValue("");

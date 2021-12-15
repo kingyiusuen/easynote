@@ -8,6 +8,7 @@ import {
   setCurrentUser,
 } from "./actions/session.action";
 import type { RootState } from "./store";
+import { IParams } from "./types";
 
 export const useReduxSelector: TypedUseSelectorHook<RootState> = useSelector;
 
@@ -30,14 +31,15 @@ export const useRestoreSession = () => {
   }
 };
 
-export const useGetNotebookId = () => {
-  const params = useParams();
-  return params.notebookId || "all";
+/* Get notebookId from URL */
+export const useGetActiveNotebookId = () => {
+  const params = useParams<keyof IParams>() as IParams;
+  return params.notebookId;
 };
 
-/* Get notebook based on URL */
-export const useGetNotebook = () => {
-  const notebookId = useGetNotebookId();
+/* Get notebook from URL */
+export const useGetActiveNotebook = () => {
+  const notebookId = useGetActiveNotebookId();
 
   if (notebookId === "all") {
     const noteIds = Array.prototype.concat(
@@ -49,6 +51,9 @@ export const useGetNotebook = () => {
     return {
       id: "all",
       name: "All Notes",
+      userId: "",
+      createdAt: "",
+      updatedAt: "",
       noteIds,
     };
   }

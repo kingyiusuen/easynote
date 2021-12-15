@@ -6,7 +6,7 @@ import Header from "./Header";
 import NoteListItem from "./NoteListItem";
 import NoNotesMessage from "./NoNotesMessage";
 import { scrollable } from "../../styles/mixins";
-import { useGetNotebook, useReduxSelector } from "../../hooks";
+import { useGetActiveNotebook, useReduxSelector } from "../../hooks";
 import { setActiveNoteId } from "../../actions/notes.action";
 import { NoteIdEntityMap } from "../../types";
 
@@ -21,8 +21,7 @@ const sort = (notes: NoteIdEntityMap, noteIds: string[]) => {
 };
 
 const NoteList = () => {
-  // Get the list of note Ids for the selected notebook
-  const notebook = useGetNotebook();
+  const notebook = useGetActiveNotebook();
 
   // Sort the notes and set the first note as active
   const notes = useReduxSelector((state) => state.note.entities);
@@ -32,7 +31,7 @@ const NoteList = () => {
   useEffect(() => {
     const firstId = noteIds.length && noteIds[0];
     dispatch(setActiveNoteId(firstId || ""));
-  }, [notebook]);
+  }, [notebook.id]);
 
   const activeNoteId = useReduxSelector((state) => state.note.activeId);
 

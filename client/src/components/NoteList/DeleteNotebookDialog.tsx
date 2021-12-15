@@ -8,7 +8,7 @@ import styled from "styled-components";
 import OutlinedButton from "../shared/OutlinedButton";
 import ErrorMessage from "../shared/ErrorMessage";
 import { deleteNotebook } from "../../actions/notebooks.action";
-import { useReduxSelector } from "../../hooks";
+import { useGetActiveNotebookId, useReduxSelector } from "../../hooks";
 import DialogContentText from "@mui/material/DialogContentText";
 import { baseButton } from "../../styles/mixins";
 
@@ -22,7 +22,7 @@ const DeleteNotebookDialog = ({ open, setOpen }: DialogProps) => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const user = useReduxSelector((state) => state.session.user);
-  const activeNotebookId = useReduxSelector((state) => state.notebook.activeId);
+  const activeNotebookId = useGetActiveNotebookId();
 
   const handleClose = () => {
     setErrorMessage("");

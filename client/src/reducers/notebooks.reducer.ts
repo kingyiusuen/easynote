@@ -8,13 +8,11 @@ import { NotebookIdEntityMap } from "../types";
 interface NotebookStore {
   ids: string[];
   entities: NotebookIdEntityMap;
-  activeId: string;
 }
 
 const initialState = {
   ids: [],
   entities: {},
-  activeId: "all",
 };
 
 const notebookReducer = (

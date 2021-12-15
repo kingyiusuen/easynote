@@ -23,3 +23,7 @@ export interface NoteIdEntityMap {
 export interface NotebookIdEntityMap {
   [notebookId: string]: Notebook;
 }
+
+export interface IParams {
+  notebookId: string;
+}

@@ -4,7 +4,7 @@ import { flexCenter, scrollable, baseIconButton } from "../../styles/mixins";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BiBook } from "react-icons/bi";
 import { RiLogoutCircleRLine } from "react-icons/ri";
-import { useGetNotebookId, useReduxSelector } from "../../hooks";
+import { useGetActiveNotebookId, useReduxSelector } from "../../hooks";
 import CreateNotebookDialog from "./CreateNotebookDialog";
 import { useDispatch } from "react-redux";
 import { logout } from "../../actions/session.action";
@@ -15,8 +15,9 @@ import ArrowTooltip from "../shared/ArrowTooltip";
 const Sidebar = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const notebookId = useGetNotebookId();
+  const notebookId = useGetActiveNotebookId();
   const notebooks = useReduxSelector((state) => state.notebook);
+
   const user = useReduxSelector((state) => state.session.user);
 
   return (
