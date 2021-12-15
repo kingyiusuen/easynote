@@ -4,17 +4,14 @@ import MenuItem from "@mui/material/MenuItem";
 import Fade from "@mui/material/Fade";
 import styled from "styled-components";
 import { HiDotsHorizontal } from "react-icons/hi";
+import { MdDriveFileMove, MdDeleteForever } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import DeleteNoteDialog from "./DeleteNoteDialog";
 import { updateNote } from "../../actions/notes.action";
 import { baseIconButton, scrollable } from "../../styles/mixins";
-import { useReduxSelector } from "../../hooks";
-
-interface Props {
-  noteId: string;
-}
+import { Note } from "../../types";
 
 const modules = {
   toolbar: [
@@ -28,13 +25,14 @@ const modules = {
 
 const AUTOSAVE_INTERVAL = 1500; // 1.5 seconds
 
-const Editor = ({ noteId }: Props) => {
-  const dispatch = useDispatch();
-  const note = useReduxSelector((state) => state.note.entities[noteId]);
+interface Props {
+  note: Note;
+}
 
+const Editor = ({ note }: Props) => {
   const isFirstRun = useRef(true);
-  const [title, setTitle] = useState(note.title);
-  const [content, setContent] = useState(note.content);
+  const [title, setTitle] = useState(note?.title);
+  const [content, setContent] = useState(note?.content);
 
   const handleTitleChange = (event: React.FormEvent<HTMLInputElement>) => {
     setTitle(event.currentTarget.value);
@@ -45,12 +43,13 @@ const Editor = ({ noteId }: Props) => {
   };
 
   // Autosaving
+  const dispatch = useDispatch();
   useEffect(() => {
     const timer = setTimeout(() => {
       if (isFirstRun.current) {
         isFirstRun.current = false;
       } else {
-        dispatch(updateNote(noteId, { title, content }));
+        dispatch(updateNote(note.id, { title, content }));
       }
     }, AUTOSAVE_INTERVAL);
 
@@ -96,9 +95,11 @@ const Editor = ({ noteId }: Props) => {
           TransitionComponent={Fade}
         >
           <MenuItem onClick={handleCloseMenu} disableRipple>
+            <MdDriveFileMove />
             Move note
           </MenuItem>
           <MenuItem onClick={handleDeleteNoteClick} disableRipple>
+            <MdDeleteForever />
             Delete note
           </MenuItem>
         </StyledMenu>
@@ -193,6 +194,11 @@ const StyledMenu = styled(Menu)`
   .MuiMenuItem-root {
     font-size: 14px;
     padding: 4px 16px;
+
+    & svg {
+      font-size: 18px;
+      margin-right: 6px;
+    }
   }
 `;
 

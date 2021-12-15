@@ -3,7 +3,9 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
 import Fade from "@mui/material/Fade";
+import { BiRename } from "react-icons/bi";
 import { HiDotsHorizontal, HiOutlinePencilAlt } from "react-icons/hi";
+import { MdDeleteForever } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { createNote } from "../../actions/notes.action";
@@ -75,9 +77,11 @@ const Header = ({ activeNotebookId }: HeaderProps) => {
         {activeNotebookId !== "all" && (
           <div>
             <MenuItem onClick={handleRenameNotebookClick} disableRipple>
+              <BiRename />
               Rename notebook
             </MenuItem>
             <MenuItem onClick={handleDeleteNotebookClick} disableRipple>
+              <MdDeleteForever />
               Delete notebook
             </MenuItem>
             <Divider sx={{ my: 0.5 }} />{" "}
@@ -140,6 +144,11 @@ const StyledMenu = styled(Menu)`
   .MuiMenuItem-root {
     font-size: 14px;
     padding: 4px 16px;
+
+    & svg {
+      font-size: 18px;
+      margin-right: 6px;
+    }
   }
 `;
 

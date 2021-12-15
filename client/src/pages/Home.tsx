@@ -7,6 +7,7 @@ import Editor from "../components/Editor/Editor";
 import PreLoader from "../components/PreLoader/PreLoader";
 import { useReduxSelector } from "../hooks";
 import { fetchUserNotebooks } from "../actions/session.action";
+import { setActiveNotebookId } from "../actions/notebooks.action";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -16,33 +17,23 @@ const Home = () => {
     if (user) {
       setIsLoading(true);
       dispatch(fetchUserNotebooks(user.id));
+      dispatch(setActiveNotebookId("all"));
       setTimeout(() => setIsLoading(false), 500);
     }
   }, []);
 
   const user = useReduxSelector((state) => state.session.user);
-  const activeNotebookId = useReduxSelector((state) => state.notebook.activeId);
-  let noteIds: string[];
-  if (activeNotebookId === "all") {
-    const listsOfNoteIds = useReduxSelector((state) =>
-      state.notebook.ids.map((id) => state.notebook.entities[id].noteIds)
-    );
-    noteIds = Array.prototype.concat(...listsOfNoteIds);
-  } else {
-    noteIds = useReduxSelector(
-      (state) => state.notebook.entities[activeNotebookId]?.noteIds
-    );
-  }
-  const activeNoteId =
-    useReduxSelector((state) => state.note.activeId) || noteIds[0];
+  const note = useReduxSelector(
+    (state) => state.note.entities[state.note.activeId]
+  );
 
   return isLoading ? (
     <PreLoader />
   ) : (
     <Container>
       <Sidebar />
-      <NoteList noteIds={noteIds} />
-      {activeNoteId && <Editor key={activeNoteId} noteId={activeNoteId} />}
+      <NoteList />
+      {note && <Editor note={note} />}
     </Container>
   );
 };

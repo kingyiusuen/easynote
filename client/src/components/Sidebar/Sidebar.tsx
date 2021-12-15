@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../actions/session.action";
 import AllNotesOption from "./AllNotesOption";
 import NotebookOption from "./NotebookOption";
+import { setActiveNotebookId } from "../../actions/notebooks.action";
 
 const Container = styled.div`
   background-color: var(--sidebar-background);
@@ -84,10 +85,16 @@ const Sidebar = () => {
   const notebooks = useReduxSelector((state) => state.notebook);
   const user = useReduxSelector((state) => state.session.user);
 
+  const handleClick = (notebookId: string) => () =>
+    dispatch(setActiveNotebookId(notebookId));
+
   return (
     <Container>
       <List>
-        <AllNotesOption $active={notebooks.activeId === "all"} />
+        <AllNotesOption
+          handleClick={handleClick("all")}
+          $active={notebooks.activeId === "all"}
+        />
         <ListHeading
           icon={<BiBook />}
           text="Notebooks"
@@ -97,7 +104,8 @@ const Sidebar = () => {
           notebooks.ids.map((id) => (
             <NotebookOption
               key={id}
-              notebook={notebooks.entities[id]}
+              notebookName={notebooks.entities[id].name}
+              handleClick={handleClick(id)}
               $active={notebooks.activeId === id}
             />
           ))}

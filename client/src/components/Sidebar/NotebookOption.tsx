@@ -1,28 +1,24 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { setActiveNotebookId } from "../../actions/notebooks.action";
 import { flexCenter } from "../../styles/mixins";
-import { Notebook } from "../../types";
 
 interface ContainerProps {
   $active: boolean;
 }
 
 interface ComponentProps extends ContainerProps {
-  notebook: Notebook;
+  notebookName: string;
+  handleClick: () => void;
 }
 
-const NotebookOption = ({ notebook, $active }: ComponentProps) => {
-  const dispatch = useDispatch();
-
-  const handleClick = () => {
-    dispatch(setActiveNotebookId(notebook.id));
-  };
-
+const NotebookOption = ({
+  notebookName,
+  handleClick,
+  $active,
+}: ComponentProps) => {
   return (
     <Container onClick={handleClick} $active={$active}>
-      <TextWrapper>{notebook.name}</TextWrapper>
+      <TextWrapper>{notebookName}</TextWrapper>
     </Container>
   );
 };

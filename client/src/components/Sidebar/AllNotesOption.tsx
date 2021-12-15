@@ -1,9 +1,26 @@
 import React from "react";
 import { CgNotes } from "react-icons/cg";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { setActiveNotebookId } from "../../actions/notebooks.action";
 import { flexCenter } from "../../styles/mixins";
+
+interface ContainerProps {
+  $active: boolean;
+}
+
+interface ComponentProps extends ContainerProps {
+  handleClick: () => void;
+}
+
+const AllNotesOption = ({ $active, handleClick }: ComponentProps) => {
+  return (
+    <Container onClick={handleClick} $active={$active}>
+      <CgNotes />
+      <TextWrapper>All Notes</TextWrapper>
+    </Container>
+  );
+};
+
+export default AllNotesOption;
 
 const Container = styled.div<ContainerProps>`
   display: flex;
@@ -32,25 +49,3 @@ const Container = styled.div<ContainerProps>`
 const TextWrapper = styled.span`
   font-size: 15px;
 `;
-
-interface ContainerProps {
-  $active: boolean;
-  $indent?: boolean;
-}
-
-const AllNotesOption = ({ $active }: { $active: boolean }) => {
-  const dispatch = useDispatch();
-
-  const handleClick = () => {
-    dispatch(setActiveNotebookId("all"));
-  };
-
-  return (
-    <Container onClick={handleClick} $active={$active}>
-      <CgNotes />
-      <TextWrapper>All Notes</TextWrapper>
-    </Container>
-  );
-};
-
-export default AllNotesOption;
