@@ -3,13 +3,14 @@ import * as noteService from "../services/notes.service";
 import { AppThunk } from "../store";
 import { SetActiveNotebookIdAction } from "./notebooks.action";
 import { Note, NoteIdEntityMap } from "../types";
+import axios from "axios";
 
 /* Action names */
 export enum NOTE_ACTIONS {
   INITIALIZE_NOTES = "INITIALIZE_NOTES",
   CREATE_NOTE = "CREATE_NOTE",
-  REMOVE_NOTE = "REMOVE_NOTE",
   UPDATE_NOTE = "UPDATE_NOTE",
+  DELETE_NOTE = "DELETE_NOTE",
   SET_ACTIVE_NOTE_ID = "SET_ACTIVE_NOTE_ID",
 }
 
@@ -32,6 +33,14 @@ export type UpdateNoteAction = {
   payload: Note;
 };
 
+export type DeleteNoteAction = {
+  type: NOTE_ACTIONS.DELETE_NOTE;
+  payload: {
+    noteId: string;
+    notebookId: string;
+  };
+};
+
 export type SetActiveNoteId = {
   type: NOTE_ACTIONS.SET_ACTIVE_NOTE_ID;
   payload: {
@@ -44,6 +53,7 @@ export type NoteActionType =
   | SetActiveNotebookIdAction
   | CreateNoteAction
   | UpdateNoteAction
+  | DeleteNoteAction
   | SetActiveNoteId;
 
 /* Interfaces for data coming into action creators */
@@ -82,6 +92,30 @@ export const updateNote =
       });
     } catch (error) {
       console.log(error);
+    }
+  };
+
+export const deleteNote =
+  (
+    noteId: string,
+    notebookId: string,
+    callbackOnSuccess: () => void,
+    callbackOnFailure: React.Dispatch<React.SetStateAction<string>>
+  ): AppThunk =>
+  async (dispatch: Dispatch) => {
+    try {
+      await noteService.remove(noteId);
+      dispatch({
+        type: NOTE_ACTIONS.DELETE_NOTE,
+        payload: { noteId, notebookId },
+      });
+      callbackOnSuccess();
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        callbackOnFailure(error.response.data.message);
+      } else {
+        callbackOnFailure("Something went wrong");
+      }
     }
   };
 

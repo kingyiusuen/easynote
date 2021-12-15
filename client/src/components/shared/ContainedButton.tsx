@@ -8,6 +8,7 @@ const ContainedButton = styled.button`
   padding: 10px 16px;
   color: white;
   background-color: ${({ disabled }) => (disabled ? "#6d7a9d" : "#394053")};
+  border: 1px solid ${({ disabled }) => (disabled ? "#6d7a9d" : "#394053")};
 
   &:hover {
     background-color: ${({ disabled }) => (disabled ? "#6d7a9d" : "#313647")};

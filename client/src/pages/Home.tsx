@@ -12,6 +12,14 @@ const Home = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    if (user) {
+      setIsLoading(true);
+      dispatch(fetchUserNotebooks(user.id));
+      setTimeout(() => setIsLoading(false), 500);
+    }
+  }, []);
+
   const user = useReduxSelector((state) => state.session.user);
   const activeNotebookId = useReduxSelector((state) => state.notebook.activeId);
   let noteIds: string[];
@@ -25,15 +33,8 @@ const Home = () => {
       (state) => state.notebook.entities[activeNotebookId]?.noteIds
     );
   }
-  const activeNoteId = useReduxSelector((state) => state.note.activeId);
-
-  useEffect(() => {
-    if (user) {
-      setIsLoading(true);
-      dispatch(fetchUserNotebooks(user.id));
-      setTimeout(() => setIsLoading(false), 500);
-    }
-  }, []);
+  const activeNoteId =
+    useReduxSelector((state) => state.note.activeId) || noteIds[0];
 
   return isLoading ? (
     <PreLoader />

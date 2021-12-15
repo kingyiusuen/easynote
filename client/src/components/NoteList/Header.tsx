@@ -10,12 +10,18 @@ import { createNote } from "../../actions/notes.action";
 import { baseIconButton } from "../../styles/mixins";
 import RenameNotebookDialog from "./RenameNotebookDialog";
 import DeleteNotebookDialog from "./DeleteNotebookDialog";
+import { useReduxSelector } from "../../hooks";
 
 interface HeaderProps {
   activeNotebookId: string;
 }
 
 const Header = ({ activeNotebookId }: HeaderProps) => {
+  const notebookName =
+    useReduxSelector(
+      (state) => state.notebook.entities[activeNotebookId]?.name
+    ) || "All Notes";
+
   const dispatch = useDispatch();
   const [isRenameNotebookDialogOpen, setIsRenameNotebookDialogOpen] =
     useState(false);
@@ -47,12 +53,14 @@ const Header = ({ activeNotebookId }: HeaderProps) => {
 
   return (
     <Container>
-      <Heading>All Notes</Heading>
+      <Heading>{notebookName}</Heading>
       <ButtonGroup>
-        <IconButton title="Add new note" onClick={handleCreateNoteClick}>
-          <HiOutlinePencilAlt />
-        </IconButton>
-        <IconButton title="More" onClick={handleClick}>
+        {activeNotebookId !== "all" && (
+          <IconButton title="Add new note" onClick={handleCreateNoteClick}>
+            <HiOutlinePencilAlt />
+          </IconButton>
+        )}
+        <IconButton title="More actions" onClick={handleClick}>
           <HiDotsHorizontal />
         </IconButton>
       </ButtonGroup>
@@ -64,13 +72,17 @@ const Header = ({ activeNotebookId }: HeaderProps) => {
         onClose={handleCloseMenu}
         TransitionComponent={Fade}
       >
-        <MenuItem onClick={handleRenameNotebookClick} disableRipple>
-          Rename notebook
-        </MenuItem>
-        <MenuItem onClick={handleDeleteNotebookClick} disableRipple>
-          Delete notebook
-        </MenuItem>
-        <Divider sx={{ my: 0.5 }} />
+        {activeNotebookId !== "all" && (
+          <div>
+            <MenuItem onClick={handleRenameNotebookClick} disableRipple>
+              Rename notebook
+            </MenuItem>
+            <MenuItem onClick={handleDeleteNotebookClick} disableRipple>
+              Delete notebook
+            </MenuItem>
+            <Divider sx={{ my: 0.5 }} />{" "}
+          </div>
+        )}
         <MenuItem disabled>Sort by</MenuItem>
         <MenuItem onClick={handleCloseMenu} disableRipple>
           Date updated

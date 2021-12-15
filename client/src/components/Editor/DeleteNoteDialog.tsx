@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import MuiDialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import OutlinedButton from "../shared/OutlinedButton";
 import ErrorMessage from "../shared/ErrorMessage";
-import { deleteNotebook } from "../../actions/notebooks.action";
+import { deleteNote } from "../../actions/notes.action";
 import { useReduxSelector } from "../../hooks";
-import DialogContentText from "@mui/material/DialogContentText";
 import { baseButton } from "../../styles/mixins";
 
 interface DialogProps {
@@ -17,12 +17,14 @@ interface DialogProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DeleteNotebookDialog = ({ open, setOpen }: DialogProps) => {
+const DeleteNoteDialog = ({ open, setOpen }: DialogProps) => {
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState("");
 
-  const user = useReduxSelector((state) => state.session.user);
-  const activeNotebookId = useReduxSelector((state) => state.notebook.activeId);
+  const activeNoteId = useReduxSelector((state) => state.note.activeId);
+  const notebookId = useReduxSelector(
+    (state) => state.note.entities[activeNoteId]?.notebookId
+  );
 
   const handleClose = () => {
     setErrorMessage("");
@@ -31,18 +33,17 @@ const DeleteNotebookDialog = ({ open, setOpen }: DialogProps) => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (user) {
-      dispatch(deleteNotebook(activeNotebookId, handleClose, setErrorMessage));
-    }
+    dispatch(
+      deleteNote(activeNoteId, notebookId, handleClose, setErrorMessage)
+    );
   };
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Delete notebook</DialogTitle>
+      <DialogTitle>Delete note</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Any notes in the notebook will be remove permanently. This cannot be
-          undone.
+          The note will be remove permanently. This cannot be undone.
         </DialogContentText>
         {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       </DialogContent>
@@ -58,7 +59,7 @@ const DeleteNotebookDialog = ({ open, setOpen }: DialogProps) => {
   );
 };
 
-export default DeleteNotebookDialog;
+export default DeleteNoteDialog;
 
 const Dialog = styled(MuiDialog)`
   user-select: none;

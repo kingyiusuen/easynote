@@ -2,7 +2,7 @@ import axios from "axios";
 import { Dispatch } from "redux";
 import { AppThunk } from "../store";
 import { Notebook, NotebookIdEntityMap } from "../types";
-import { CreateNoteAction } from "./notes.action";
+import { CreateNoteAction, DeleteNoteAction } from "./notes.action";
 import * as notebookService from "../services/notebooks.service";
 
 /* Action names */
@@ -49,6 +49,7 @@ export type DeleteNotebookAction = {
 
 export type NotebookActionType =
   | CreateNoteAction
+  | DeleteNoteAction
   | InitializeNotebooksAction
   | SetActiveNotebookIdAction
   | CreateNotebookAction
@@ -116,7 +117,7 @@ export const renameNotebook =
     }
   };
 
-export const removeNotebook =
+export const deleteNotebook =
   (
     notebookId: string,
     callbackOnSuccess: () => void,

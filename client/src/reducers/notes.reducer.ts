@@ -43,6 +43,14 @@ const noteReducer = (
         entities: { ...state.entities, [action.payload.id]: action.payload },
       };
     }
+    case NOTE_ACTIONS.DELETE_NOTE: {
+      const { [action.payload.noteId]: _, ...rest } = state.entities;
+      return {
+        ids: state.ids.filter((id) => id !== action.payload.noteId),
+        entities: rest,
+        activeId: "",
+      };
+    }
     case NOTE_ACTIONS.SET_ACTIVE_NOTE_ID:
       return {
         ...state,

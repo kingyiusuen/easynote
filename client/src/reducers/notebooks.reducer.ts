@@ -73,6 +73,22 @@ const notebookReducer = (
           },
         },
       };
+    case NOTE_ACTIONS.DELETE_NOTE: {
+      const newNoteIdsList = state.entities[
+        action.payload.notebookId
+      ].noteIds.filter((id) => id !== action.payload.noteId);
+      return {
+        ...state,
+        entities: {
+          ...state.entities,
+          [action.payload.notebookId]: {
+            ...state.entities[action.payload.notebookId],
+            noteIds: newNoteIdsList,
+          },
+        },
+      };
+    }
+
     default:
       return state;
   }

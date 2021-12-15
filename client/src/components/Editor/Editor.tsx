@@ -1,11 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Fade from "@mui/material/Fade";
 import styled from "styled-components";
+import { HiDotsHorizontal } from "react-icons/hi";
+import { useDispatch } from "react-redux";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import DeleteNoteDialog from "./DeleteNoteDialog";
 import { updateNote } from "../../actions/notes.action";
-import { scrollable } from "../../styles/mixins";
+import { baseIconButton, scrollable } from "../../styles/mixins";
 import { useReduxSelector } from "../../hooks";
-import { useDispatch } from "react-redux";
 
 interface Props {
   noteId: string;
@@ -54,6 +59,22 @@ const Editor = ({ noteId }: Props) => {
     };
   }, [title, content]);
 
+  // Header menu
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const isMenuOpen = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const [isDeleteNoteDialogOpen, setIsDeleteNoteDialogOpen] = useState(false);
+  const handleDeleteNoteClick = () => {
+    handleCloseMenu();
+    setIsDeleteNoteDialogOpen(true);
+  };
+
   return (
     <div>
       <Header>
@@ -63,6 +84,30 @@ const Editor = ({ noteId }: Props) => {
           value={title}
           onChange={(event) => handleTitleChange(event)}
         />
+        <IconButton title="More actions" onClick={handleClick}>
+          <HiDotsHorizontal />
+        </IconButton>
+        <StyledMenu
+          id="fade-menu"
+          MenuListProps={{ "aria-labelledby": "fade-button" }}
+          anchorEl={anchorEl}
+          open={isMenuOpen}
+          onClose={handleCloseMenu}
+          TransitionComponent={Fade}
+        >
+          <MenuItem onClick={handleCloseMenu} disableRipple>
+            Move note
+          </MenuItem>
+          <MenuItem onClick={handleDeleteNoteClick} disableRipple>
+            Delete note
+          </MenuItem>
+        </StyledMenu>
+        <InvisibleDiv>
+          <DeleteNoteDialog
+            open={isDeleteNoteDialogOpen}
+            setOpen={setIsDeleteNoteDialogOpen}
+          />
+        </InvisibleDiv>
       </Header>
       <QuillEditor
         modules={modules}
@@ -88,7 +133,9 @@ const QuillEditor = styled(ReactQuill)`
 
   .ql-toolbar.ql-snow {
     border: none;
-    
+    overflow-x: hidden;
+    white-space: nowrap;
+
     .ql-formats {
       margin-right: 0;
   
@@ -116,16 +163,39 @@ const QuillEditor = styled(ReactQuill)`
 
 const Header = styled.div`
   height: 62px;
+  display: flex;
+  padding: 12px 15px;
 `;
 
 const TitleInput = styled.input`
   border: none;
   width: 100%;
   font-size: 32px;
-  padding: 12px 15px;
   font-weight: 500;
 
   &:focus {
     outline: none;
   }
+`;
+
+const IconButton = styled.button`
+  ${baseIconButton}
+  font-size: 28px;
+  padding: 2px;
+  color: #9b9a9a;
+
+  &:hover {
+    background-color: #e9e9e7;
+  }
+`;
+
+const StyledMenu = styled(Menu)`
+  .MuiMenuItem-root {
+    font-size: 14px;
+    padding: 4px 16px;
+  }
+`;
+
+const InvisibleDiv = styled.div`
+  display: none;
 `;
