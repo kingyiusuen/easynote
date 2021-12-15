@@ -11,15 +11,64 @@ import { logout } from "../../actions/session.action";
 import AllNotesOption from "./AllNotesOption";
 import NotebookOption from "./NotebookOption";
 import { setActiveNotebookId } from "../../actions/notebooks.action";
+import ArrowTooltip from "../shared/ArrowTooltip";
+
+const Sidebar = () => {
+  const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  const notebooks = useReduxSelector((state) => state.notebook);
+  const user = useReduxSelector((state) => state.session.user);
+
+  const handleClick = (notebookId: string) => () =>
+    dispatch(setActiveNotebookId(notebookId));
+
+  return (
+    <Container>
+      <List>
+        <AllNotesOption
+          handleClick={handleClick("all")}
+          $active={notebooks.activeId === "all"}
+        />
+        <Heading>
+          <HeadingLeft>
+            <BiBook />
+            <TextWrapper>Notebooks</TextWrapper>
+          </HeadingLeft>
+          <ArrowTooltip title="Create notebook" placement="right">
+            <IconButton onClick={() => setOpen(true)}>
+              <AiOutlinePlusCircle />
+            </IconButton>
+          </ArrowTooltip>
+        </Heading>
+
+        {notebooks.ids &&
+          notebooks.ids.map((id) => (
+            <NotebookOption
+              key={id}
+              notebookName={notebooks.entities[id].name}
+              handleClick={handleClick(id)}
+              $active={notebooks.activeId === id}
+            />
+          ))}
+      </List>
+      <Footer>
+        <span>{user?.username}</span>
+        <ArrowTooltip title="Logout" placement="right">
+          <IconButton onClick={() => dispatch(logout())}>
+            <RiLogoutCircleRLine />
+          </IconButton>
+        </ArrowTooltip>
+      </Footer>
+      <CreateNotebookDialog open={open} setOpen={setOpen} />
+    </Container>
+  );
+};
+
+export default Sidebar;
 
 const Container = styled.div`
   background-color: var(--sidebar-background);
   user-select: none;
-`;
-
-const IconWrapper = styled.div`
-  ${flexCenter}
-  font-size: 20px;
 `;
 
 const List = styled.div`
@@ -32,13 +81,23 @@ const TextWrapper = styled.span`
   font-size: 15px;
 `;
 
-const ListHeadingWrapper = styled.div`
+const Heading = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 7px;
-  padding: 0 12px;
+  padding: 0 16px;
   height: 36px;
   color: var(--sidebar-text-muted);
+
+  & svg {
+    ${flexCenter}
+    font-size: 20px;
+  }
+`;
+
+const HeadingLeft = styled.div`
+  display: flex;
+  gap: 7px;
 `;
 
 const IconButton = styled.button`
@@ -58,67 +117,7 @@ const Footer = styled.div`
   align-items: center;
   font-size: 14px;
   height: 60px;
-  padding: 0px 24px;
+  padding: 0px 16px;
   color: var(--sidebar-text-normal);
   background-color: #0c0f13;
 `;
-
-interface ListHeadingProps {
-  icon: React.ReactNode;
-  text: string;
-  buttonIcon: React.ReactNode;
-}
-
-const ListHeading = ({ icon, text, buttonIcon }: ListHeadingProps) => {
-  return (
-    <ListHeadingWrapper>
-      <IconWrapper>{icon}</IconWrapper>
-      <TextWrapper>{text}</TextWrapper>
-      <IconButton>{buttonIcon}</IconButton>
-    </ListHeadingWrapper>
-  );
-};
-
-const Sidebar = () => {
-  const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
-  const notebooks = useReduxSelector((state) => state.notebook);
-  const user = useReduxSelector((state) => state.session.user);
-
-  const handleClick = (notebookId: string) => () =>
-    dispatch(setActiveNotebookId(notebookId));
-
-  return (
-    <Container>
-      <List>
-        <AllNotesOption
-          handleClick={handleClick("all")}
-          $active={notebooks.activeId === "all"}
-        />
-        <ListHeading
-          icon={<BiBook />}
-          text="Notebooks"
-          buttonIcon={<AiOutlinePlusCircle onClick={() => setOpen(true)} />}
-        />
-        {notebooks.ids &&
-          notebooks.ids.map((id) => (
-            <NotebookOption
-              key={id}
-              notebookName={notebooks.entities[id].name}
-              handleClick={handleClick(id)}
-              $active={notebooks.activeId === id}
-            />
-          ))}
-      </List>
-      <Footer>
-        <span>{user?.username}</span>
-        <IconButton title="Logout" onClick={() => dispatch(logout())}>
-          <RiLogoutCircleRLine />
-        </IconButton>
-      </Footer>
-      <CreateNotebookDialog open={open} setOpen={setOpen} />
-    </Container>
-  );
-};
-
-export default Sidebar;

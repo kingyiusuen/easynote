@@ -26,7 +26,7 @@ const Container = styled.div<ContainerProps>`
   display: flex;
   align-items: center;
   gap: 7px;
-  padding: 0 12px;
+  padding: 0 16px;
   height: 36px;
   color: var(--sidebar-text-normal);
   ${({ $active }) =>

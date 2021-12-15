@@ -13,6 +13,7 @@ import { baseIconButton } from "../../styles/mixins";
 import RenameNotebookDialog from "./RenameNotebookDialog";
 import DeleteNotebookDialog from "./DeleteNotebookDialog";
 import { useReduxSelector } from "../../hooks";
+import ArrowTooltip from "../shared/ArrowTooltip";
 
 interface HeaderProps {
   activeNotebookId: string;
@@ -58,13 +59,17 @@ const Header = ({ activeNotebookId }: HeaderProps) => {
       <Heading>{notebookName}</Heading>
       <ButtonGroup>
         {activeNotebookId !== "all" && (
-          <IconButton title="Add new note" onClick={handleCreateNoteClick}>
-            <HiOutlinePencilAlt />
-          </IconButton>
+          <ArrowTooltip title="Add new note" placement="bottom">
+            <IconButton onClick={handleCreateNoteClick}>
+              <HiOutlinePencilAlt />
+            </IconButton>
+          </ArrowTooltip>
         )}
-        <IconButton title="More actions" onClick={handleClick}>
-          <HiDotsHorizontal />
-        </IconButton>
+        <ArrowTooltip title="More actions" placement="bottom">
+          <IconButton onClick={handleClick}>
+            <HiDotsHorizontal />
+          </IconButton>
+        </ArrowTooltip>
       </ButtonGroup>
       <StyledMenu
         id="fade-menu"

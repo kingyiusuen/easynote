@@ -12,6 +12,7 @@ import DeleteNoteDialog from "./DeleteNoteDialog";
 import { updateNote } from "../../actions/notes.action";
 import { baseIconButton, scrollable } from "../../styles/mixins";
 import { Note } from "../../types";
+import ArrowTooltip from "../shared/ArrowTooltip";
 
 const modules = {
   toolbar: [
@@ -83,9 +84,11 @@ const Editor = ({ note }: Props) => {
           value={title}
           onChange={(event) => handleTitleChange(event)}
         />
-        <IconButton title="More actions" onClick={handleClick}>
-          <HiDotsHorizontal />
-        </IconButton>
+        <ArrowTooltip title="More actions">
+          <IconButton onClick={handleClick}>
+            <HiDotsHorizontal />
+          </IconButton>
+        </ArrowTooltip>
         <StyledMenu
           id="fade-menu"
           MenuListProps={{ "aria-labelledby": "fade-button" }}
