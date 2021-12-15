@@ -13,7 +13,7 @@ const PageContainer: React.FC = ({ children }) => {
 export default PageContainer;
 
 const Wrapper = styled.div`
-  background-color: #f5f5f4;
+  background-color: var(--notelist-background);
   height: 100vh;
   user-select: none;
   ${flexCenter}

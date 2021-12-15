@@ -1,5 +1,4 @@
 import { NOTE_ACTIONS, NoteActionType } from "../actions/notes.action";
-import { NOTEBOOK_ACTIONS } from "../actions/notebooks.action";
 import { NoteIdEntityMap } from "../types";
 
 interface NoteStore {
@@ -19,11 +18,6 @@ const noteReducer = (
   action: NoteActionType
 ) => {
   switch (action.type) {
-    case NOTEBOOK_ACTIONS.SET_ACTIVE_NOTEBOOK_ID:
-      return {
-        ...state,
-        activeId: "",
-      };
     case NOTE_ACTIONS.INITIALIZE_NOTES:
       return {
         ...state,
@@ -49,6 +43,18 @@ const noteReducer = (
         ids: state.ids.filter((id) => id !== action.payload.noteId),
         entities: rest,
         activeId: "",
+      };
+    }
+    case NOTE_ACTIONS.MOVE_NOTE: {
+      return {
+        ...state,
+        entities: {
+          ...state.entities,
+          [action.payload.noteId]: {
+            ...state.entities[action.payload.noteId],
+            notebookId: action.payload.targetNotebookId,
+          },
+        },
       };
     }
     case NOTE_ACTIONS.SET_ACTIVE_NOTE_ID:

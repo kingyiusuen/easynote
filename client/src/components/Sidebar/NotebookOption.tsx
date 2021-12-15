@@ -1,25 +1,24 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { flexCenter } from "../../styles/mixins";
+import { Notebook } from "../../types";
 
 interface ContainerProps {
   $active: boolean;
 }
 
 interface ComponentProps extends ContainerProps {
-  notebookName: string;
-  handleClick: () => void;
+  notebook: Notebook;
 }
 
-const NotebookOption = ({
-  notebookName,
-  handleClick,
-  $active,
-}: ComponentProps) => {
+const NotebookOption = ({ notebook, $active }: ComponentProps) => {
   return (
-    <Container onClick={handleClick} $active={$active}>
-      <TextWrapper>{notebookName}</TextWrapper>
-    </Container>
+    <Link to={`/${notebook.id}`}>
+      <Container $active={$active}>
+        <TextWrapper>{notebook.name}</TextWrapper>
+      </Container>
+    </Link>
   );
 };
 

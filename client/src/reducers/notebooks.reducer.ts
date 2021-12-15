@@ -28,11 +28,6 @@ const notebookReducer = (
         ids: action.payload.ids,
         entities: action.payload.entities,
       };
-    case NOTEBOOK_ACTIONS.SET_ACTIVE_NOTEBOOK_ID:
-      return {
-        ...state,
-        activeId: action.payload.id,
-      };
     case NOTEBOOK_ACTIONS.CREATE_NOTEBOOK:
       return {
         ids: [...state.ids, action.payload.id],
@@ -84,6 +79,29 @@ const notebookReducer = (
           [action.payload.notebookId]: {
             ...state.entities[action.payload.notebookId],
             noteIds: newNoteIdsList,
+          },
+        },
+      };
+    }
+    case NOTE_ACTIONS.MOVE_NOTE: {
+      const updatedCurrentNotebookNoteIds = state.entities[
+        action.payload.currentNotebookId
+      ].noteIds.filter((id) => id !== action.payload.noteId);
+      const updatedTargetNotebookNoteIds = [
+        action.payload.noteId,
+        ...state.entities[action.payload.targetNotebookId].noteIds,
+      ];
+      return {
+        ...state,
+        entities: {
+          ...state.entities,
+          [action.payload.currentNotebookId]: {
+            ...state.entities[action.payload.currentNotebookId],
+            noteIds: updatedCurrentNotebookNoteIds,
+          },
+          [action.payload.targetNotebookId]: {
+            ...state.entities[action.payload.targetNotebookId],
+            noteIds: updatedTargetNotebookNoteIds,
           },
         },
       };

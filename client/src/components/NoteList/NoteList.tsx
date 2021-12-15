@@ -1,55 +1,44 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { HiOutlineFilter } from "react-icons/hi";
+import { useDispatch } from "react-redux";
 import Header from "./Header";
 import NoteListItem from "./NoteListItem";
 import NoNotesMessage from "./NoNotesMessage";
 import { scrollable } from "../../styles/mixins";
-import { useReduxSelector } from "../../hooks";
-import { useDispatch } from "react-redux";
+import { useGetNotebook, useReduxSelector } from "../../hooks";
 import { setActiveNoteId } from "../../actions/notes.action";
+import { NoteIdEntityMap } from "../../types";
 
-const NoteList = () => {
-  // Get the list of note Ids for the selected notebook
-  const activeNotebookId = useReduxSelector((state) => state.notebook.activeId);
-  let noteIds: string[];
-  if (activeNotebookId === "all") {
-    const listsOfNoteIds = useReduxSelector((state) =>
-      state.notebook.ids.map((id) => state.notebook.entities[id].noteIds)
-    );
-    noteIds = Array.prototype.concat(...listsOfNoteIds);
-  } else {
-    noteIds = useReduxSelector(
-      (state) => state.notebook.entities[activeNotebookId]?.noteIds
-    );
-  }
-
-  // If no active note, set the first note as active
-  const activeNoteId = useReduxSelector((state) => state.note.activeId);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    if (!activeNoteId) {
-      dispatch(
-        setActiveNoteId(
-          (noteIds && noteIds.length && noteIds[noteIds.length - 1]) || ""
-        )
-      );
-    }
-  });
-
-  const notes = useReduxSelector((state) => state.note.entities);
-
-  const sortedNoteIds = noteIds
+const sort = (notes: NoteIdEntityMap, noteIds: string[]) => {
+  return noteIds
     ?.slice()
     .sort(
       (id1, id2) =>
         Date.parse(notes[id1].updatedAt) - Date.parse(notes[id2].updatedAt)
     )
     .reverse();
+};
+
+const NoteList = () => {
+  // Get the list of note Ids for the selected notebook
+  const notebook = useGetNotebook();
+
+  // Sort the notes and set the first note as active
+  const notes = useReduxSelector((state) => state.note.entities);
+  const noteIds = notebook.noteIds;
+  const sortedNoteIds = sort(notes, noteIds);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const firstId = noteIds.length && noteIds[0];
+    dispatch(setActiveNoteId(firstId || ""));
+  }, [notebook]);
+
+  const activeNoteId = useReduxSelector((state) => state.note.activeId);
 
   return (
     <Wrapper>
-      <Header activeNotebookId={activeNotebookId} />
+      <Header activeNotebookId={notebook.id} />
       <SearchBarWrapper>
         <SearchBar>
           <HiOutlineFilter />
@@ -79,7 +68,7 @@ export default NoteList;
 const Wrapper = styled.div`
   user-select: none;
   color: #282a2c;
-  background-color: #f5f5f4;
+  background-color: var(--notelist-background);
 `;
 
 const SearchBarWrapper = styled.div`

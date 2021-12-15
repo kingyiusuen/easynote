@@ -7,7 +7,6 @@ import Editor from "../components/Editor/Editor";
 import PreLoader from "../components/PreLoader/PreLoader";
 import { useReduxSelector } from "../hooks";
 import { fetchUserNotebooks } from "../actions/session.action";
-import { setActiveNotebookId } from "../actions/notebooks.action";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -17,7 +16,6 @@ const Home = () => {
     if (user) {
       setIsLoading(true);
       dispatch(fetchUserNotebooks(user.id));
-      dispatch(setActiveNotebookId("all"));
       setTimeout(() => setIsLoading(false), 500);
     }
   }, []);

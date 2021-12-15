@@ -13,6 +13,7 @@ import { updateNote } from "../../actions/notes.action";
 import { baseIconButton, scrollable } from "../../styles/mixins";
 import { Note } from "../../types";
 import ArrowTooltip from "../shared/ArrowTooltip";
+import MoveNoteDialog from "./MoveNoteDialog";
 
 const modules = {
   toolbar: [
@@ -75,6 +76,12 @@ const Editor = ({ note }: Props) => {
     setIsDeleteNoteDialogOpen(true);
   };
 
+  const [isMoveNoteDialogOpen, setIsMoveNoteDialogOpen] = useState(false);
+  const handleMoveNoteClick = () => {
+    handleCloseMenu();
+    setIsMoveNoteDialogOpen(true);
+  };
+
   return (
     <div>
       <Header>
@@ -97,7 +104,7 @@ const Editor = ({ note }: Props) => {
           onClose={handleCloseMenu}
           TransitionComponent={Fade}
         >
-          <MenuItem onClick={handleCloseMenu} disableRipple>
+          <MenuItem onClick={handleMoveNoteClick} disableRipple>
             <MdDriveFileMove />
             Move note
           </MenuItem>
@@ -110,6 +117,10 @@ const Editor = ({ note }: Props) => {
           <DeleteNoteDialog
             open={isDeleteNoteDialogOpen}
             setOpen={setIsDeleteNoteDialogOpen}
+          />
+          <MoveNoteDialog
+            open={isMoveNoteDialogOpen}
+            setOpen={setIsMoveNoteDialogOpen}
           />
         </InvisibleDiv>
       </Header>

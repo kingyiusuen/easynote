@@ -1,5 +1,9 @@
 import axios from "axios";
-import { NoteCreateDto, NoteUpdateDto } from "../actions/notes.action";
+import {
+  NoteCreateDto,
+  NoteUpdateDto,
+  NoteMoveDto,
+} from "../actions/notes.action";
 
 const baseURL = "/notes";
 
@@ -7,7 +11,9 @@ export const create = async (noteData: NoteCreateDto) => {
   return await axios.post(`${baseURL}/`, noteData);
 };
 
-export const update = async (noteId: string, noteData: NoteUpdateDto) => {
+type MergedUpdateDto = NoteUpdateDto | NoteMoveDto;
+
+export const update = async (noteId: string, noteData: MergedUpdateDto) => {
   return await axios.put(`${baseURL}/${noteId}`, noteData);
 };
 

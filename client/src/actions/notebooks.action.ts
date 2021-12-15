@@ -2,7 +2,11 @@ import axios from "axios";
 import { Dispatch } from "redux";
 import { AppThunk } from "../store";
 import { Notebook, NotebookIdEntityMap } from "../types";
-import { CreateNoteAction, DeleteNoteAction } from "./notes.action";
+import {
+  CreateNoteAction,
+  DeleteNoteAction,
+  MoveNoteAction,
+} from "./notes.action";
 import * as notebookService from "../services/notebooks.service";
 
 /* Action names */
@@ -11,7 +15,6 @@ export enum NOTEBOOK_ACTIONS {
   CREATE_NOTEBOOK = "CREATE_NOTEBOOK",
   RENAME_NOTEBOOK = "RENAME_NOTEBOOK",
   DELETE_NOTEBOOK = "DELETE_NOTEBOOK",
-  SET_ACTIVE_NOTEBOOK_ID = "SET_ACTIVE_NOTEBOOK_ID",
 }
 
 /* Action types */
@@ -20,13 +23,6 @@ export type InitializeNotebooksAction = {
   payload: {
     ids: string[];
     entities: NotebookIdEntityMap;
-  };
-};
-
-export type SetActiveNotebookIdAction = {
-  type: NOTEBOOK_ACTIONS.SET_ACTIVE_NOTEBOOK_ID;
-  payload: {
-    id: string;
   };
 };
 
@@ -50,8 +46,8 @@ export type DeleteNotebookAction = {
 export type NotebookActionType =
   | CreateNoteAction
   | DeleteNoteAction
+  | MoveNoteAction
   | InitializeNotebooksAction
-  | SetActiveNotebookIdAction
   | CreateNotebookAction
   | RenameNotebookAction
   | DeleteNotebookAction;
@@ -139,8 +135,3 @@ export const deleteNotebook =
       }
     }
   };
-
-export const setActiveNotebookId = (notebookId: string) => ({
-  type: NOTEBOOK_ACTIONS.SET_ACTIVE_NOTEBOOK_ID,
-  payload: { id: notebookId },
-});

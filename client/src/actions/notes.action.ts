@@ -1,7 +1,6 @@
 import { Dispatch } from "redux";
 import * as noteService from "../services/notes.service";
 import { AppThunk } from "../store";
-import { SetActiveNotebookIdAction } from "./notebooks.action";
 import { Note, NoteIdEntityMap } from "../types";
 import axios from "axios";
 
@@ -11,6 +10,7 @@ export enum NOTE_ACTIONS {
   CREATE_NOTE = "CREATE_NOTE",
   UPDATE_NOTE = "UPDATE_NOTE",
   DELETE_NOTE = "DELETE_NOTE",
+  MOVE_NOTE = "MOVE_NOTE",
   SET_ACTIVE_NOTE_ID = "SET_ACTIVE_NOTE_ID",
 }
 
@@ -41,6 +41,15 @@ export type DeleteNoteAction = {
   };
 };
 
+export type MoveNoteAction = {
+  type: NOTE_ACTIONS.MOVE_NOTE;
+  payload: {
+    noteId: string;
+    currentNotebookId: string;
+    targetNotebookId: string;
+  };
+};
+
 export type SetActiveNoteId = {
   type: NOTE_ACTIONS.SET_ACTIVE_NOTE_ID;
   payload: {
@@ -50,10 +59,10 @@ export type SetActiveNoteId = {
 
 export type NoteActionType =
   | InitializeNotesAction
-  | SetActiveNotebookIdAction
   | CreateNoteAction
   | UpdateNoteAction
   | DeleteNoteAction
+  | MoveNoteAction
   | SetActiveNoteId;
 
 /* Interfaces for data coming into action creators */
@@ -64,6 +73,10 @@ export interface NoteCreateDto {
 export interface NoteUpdateDto {
   title: string;
   content: string;
+}
+
+export interface NoteMoveDto {
+  notebookId: string;
 }
 
 /* Action creators */
@@ -108,6 +121,35 @@ export const deleteNote =
       dispatch({
         type: NOTE_ACTIONS.DELETE_NOTE,
         payload: { noteId, notebookId },
+      });
+      callbackOnSuccess();
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        callbackOnFailure(error.response.data.message);
+      } else {
+        callbackOnFailure("Something went wrong");
+      }
+    }
+  };
+
+export const moveNote =
+  (
+    noteId: string,
+    currentNotebookId: string,
+    targetNotebookId: string,
+    callbackOnSuccess: () => void,
+    callbackOnFailure: React.Dispatch<React.SetStateAction<string>>
+  ): AppThunk =>
+  async (dispatch: Dispatch) => {
+    try {
+      await noteService.update(noteId, { notebookId: targetNotebookId });
+      dispatch({
+        type: NOTE_ACTIONS.DELETE_NOTE,
+        payload: {
+          noteId,
+          currentNotebookId,
+          targetNotebookId,
+        },
       });
       callbackOnSuccess();
     } catch (error) {

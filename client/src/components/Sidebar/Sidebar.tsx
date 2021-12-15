@@ -4,31 +4,25 @@ import { flexCenter, scrollable, baseIconButton } from "../../styles/mixins";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BiBook } from "react-icons/bi";
 import { RiLogoutCircleRLine } from "react-icons/ri";
-import { useReduxSelector } from "../../hooks";
+import { useGetNotebookId, useReduxSelector } from "../../hooks";
 import CreateNotebookDialog from "./CreateNotebookDialog";
 import { useDispatch } from "react-redux";
 import { logout } from "../../actions/session.action";
 import AllNotesOption from "./AllNotesOption";
 import NotebookOption from "./NotebookOption";
-import { setActiveNotebookId } from "../../actions/notebooks.action";
 import ArrowTooltip from "../shared/ArrowTooltip";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const notebookId = useGetNotebookId();
   const notebooks = useReduxSelector((state) => state.notebook);
   const user = useReduxSelector((state) => state.session.user);
-
-  const handleClick = (notebookId: string) => () =>
-    dispatch(setActiveNotebookId(notebookId));
 
   return (
     <Container>
       <List>
-        <AllNotesOption
-          handleClick={handleClick("all")}
-          $active={notebooks.activeId === "all"}
-        />
+        <AllNotesOption $active={notebookId === "all"} />
         <Heading>
           <HeadingLeft>
             <BiBook />
@@ -45,9 +39,8 @@ const Sidebar = () => {
           notebooks.ids.map((id) => (
             <NotebookOption
               key={id}
-              notebookName={notebooks.entities[id].name}
-              handleClick={handleClick(id)}
-              $active={notebooks.activeId === id}
+              notebook={notebooks.entities[id]}
+              $active={notebookId === id}
             />
           ))}
       </List>

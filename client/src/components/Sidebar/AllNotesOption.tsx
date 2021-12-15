@@ -1,5 +1,6 @@
 import React from "react";
 import { CgNotes } from "react-icons/cg";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { flexCenter } from "../../styles/mixins";
 
@@ -7,16 +8,14 @@ interface ContainerProps {
   $active: boolean;
 }
 
-interface ComponentProps extends ContainerProps {
-  handleClick: () => void;
-}
-
-const AllNotesOption = ({ $active, handleClick }: ComponentProps) => {
+const AllNotesOption = ({ $active }: ContainerProps) => {
   return (
-    <Container onClick={handleClick} $active={$active}>
-      <CgNotes />
-      <TextWrapper>All Notes</TextWrapper>
-    </Container>
+    <Link to="/all">
+      <Container $active={$active}>
+        <CgNotes />
+        <TextWrapper>All Notes</TextWrapper>
+      </Container>
+    </Link>
   );
 };
 

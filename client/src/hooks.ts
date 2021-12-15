@@ -1,5 +1,6 @@
 import jwtDecode from "jwt-decode";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import {
   CustomJwtPayload,
   logout,
@@ -27,4 +28,30 @@ export const useRestoreSession = () => {
       dispatch(logout());
     }
   }
+};
+
+export const useGetNotebookId = () => {
+  const params = useParams();
+  return params.notebookId || "all";
+};
+
+/* Get notebook based on URL */
+export const useGetNotebook = () => {
+  const notebookId = useGetNotebookId();
+
+  if (notebookId === "all") {
+    const noteIds = Array.prototype.concat(
+      ...useReduxSelector((state) =>
+        state.notebook.ids.map((id) => state.notebook.entities[id].noteIds)
+      )
+    );
+
+    return {
+      id: "all",
+      name: "All Notes",
+      noteIds,
+    };
+  }
+
+  return useReduxSelector((state) => state.notebook.entities[notebookId]);
 };

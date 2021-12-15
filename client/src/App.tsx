@@ -44,13 +44,14 @@ const App = () => {
           }
         />
         <Route
-          path="/"
+          path="/:notebookId"
           element={
             <ProtectedRoute>
               <Home />
             </ProtectedRoute>
           }
         />
+        <Route path="/" element={<Navigate to="/all" />} />
       </Routes>
     </BrowserRouter>
   );

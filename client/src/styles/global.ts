@@ -19,6 +19,7 @@ export default createGlobalStyle`
     --sidebar-background: #161a21;
     --sidebar-background-hover: #20242e;
     --sidebar-background-active: #394053;
+    --notelist-background: #f5f5f4;
     --danger: #cc4539;
   }
 
