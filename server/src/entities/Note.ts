@@ -24,7 +24,7 @@ export class Note {
   @Column({ type: "timestamptz" })
   updatedAt!: Date;
 
-  @ManyToOne(() => Notebook)
+  @ManyToOne(() => Notebook, { onDelete: "CASCADE" })
   @JoinColumn({ name: "notebookId" })
   notebook!: Notebook;
 
