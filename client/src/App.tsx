@@ -52,6 +52,7 @@ const App = () => {
           }
         />
         <Route path="/" element={<Navigate to="/all" />} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
   );

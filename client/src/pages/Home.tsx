@@ -5,13 +5,15 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import NoteList from "../components/NoteList/NoteList";
 import Editor from "../components/Editor/Editor";
 import PreLoader from "../components/PreLoader/PreLoader";
-import { useReduxSelector } from "../hooks";
+import { useGetActiveNotebook, useReduxSelector } from "../hooks";
 import { fetchUserNotebooks } from "../actions/session.action";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  // Fetch notebooks and show loading screen for at least 0.5 seconds
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
-
+  const user = useReduxSelector((state) => state.session.user);
   useEffect(() => {
     if (user) {
       setIsLoading(true);
@@ -20,7 +22,15 @@ const Home = () => {
     }
   }, []);
 
-  const user = useReduxSelector((state) => state.session.user);
+  // Redirect when notebook id in URL does not exist in database
+  const notebook = useGetActiveNotebook();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!notebook) {
+      navigate("/all");
+    }
+  }, [isLoading]);
+
   const note = useReduxSelector(
     (state) => state.note.entities[state.note.activeId]
   );
@@ -29,9 +39,13 @@ const Home = () => {
     <PreLoader />
   ) : (
     <Container>
-      <Sidebar />
-      <NoteList />
-      {note && <Editor />}
+      {notebook && (
+        <>
+          <Sidebar />
+          <NoteList />
+          {note && <Editor />}
+        </>
+      )}
     </Container>
   );
 };

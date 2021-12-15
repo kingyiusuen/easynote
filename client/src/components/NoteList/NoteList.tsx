@@ -29,7 +29,7 @@ const NoteList = () => {
   const sortedNoteIds = sort(notes, noteIds);
   const dispatch = useDispatch();
   useEffect(() => {
-    const firstId = noteIds.length && noteIds[0];
+    const firstId = sortedNoteIds.length && sortedNoteIds[0];
     dispatch(setActiveNoteId(firstId || ""));
   }, [notebook.id]);
 
