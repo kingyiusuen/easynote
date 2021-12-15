@@ -37,7 +37,7 @@ const NoteList = () => {
 
   return (
     <Wrapper>
-      <Header activeNotebookId={notebook.id} />
+      <Header notebook={notebook} />
       <SearchBarWrapper>
         <SearchBar>
           <HiOutlineFilter />

@@ -11,9 +11,9 @@ import "react-quill/dist/quill.snow.css";
 import DeleteNoteDialog from "./DeleteNoteDialog";
 import { updateNote } from "../../actions/notes.action";
 import { baseIconButton, scrollable } from "../../styles/mixins";
-import { Note } from "../../types";
 import ArrowTooltip from "../shared/ArrowTooltip";
 import MoveNoteDialog from "./MoveNoteDialog";
+import { useReduxSelector } from "../../hooks";
 
 const modules = {
   toolbar: [
@@ -27,14 +27,14 @@ const modules = {
 
 const AUTOSAVE_INTERVAL = 1500; // 1.5 seconds
 
-interface Props {
-  note: Note;
-}
+const Editor = () => {
+  const note = useReduxSelector(
+    (state) => state.note.entities[state.note.activeId]
+  );
 
-const Editor = ({ note }: Props) => {
   const isFirstRun = useRef(true);
-  const [title, setTitle] = useState(note?.title);
-  const [content, setContent] = useState(note?.content);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
   const handleTitleChange = (event: React.FormEvent<HTMLInputElement>) => {
     setTitle(event.currentTarget.value);
@@ -43,6 +43,11 @@ const Editor = ({ note }: Props) => {
   const handleContentChange = (content: string) => {
     setContent(content);
   };
+
+  useEffect(() => {
+    setTitle(note.title);
+    setContent(note.content);
+  }, [note.id]);
 
   // Autosaving
   const dispatch = useDispatch();

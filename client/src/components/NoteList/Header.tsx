@@ -12,19 +12,14 @@ import { createNote } from "../../actions/notes.action";
 import { baseIconButton } from "../../styles/mixins";
 import RenameNotebookDialog from "./RenameNotebookDialog";
 import DeleteNotebookDialog from "./DeleteNotebookDialog";
-import { useReduxSelector } from "../../hooks";
 import ArrowTooltip from "../shared/ArrowTooltip";
+import { Notebook } from "../../types";
 
 interface HeaderProps {
-  activeNotebookId: string;
+  notebook: Notebook;
 }
 
-const Header = ({ activeNotebookId }: HeaderProps) => {
-  const notebookName =
-    useReduxSelector(
-      (state) => state.notebook.entities[activeNotebookId]?.name
-    ) || "All Notes";
-
+const Header = ({ notebook }: HeaderProps) => {
   const dispatch = useDispatch();
   const [isRenameNotebookDialogOpen, setIsRenameNotebookDialogOpen] =
     useState(false);
@@ -41,7 +36,7 @@ const Header = ({ activeNotebookId }: HeaderProps) => {
   };
 
   const handleCreateNoteClick = () => {
-    dispatch(createNote(activeNotebookId));
+    dispatch(createNote(notebook.id));
   };
 
   const handleRenameNotebookClick = () => {
@@ -56,9 +51,9 @@ const Header = ({ activeNotebookId }: HeaderProps) => {
 
   return (
     <Container>
-      <Heading>{notebookName}</Heading>
+      <Heading>{notebook.name}</Heading>
       <ButtonGroup>
-        {activeNotebookId !== "all" && (
+        {notebook.id !== "all" && (
           <ArrowTooltip title="Add new note" placement="bottom">
             <IconButton onClick={handleCreateNoteClick}>
               <HiOutlinePencilAlt />
@@ -79,7 +74,7 @@ const Header = ({ activeNotebookId }: HeaderProps) => {
         onClose={handleCloseMenu}
         TransitionComponent={Fade}
       >
-        {activeNotebookId !== "all" && (
+        {notebook.id !== "all" && (
           <div>
             <MenuItem onClick={handleRenameNotebookClick} disableRipple>
               <BiRename />

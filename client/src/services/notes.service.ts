@@ -18,6 +18,5 @@ export const update = async (noteId: string, noteData: MergedUpdateDto) => {
 };
 
 export const remove = async (noteId: string) => {
-  console.log(noteId);
   return await axios.delete(`${baseURL}/${noteId}`);
 };

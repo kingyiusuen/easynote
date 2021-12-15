@@ -31,7 +31,7 @@ const Home = () => {
     <Container>
       <Sidebar />
       <NoteList />
-      {note && <Editor note={note} />}
+      {note && <Editor />}
     </Container>
   );
 };

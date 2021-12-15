@@ -17,7 +17,6 @@ const Sidebar = () => {
   const [open, setOpen] = useState(false);
   const notebookId = useGetActiveNotebookId();
   const notebooks = useReduxSelector((state) => state.notebook);
-
   const user = useReduxSelector((state) => state.session.user);
 
   return (
