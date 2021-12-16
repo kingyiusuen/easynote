@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { HiOutlineFilter } from "react-icons/hi";
 import { useDispatch } from "react-redux";
 import Header from "./Header";
+import SearchBar from "./SearchBar";
 import NoteListItem from "./NoteListItem";
 import NoNotesMessage from "./NoNotesMessage";
 import { scrollable } from "../../styles/mixins";
@@ -26,11 +26,15 @@ const NoteList = () => {
   // Sort the notes and set the first note as active
   const notes = useReduxSelector((state) => state.note.entities);
   const noteIds = notebook.noteIds;
-  const sortedNoteIds = sort(notes, noteIds);
+
+  const [sortedNoteIds, setSortedNoteIds] = useState<string[]>([]);
+
   const dispatch = useDispatch();
   useEffect(() => {
-    const firstId = sortedNoteIds.length && sortedNoteIds[0];
+    const tmp = sort(notes, noteIds);
+    const firstId = tmp.length && tmp[0];
     dispatch(setActiveNoteId(firstId || ""));
+    setSortedNoteIds(tmp);
   }, [notebook.id]);
 
   const activeNoteId = useReduxSelector((state) => state.note.activeId);
@@ -38,12 +42,11 @@ const NoteList = () => {
   return (
     <Wrapper>
       <Header notebook={notebook} />
-      <SearchBarWrapper>
-        <SearchBar>
-          <HiOutlineFilter />
-          <Input type="text" placeholder="Filter" />
-        </SearchBar>
-      </SearchBarWrapper>
+      <SearchBar
+        notes={notes}
+        noteIds={noteIds}
+        setSortedNoteIds={setSortedNoteIds}
+      />
       {sortedNoteIds?.length ? (
         <List>
           {sortedNoteIds &&
@@ -68,35 +71,6 @@ const Wrapper = styled.div`
   user-select: none;
   color: #282a2c;
   background-color: var(--notelist-background);
-`;
-
-const SearchBarWrapper = styled.div`
-  padding: 0 16px;
-  height: 50px;
-`;
-
-const SearchBar = styled.div`
-  padding: 4px;
-  display: flex;
-  background-color: white;
-  border-radius: 4px;
-
-  & > svg {
-    font-size: 22px;
-    color: #c4c5c6;
-    margin: 4px 8px;
-  }
-`;
-
-const Input = styled.input`
-  border: none;
-  width: 100%;
-  font-size: 16px;
-  color: #a2a3a3;
-
-  &:focus {
-    outline: none;
-  }
 `;
 
 const List = styled.div`
