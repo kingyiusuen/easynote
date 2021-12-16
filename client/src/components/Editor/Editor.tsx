@@ -25,7 +25,7 @@ const modules = {
   ],
 };
 
-const AUTOSAVE_INTERVAL = 1000;
+const AUTOSAVE_INTERVAL = 500;
 
 const Editor = () => {
   const note = useReduxSelector(

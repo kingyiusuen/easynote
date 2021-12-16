@@ -4,7 +4,12 @@ import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
 import Fade from "@mui/material/Fade";
 import { BiRename } from "react-icons/bi";
-import { HiDotsHorizontal, HiOutlinePencilAlt } from "react-icons/hi";
+import {
+  HiDotsHorizontal,
+  HiOutlinePencilAlt,
+  HiOutlineArrowDown,
+  HiOutlineArrowUp,
+} from "react-icons/hi";
 import { MdDeleteForever } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
@@ -14,12 +19,31 @@ import RenameNotebookDialog from "./RenameNotebookDialog";
 import DeleteNotebookDialog from "./DeleteNotebookDialog";
 import ArrowTooltip from "../shared/ArrowTooltip";
 import { Notebook } from "../../types";
+import { SortCriterion } from "./NoteList";
+
+interface SortIconProps {
+  ascendingOrder: boolean;
+}
+
+const SortIcon = ({ ascendingOrder }: SortIconProps) => {
+  return ascendingOrder ? <HiOutlineArrowUp /> : <HiOutlineArrowDown />;
+};
 
 interface HeaderProps {
   notebook: Notebook;
+  sortCriterion: SortCriterion;
+  setSortCriterion: React.Dispatch<React.SetStateAction<SortCriterion>>;
+  ascendingOrder: boolean;
+  setAscendingOrder: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Header = ({ notebook }: HeaderProps) => {
+const Header = ({
+  notebook,
+  sortCriterion,
+  setSortCriterion,
+  ascendingOrder,
+  setAscendingOrder,
+}: HeaderProps) => {
   const dispatch = useDispatch();
   const [isRenameNotebookDialogOpen, setIsRenameNotebookDialogOpen] =
     useState(false);
@@ -47,6 +71,24 @@ const Header = ({ notebook }: HeaderProps) => {
   const handleDeleteNotebookClick = () => {
     handleCloseMenu();
     setIsDeleteNotebookDialogOpen(true);
+  };
+
+  const handleSortByDateCreatedClick = () => {
+    if (sortCriterion === "createdAt") {
+      setAscendingOrder(!ascendingOrder);
+    } else {
+      setSortCriterion("createdAt");
+    }
+    handleCloseMenu();
+  };
+
+  const handleSortByDateUpdatedClick = () => {
+    if (sortCriterion === "updatedAt") {
+      setAscendingOrder(!ascendingOrder);
+    } else {
+      setSortCriterion("updatedAt");
+    }
+    handleCloseMenu();
   };
 
   return (
@@ -88,11 +130,33 @@ const Header = ({ notebook }: HeaderProps) => {
           </div>
         )}
         <MenuItem disabled>Sort by</MenuItem>
-        <MenuItem onClick={handleCloseMenu} disableRipple>
-          Date updated
-        </MenuItem>
-        <MenuItem onClick={handleCloseMenu} disableRipple>
+        <MenuItem
+          onClick={handleSortByDateCreatedClick}
+          disableRipple
+          classes={{
+            root: sortCriterion === "createdAt" ? "active" : undefined,
+          }}
+        >
+          {sortCriterion === "createdAt" ? (
+            <SortIcon ascendingOrder={ascendingOrder} />
+          ) : (
+            <EmptyDiv></EmptyDiv>
+          )}
           Date created
+        </MenuItem>
+        <MenuItem
+          onClick={handleSortByDateUpdatedClick}
+          disableRipple
+          classes={{
+            root: sortCriterion === "updatedAt" ? "active" : undefined,
+          }}
+        >
+          {sortCriterion === "updatedAt" ? (
+            <SortIcon ascendingOrder={ascendingOrder} />
+          ) : (
+            <EmptyDiv></EmptyDiv>
+          )}
+          Date updated
         </MenuItem>
       </StyledMenu>
       <InvisibleDiv>
@@ -149,9 +213,18 @@ const StyledMenu = styled(Menu)`
       font-size: 18px;
       margin-right: 6px;
     }
+    &.active {
+      color: #647dc1;
+    }
   }
 `;
 
 const InvisibleDiv = styled.div`
   display: none;
+`;
+
+const EmptyDiv = styled.div`
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
 `;
