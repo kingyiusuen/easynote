@@ -26,7 +26,7 @@ const noteReducer = (
       };
     case NOTE_ACTIONS.CREATE_NOTE: {
       return {
-        ids: [...state.ids, action.payload.id],
+        ids: [action.payload.id, ...state.ids],
         entities: { ...state.entities, [action.payload.id]: action.payload },
         activeId: action.payload.id,
       };
@@ -42,7 +42,7 @@ const noteReducer = (
       return {
         ids: state.ids.filter((id) => id !== action.payload.noteId),
         entities: rest,
-        activeId: "",
+        activeId: action.payload.nextNoteId,
       };
     }
     case NOTE_ACTIONS.MOVE_NOTE: {
@@ -57,11 +57,12 @@ const noteReducer = (
         },
       };
     }
-    case NOTE_ACTIONS.SET_ACTIVE_NOTE_ID:
+    case NOTE_ACTIONS.SET_ACTIVE_NOTE_ID: {
       return {
         ...state,
         activeId: action.payload.id,
       };
+    }
     default:
       return state;
   }

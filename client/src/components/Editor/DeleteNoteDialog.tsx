@@ -9,32 +9,45 @@ import styled from "styled-components";
 import OutlinedButton from "../shared/OutlinedButton";
 import ErrorMessage from "../shared/ErrorMessage";
 import { deleteNote } from "../../actions/notes.action";
-import { useReduxSelector } from "../../hooks";
 import { baseButton } from "../../styles/mixins";
+import { Note } from "../../types";
+import { useReduxSelector } from "../../hooks";
 
 interface DialogProps {
+  note: Note;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DeleteNoteDialog = ({ open, setOpen }: DialogProps) => {
+const DeleteNoteDialog = ({ note, open, setOpen }: DialogProps) => {
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState("");
-
-  const activeNoteId = useReduxSelector((state) => state.note.activeId);
-  const notebookId = useReduxSelector(
-    (state) => state.note.entities[activeNoteId]?.notebookId
-  );
 
   const handleClose = () => {
     setErrorMessage("");
     setOpen(false);
   };
 
+  // Set the next note in note list to active after deleting current note
+  const notebook = useReduxSelector(
+    (state) => state.notebook.entities[note.notebookId]
+  );
+  const currentNoteIdIndex = notebook.noteIds.findIndex(
+    (noteId) => noteId === note.id
+  );
+  const nextNoteIdIndex = (currentNoteIdIndex + 1) % notebook.noteIds.length;
+  const nextNoteId = notebook.noteIds[nextNoteIdIndex] || "";
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     dispatch(
-      deleteNote(activeNoteId, notebookId, handleClose, setErrorMessage)
+      deleteNote(
+        note.id,
+        note.notebookId,
+        nextNoteId,
+        handleClose,
+        setErrorMessage
+      )
     );
   };
 

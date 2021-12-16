@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Fade from "@mui/material/Fade";
@@ -25,45 +25,49 @@ const modules = {
   ],
 };
 
-const AUTOSAVE_INTERVAL = 1500; // 1.5 seconds
+const AUTOSAVE_INTERVAL = 1000;
 
 const Editor = () => {
   const note = useReduxSelector(
     (state) => state.note.entities[state.note.activeId]
   );
-
-  const isFirstRun = useRef(true);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [syncStatus, setSyncStatus] = useState("All changes saved");
+  const [noteForm, setNoteForm] = useState({
+    title: "",
+    content: "",
+  });
+  const [isFirstRun, setIsFirstRun] = useState(false);
 
   const handleTitleChange = (event: React.FormEvent<HTMLInputElement>) => {
-    setTitle(event.currentTarget.value);
+    setNoteForm({ ...noteForm, title: event.currentTarget.value });
   };
 
   const handleContentChange = (content: string) => {
-    setContent(content);
+    setNoteForm({ ...noteForm, content });
   };
-
-  useEffect(() => {
-    setTitle(note.title);
-    setContent(note.content);
-  }, [note.id]);
 
   // Autosaving
   const dispatch = useDispatch();
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (isFirstRun.current) {
-        isFirstRun.current = false;
-      } else {
-        dispatch(updateNote(note.id, { title, content }));
-      }
-    }, AUTOSAVE_INTERVAL);
+    setNoteForm({ title: note.title, content: note.content });
+    setIsFirstRun(true);
+  }, [note.id]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isFirstRun) {
+      setIsFirstRun(false);
+    } else {
+      timer = setTimeout(() => {
+        dispatch(updateNote(note.id, noteForm, setSyncStatus));
+      }, AUTOSAVE_INTERVAL);
+    }
 
     return () => {
-      clearTimeout(timer);
+      if (timer) clearTimeout(timer);
     };
-  }, [title, content]);
+  }, [noteForm]);
 
   // Header menu
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -93,7 +97,7 @@ const Editor = () => {
         <TitleInput
           type="text"
           placeholder="Title"
-          value={title}
+          value={noteForm.title}
           onChange={(event) => handleTitleChange(event)}
         />
         <ArrowTooltip title="More actions">
@@ -120,6 +124,7 @@ const Editor = () => {
         </StyledMenu>
         <InvisibleDiv>
           <DeleteNoteDialog
+            note={note}
             open={isDeleteNoteDialogOpen}
             setOpen={setIsDeleteNoteDialogOpen}
           />
@@ -132,9 +137,10 @@ const Editor = () => {
       <QuillEditor
         modules={modules}
         placeholder="Start writing here"
-        value={content}
+        value={noteForm.content}
         onChange={handleContentChange}
       />
+      <Footer>{syncStatus}</Footer>
     </div>
   );
 };
@@ -166,7 +172,7 @@ const QuillEditor = styled(ReactQuill)`
   }
 
   .ql-container.ql-snow {
-    height: calc(100vh - 62px - 40px); // Minus header height and toolbar height
+    height: calc(100vh - 62px - 40px - 40px); // Minus heights of header, toolbar and footer
     border: none;
     font-size: 16px !important;
   }
@@ -223,4 +229,12 @@ const StyledMenu = styled(Menu)`
 
 const InvisibleDiv = styled.div`
   display: none;
+`;
+
+const Footer = styled.div`
+  padding: 12px 15px;
+  height: 40px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.5);
+  text-align: right;
 `;

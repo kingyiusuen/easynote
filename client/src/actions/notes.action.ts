@@ -38,6 +38,7 @@ export type DeleteNoteAction = {
   payload: {
     noteId: string;
     notebookId: string;
+    nextNoteId: string;
   };
 };
 
@@ -95,15 +96,22 @@ export const createNote =
   };
 
 export const updateNote =
-  (noteId: string, updateNoteData: NoteUpdateDto): AppThunk =>
+  (
+    noteId: string,
+    updateNoteData: NoteUpdateDto,
+    setSyncStatus: React.Dispatch<React.SetStateAction<string>>
+  ): AppThunk =>
   async (dispatch: Dispatch) => {
+    setSyncStatus("Saving...");
     try {
       const response = await noteService.update(noteId, updateNoteData);
       dispatch({
         type: NOTE_ACTIONS.UPDATE_NOTE,
         payload: response.data,
       });
+      setTimeout(() => setSyncStatus("All changes saved"), 500);
     } catch (error) {
+      setSyncStatus("Something went wrong");
       console.log(error);
     }
   };
@@ -112,6 +120,7 @@ export const deleteNote =
   (
     noteId: string,
     notebookId: string,
+    nextNoteId: string,
     callbackOnSuccess: () => void,
     callbackOnFailure: React.Dispatch<React.SetStateAction<string>>
   ): AppThunk =>
@@ -120,7 +129,7 @@ export const deleteNote =
       await noteService.remove(noteId);
       dispatch({
         type: NOTE_ACTIONS.DELETE_NOTE,
-        payload: { noteId, notebookId },
+        payload: { noteId, notebookId, nextNoteId },
       });
       callbackOnSuccess();
     } catch (error) {

@@ -49,7 +49,6 @@ const notebookReducer = (
       return {
         ids: state.ids.filter((id) => id !== action.payload.id),
         entities: rest,
-        activeId: "all",
       };
     }
     case NOTE_ACTIONS.CREATE_NOTE:

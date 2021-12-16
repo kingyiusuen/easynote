@@ -8,9 +8,10 @@ import styled from "styled-components";
 import OutlinedButton from "../shared/OutlinedButton";
 import ErrorMessage from "../shared/ErrorMessage";
 import { deleteNotebook } from "../../actions/notebooks.action";
-import { useGetActiveNotebookId, useReduxSelector } from "../../hooks";
+import { useGetActiveNotebookId } from "../../hooks";
 import DialogContentText from "@mui/material/DialogContentText";
 import { baseButton } from "../../styles/mixins";
+import { useNavigate } from "react-router-dom";
 
 interface DialogProps {
   open: boolean;
@@ -19,9 +20,9 @@ interface DialogProps {
 
 const DeleteNotebookDialog = ({ open, setOpen }: DialogProps) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
 
-  const user = useReduxSelector((state) => state.session.user);
   const activeNotebookId = useGetActiveNotebookId();
 
   const handleClose = () => {
@@ -29,11 +30,15 @@ const DeleteNotebookDialog = ({ open, setOpen }: DialogProps) => {
     setOpen(false);
   };
 
+  const callbackOnSuccess = () => {
+    navigate("/all");
+  };
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (user) {
-      dispatch(deleteNotebook(activeNotebookId, handleClose, setErrorMessage));
-    }
+    dispatch(
+      deleteNotebook(activeNotebookId, callbackOnSuccess, setErrorMessage)
+    );
   };
 
   return (
