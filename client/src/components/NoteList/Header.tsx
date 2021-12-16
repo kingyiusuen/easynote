@@ -7,8 +7,8 @@ import { BiRename } from "react-icons/bi";
 import {
   HiDotsHorizontal,
   HiOutlinePencilAlt,
-  HiOutlineArrowDown,
-  HiOutlineArrowUp,
+  HiSortAscending,
+  HiSortDescending,
 } from "react-icons/hi";
 import { MdDeleteForever } from "react-icons/md";
 import { useDispatch } from "react-redux";
@@ -26,7 +26,7 @@ interface SortIconProps {
 }
 
 const SortIcon = ({ ascendingOrder }: SortIconProps) => {
-  return ascendingOrder ? <HiOutlineArrowUp /> : <HiOutlineArrowDown />;
+  return ascendingOrder ? <HiSortAscending /> : <HiSortDescending />;
 };
 
 interface HeaderProps {
