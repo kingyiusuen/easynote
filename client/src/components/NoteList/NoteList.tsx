@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import Header from "./Header";
@@ -9,6 +9,7 @@ import { scrollable } from "../../styles/mixins";
 import { useGetActiveNotebook, useReduxSelector } from "../../hooks";
 import { setActiveNoteId } from "../../actions/notes.action";
 import { NoteIdEntityMap } from "../../types";
+import { UIContext } from "../../contexts";
 
 export type SortCriterion = "createdAt" | "updatedAt";
 
@@ -55,8 +56,11 @@ const NoteList = () => {
 
   const activeNoteId = useReduxSelector((state) => state.note.activeId);
 
+  // Responsive layout
+  const { isNoteListOpen } = useContext(UIContext);
+
   return (
-    <Wrapper>
+    <Container $isNoteListOpen={isNoteListOpen}>
       <Header
         notebook={notebook}
         sortCriterion={sortCriterion}
@@ -84,16 +88,25 @@ const NoteList = () => {
       ) : (
         <NoNotesMessage />
       )}
-    </Wrapper>
+    </Container>
   );
 };
 
 export default NoteList;
 
-const Wrapper = styled.div`
+interface ContainerProps {
+  $isNoteListOpen?: boolean;
+}
+
+const Container = styled.div<ContainerProps>`
   user-select: none;
   color: #282a2c;
   background-color: var(--notelist-background);
+  display: ${({ $isNoteListOpen }) => ($isNoteListOpen ? "block" : "none")};
+
+  @media (min-width: 700px) {
+    display: block;
+  }
 `;
 
 const List = styled.div`

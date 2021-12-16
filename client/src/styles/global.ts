@@ -11,6 +11,7 @@ export default createGlobalStyle`
     --font: --apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
+    --brand: #394053;
     --border-color: #ececec;
     --scrollbar-thin-thumb: #c4c5c6;
     --scrollbar-thin-track: transparent;

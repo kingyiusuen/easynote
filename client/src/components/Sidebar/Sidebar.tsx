@@ -1,20 +1,22 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import Drawer from "@mui/material/Drawer";
 import styled from "styled-components";
-import { flexCenter, scrollable, baseIconButton } from "../../styles/mixins";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BiBook } from "react-icons/bi";
 import { RiLogoutCircleRLine } from "react-icons/ri";
-import { useGetActiveNotebookId, useReduxSelector } from "../../hooks";
 import CreateNotebookDialog from "./CreateNotebookDialog";
 import { useDispatch } from "react-redux";
+import { useGetActiveNotebookId, useReduxSelector } from "../../hooks";
+import { flexCenter, scrollable, baseIconButton } from "../../styles/mixins";
 import { logout } from "../../actions/session.action";
 import AllNotesOption from "./AllNotesOption";
 import NotebookOption from "./NotebookOption";
 import ArrowTooltip from "../shared/ArrowTooltip";
+import { UIContext } from "../../contexts";
 
-const Sidebar = () => {
+const BaseSidebar = () => {
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const notebookId = useGetActiveNotebookId();
   const notebooks = useReduxSelector((state) => state.notebook);
   const user = useReduxSelector((state) => state.session.user);
@@ -29,7 +31,7 @@ const Sidebar = () => {
             <TextWrapper>Notebooks</TextWrapper>
           </HeadingLeft>
           <ArrowTooltip title="Create notebook" placement="right">
-            <IconButton onClick={() => setOpen(true)}>
+            <IconButton onClick={() => setOpenDialog(true)}>
               <AiOutlinePlusCircle />
             </IconButton>
           </ArrowTooltip>
@@ -52,8 +54,39 @@ const Sidebar = () => {
           </IconButton>
         </ArrowTooltip>
       </Footer>
-      <CreateNotebookDialog open={open} setOpen={setOpen} />
+      <CreateNotebookDialog open={openDialog} setOpen={setOpenDialog} />
     </Container>
+  );
+};
+
+const Sidebar = () => {
+  const { isSidebarOpen, toggleSidebar } = useContext(UIContext);
+
+  return (
+    <>
+      <Drawer
+        anchor="left"
+        variant="temporary"
+        open={isSidebarOpen}
+        onClose={toggleSidebar}
+        ModalProps={{ keepMounted: true }}
+        sx={{
+          display: { xs: "block", lg: "none" },
+          "& .MuiDrawer-paper": { width: "240px", border: "none" },
+        }}
+      >
+        <BaseSidebar />
+      </Drawer>
+      <Drawer
+        variant="permanent"
+        sx={{
+          display: { xs: "none", lg: "block" },
+          "& .MuiDrawer-paper": { width: "240px", border: "none" },
+        }}
+      >
+        <BaseSidebar />
+      </Drawer>
+    </>
   );
 };
 

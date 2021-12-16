@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import { CgNotes } from "react-icons/cg";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { flexCenter } from "../../styles/mixins";
+import { UIContext } from "../../contexts";
 
 interface ContainerProps {
   $active: boolean;
 }
 
 const AllNotesOption = ({ $active }: ContainerProps) => {
+  const { toggleSidebar } = useContext(UIContext);
+
   return (
-    <Link to="/all">
+    <Link to="/home/all" onClick={toggleSidebar}>
       <Container $active={$active}>
         <CgNotes />
         <TextWrapper>All Notes</TextWrapper>

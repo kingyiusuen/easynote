@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { useReduxSelector, useRestoreSession } from "./hooks";
+import LandingPage from "./pages/LandingPage";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -19,7 +20,7 @@ const PublicRoute = ({ children }: { children: JSX.Element }) => {
   const isAuthenticated = useReduxSelector(
     (state) => state.session.isAuthenticated
   );
-  return isAuthenticated ? <Navigate to="/" /> : children;
+  return isAuthenticated ? <Navigate to="/home/all" /> : children;
 };
 
 const App = () => {
@@ -44,14 +45,21 @@ const App = () => {
           }
         />
         <Route
-          path="/:notebookId"
+          path="/home/:notebookId"
           element={
             <ProtectedRoute>
               <Home />
             </ProtectedRoute>
           }
         />
-        <Route path="/" element={<Navigate to="/all" />} />
+        <Route
+          path="/"
+          element={
+            <PublicRoute>
+              <LandingPage />
+            </PublicRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>

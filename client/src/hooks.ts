@@ -1,3 +1,4 @@
+import { useState } from "react";
 import jwtDecode from "jwt-decode";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -74,4 +75,11 @@ export const useFindNextNoteId = (note: Note) => {
       ? notebook.noteIds[nextNoteIdIndex]
       : "";
   return nextNoteId;
+};
+
+export const useToggleItem = (defaultValue = false): [boolean, () => void] => {
+  const [isActive, setIsActive] = useState(defaultValue);
+  const toggle = () => setIsActive(!isActive);
+
+  return [isActive, toggle];
 };

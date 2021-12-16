@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import * as timeago from "timeago.js";
@@ -7,6 +7,7 @@ import { truncatedText } from "../../styles/mixins";
 import { setActiveNoteId } from "../../actions/notes.action";
 import stripHTML from "../../utils/stripHTML";
 import { SortCriterion } from "./NoteList";
+import { UIContext } from "../../contexts";
 
 interface ContainerProps {
   $active: boolean;
@@ -19,8 +20,10 @@ interface ComponentProps {
 }
 
 const NoteListItem = ({ note, sortCriterion, $active }: ComponentProps) => {
+  const { toggleNoteList } = useContext(UIContext);
   const dispatch = useDispatch();
   const handleClick = () => {
+    if (toggleNoteList) toggleNoteList();
     dispatch(setActiveNoteId(note.id));
   };
 

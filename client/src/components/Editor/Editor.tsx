@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Fade from "@mui/material/Fade";
 import styled, { css } from "styled-components";
-import { HiDotsHorizontal } from "react-icons/hi";
+import { HiOutlineArrowLeft, HiDotsHorizontal } from "react-icons/hi";
 import { BsArrowsAngleContract, BsArrowsAngleExpand } from "react-icons/bs";
 import { MdDriveFileMove, MdDeleteForever } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import DeleteNoteDialog from "./DeleteNoteDialog";
+import MoveNoteDialog from "./MoveNoteDialog";
+import ArrowTooltip from "../shared/ArrowTooltip";
 import { updateNote } from "../../actions/notes.action";
 import { baseIconButton, flexCenter, scrollable } from "../../styles/mixins";
-import ArrowTooltip from "../shared/ArrowTooltip";
-import MoveNoteDialog from "./MoveNoteDialog";
 import { useReduxSelector } from "../../hooks";
+import { UIContext } from "../../contexts";
 
 interface ContainerProps {
   $fullScreen: boolean;
+  $isNoteListOpen?: boolean;
 }
 
 const modules = {
@@ -100,10 +102,18 @@ const Editor = () => {
     setIsMoveNoteDialogOpen(true);
   };
 
+  // Responsive layout
+  const { isNoteListOpen, toggleNoteList } = useContext(UIContext);
+
   return (
-    <Container $fullScreen={fullScreen}>
+    <Container $isNoteListOpen={isNoteListOpen} $fullScreen={fullScreen}>
       <Header>
-        <CenteredDiv>
+        <CenteredDiv $hideInDesktop>
+          <IconButton onClick={toggleNoteList}>
+            <HiOutlineArrowLeft />
+          </IconButton>
+        </CenteredDiv>
+        <CenteredDiv $showInDesktop>
           <ArrowTooltip title={fullScreen ? "Collapse note" : "Expand note"}>
             <FullScreenButton onClick={toggleFullScreen}>
               {fullScreen ? <BsArrowsAngleContract /> : <BsArrowsAngleExpand />}
@@ -168,17 +178,21 @@ export default Editor;
 
 const Container = styled.div<ContainerProps>`
   background-color: white;
+  display: ${({ $isNoteListOpen }) => ($isNoteListOpen ? "none" : "display")};
 
-  ${({ $fullScreen }) =>
-    $fullScreen &&
-    css`
-      z-index: 9999;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-    `};
+  @media (min-width: 700px) {
+    display: block;
+    ${({ $fullScreen }) =>
+      $fullScreen &&
+      css`
+        z-index: 9999;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      `};
+  }
 `;
 
 const QuillEditor = styled(ReactQuill)`
@@ -199,7 +213,7 @@ const QuillEditor = styled(ReactQuill)`
     .ql-formats {
       margin-right: 0;
   
-      @media (min-width: 1050px) {
+      @media (min-width: 768px) {
         margin-right: 15px;
       }
     }
@@ -268,8 +282,31 @@ const StyledMenu = styled(Menu)`
   }
 `;
 
-const CenteredDiv = styled.div`
+interface CenterDivProps {
+  $showInDesktop?: boolean;
+  $hideInDesktop?: boolean;
+}
+
+const showInDesktopStyle = css`
+  display: none;
+
+  @media (min-width: 700px) {
+    display: flex;
+  }
+`;
+
+const hideInDesktopStyle = css`
+  display: flex;
+
+  @media (min-width: 700px) {
+    display: none;
+  }
+`;
+
+const CenteredDiv = styled.div<CenterDivProps>`
   ${flexCenter}
+  ${({ $showInDesktop }) => $showInDesktop && showInDesktopStyle}
+  ${({ $hideInDesktop }) => $hideInDesktop && hideInDesktopStyle}
 `;
 
 const InvisibleDiv = styled.div`

@@ -31,7 +31,7 @@ const DeleteNotebookDialog = ({ open, setOpen }: DialogProps) => {
   };
 
   const callbackOnSuccess = () => {
-    navigate("/all");
+    navigate("/home/all");
   };
 
   const handleSubmit = (event: React.FormEvent) => {

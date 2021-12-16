@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
@@ -6,6 +6,7 @@ import Fade from "@mui/material/Fade";
 import { BiRename } from "react-icons/bi";
 import {
   HiDotsHorizontal,
+  HiMenu,
   HiOutlinePencilAlt,
   HiSortAscending,
   HiSortDescending,
@@ -20,6 +21,7 @@ import DeleteNotebookDialog from "./DeleteNotebookDialog";
 import ArrowTooltip from "../shared/ArrowTooltip";
 import { Notebook } from "../../types";
 import { SortCriterion } from "./NoteList";
+import { UIContext } from "../../contexts";
 
 interface SortIconProps {
   ascendingOrder: boolean;
@@ -91,8 +93,13 @@ const Header = ({
     handleCloseMenu();
   };
 
+  const { toggleSidebar } = useContext(UIContext);
+
   return (
     <Container>
+      <HamburgerButton onClick={toggleSidebar}>
+        <HiMenu />
+      </HamburgerButton>
       <Heading>{notebook.name}</Heading>
       <ButtonGroup>
         {notebook.id !== "all" && (
@@ -201,6 +208,14 @@ const IconButton = styled.button`
 
   &:hover {
     background-color: #e9e9e7;
+  }
+`;
+
+const HamburgerButton = styled(IconButton)`
+  visibility: visible;
+
+  @media (min-width: 1200px) {
+    visibility: hidden;
   }
 `;
 

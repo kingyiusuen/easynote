@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { flexCenter } from "../../styles/mixins";
 import { Notebook } from "../../types";
+import { UIContext } from "../../contexts";
 
 interface ContainerProps {
   $active: boolean;
@@ -13,8 +14,10 @@ interface ComponentProps extends ContainerProps {
 }
 
 const NotebookOption = ({ notebook, $active }: ComponentProps) => {
+  const { toggleSidebar } = useContext(UIContext);
+
   return (
-    <Link to={`/${notebook.id}`}>
+    <Link to={`/home/${notebook.id}`} onClick={toggleSidebar}>
       <Container $active={$active}>
         <TextWrapper>{notebook.name}</TextWrapper>
       </Container>

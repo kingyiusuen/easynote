@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar/Sidebar";
 import NoteList from "../components/NoteList/NoteList";
 import Editor from "../components/Editor/Editor";
 import PreLoader from "../components/PreLoader/PreLoader";
-import { useGetActiveNotebook, useReduxSelector } from "../hooks";
+import {
+  useGetActiveNotebook,
+  useReduxSelector,
+  useToggleItem,
+} from "../hooks";
 import { fetchUserNotebooks } from "../actions/session.action";
-import { useNavigate } from "react-router-dom";
+import { UIContext } from "../contexts";
 
 const Home = () => {
   // Fetch notebooks and show loading screen for at least 0.5 seconds
@@ -27,7 +32,7 @@ const Home = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (!notebook) {
-      navigate("/all");
+      navigate("/home/all");
     }
   }, [isLoading]);
 
@@ -35,18 +40,26 @@ const Home = () => {
     (state) => state.note.entities[state.note.activeId]
   );
 
-  return isLoading ? (
-    <PreLoader />
-  ) : (
-    <Container>
-      {notebook && (
-        <>
-          <Sidebar />
-          <NoteList />
-          {note && <Editor />}
-        </>
-      )}
-    </Container>
+  // Handle responsive layout
+  const [isSidebarOpen, toggleSidebar] = useToggleItem(false);
+  const [isNoteListOpen, toggleNoteList] = useToggleItem(true);
+
+  if (isLoading) return <PreLoader />;
+
+  return (
+    <UIContext.Provider
+      value={{ isSidebarOpen, toggleSidebar, isNoteListOpen, toggleNoteList }}
+    >
+      <Container>
+        {notebook && (
+          <>
+            <Sidebar />
+            <NoteList />
+            {note && <Editor />}
+          </>
+        )}
+      </Container>
+    </UIContext.Provider>
   );
 };
 
@@ -55,9 +68,13 @@ export default Home;
 const Container = styled.div`
   display: grid;
   grid-template-rows: 100vh;
-  grid-template-columns: 200px 300px calc(100vw - 200px - 300px);
+  grid-template-columns: 1fr;
 
-  @media (min-width: 1050px) {
+  @media (min-width: 700px) {
+    grid-template-columns: 300px calc(100vw - 300px);
+  }
+
+  @media (min-width: 1200px) {
     grid-template-columns: 240px 380px calc(100vw - 240px - 380px);
   }
 `;
