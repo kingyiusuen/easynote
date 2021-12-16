@@ -5,7 +5,7 @@ import * as timeago from "timeago.js";
 import { Note } from "../../types";
 import { truncatedText } from "../../styles/mixins";
 import { setActiveNoteId } from "../../actions/notes.action";
-import stripHTML from "../../utils/stripHTML";
+import { stripHtml } from "string-strip-html";
 import { SortCriterion } from "./NoteList";
 import { UIContext } from "../../contexts";
 
@@ -30,7 +30,7 @@ const NoteListItem = ({ note, sortCriterion, $active }: ComponentProps) => {
   return (
     <Container onClick={handleClick} $active={$active}>
       <Title>{note.title ? note.title : "Untitled"}</Title>
-      <Content>{stripHTML(note.content)}</Content>
+      <Content>{stripHtml(note.content).result}</Content>
       <Timestamp>
         {sortCriterion === "createdAt"
           ? timeago.format(note.createdAt)
