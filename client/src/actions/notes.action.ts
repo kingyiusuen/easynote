@@ -38,7 +38,6 @@ export type DeleteNoteAction = {
   payload: {
     noteId: string;
     notebookId: string;
-    nextNoteId: string;
   };
 };
 
@@ -129,9 +128,10 @@ export const deleteNote =
       await noteService.remove(noteId);
       dispatch({
         type: NOTE_ACTIONS.DELETE_NOTE,
-        payload: { noteId, notebookId, nextNoteId },
+        payload: { noteId, notebookId },
       });
       callbackOnSuccess();
+      dispatch(setActiveNoteId(nextNoteId));
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data?.message) {
         callbackOnFailure(error.response.data.message);
@@ -146,14 +146,15 @@ export const moveNote =
     noteId: string,
     currentNotebookId: string,
     targetNotebookId: string,
+    nextNoteId: string,
     callbackOnSuccess: () => void,
     callbackOnFailure: React.Dispatch<React.SetStateAction<string>>
   ): AppThunk =>
   async (dispatch: Dispatch) => {
     try {
-      await noteService.update(noteId, { notebookId: targetNotebookId });
+      await noteService.move(noteId, { notebookId: targetNotebookId });
       dispatch({
-        type: NOTE_ACTIONS.DELETE_NOTE,
+        type: NOTE_ACTIONS.MOVE_NOTE,
         payload: {
           noteId,
           currentNotebookId,
@@ -161,6 +162,7 @@ export const moveNote =
         },
       });
       callbackOnSuccess();
+      dispatch(setActiveNoteId(nextNoteId));
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data?.message) {
         callbackOnFailure(error.response.data.message);

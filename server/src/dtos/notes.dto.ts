@@ -13,3 +13,9 @@ export class NoteUpdateDto {
   @IsString()
   public content!: string;
 }
+
+export class NoteMoveDto {
+  @IsNotEmpty()
+  @IsString()
+  public notebookId!: string;
+}

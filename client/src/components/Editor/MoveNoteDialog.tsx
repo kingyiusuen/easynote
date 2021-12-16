@@ -9,36 +9,41 @@ import OutlinedButton from "../shared/OutlinedButton";
 import ContainedButton from "../shared/ContainedButton";
 import ErrorMessage from "../shared/ErrorMessage";
 import { moveNote } from "../../actions/notes.action";
-import { useReduxSelector } from "../../hooks";
+import { useFindNextNoteId, useReduxSelector } from "../../hooks";
+import { Note } from "../../types";
 
 interface DialogProps {
+  note: Note;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const MoveNoteDialog = ({ open, setOpen }: DialogProps) => {
+const MoveNoteDialog = ({ note, open, setOpen }: DialogProps) => {
   const dispatch = useDispatch();
+  const [targetNotebookId, setTargetNotebookId] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
-  const activeNoteId = useReduxSelector((state) => state.note.activeId);
-  const currentNotebookId = useReduxSelector(
-    (state) => state.note.entities[activeNoteId]?.notebookId
-  );
   const notebookIds = useReduxSelector((state) => state.notebook.ids);
   const notebooks = useReduxSelector((state) => state.notebook.entities);
+
+  const nextNoteId = useFindNextNoteId(note);
 
   const handleClose = () => {
     setErrorMessage("");
     setOpen(false);
   };
 
+  const handleChange = (event: React.FormEvent<HTMLSelectElement>) => {
+    setTargetNotebookId(event.currentTarget.value);
+  };
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     dispatch(
       moveNote(
-        activeNoteId,
-        currentNotebookId,
-        "",
+        note.id,
+        note.notebookId,
+        targetNotebookId,
+        nextNoteId,
         handleClose,
         setErrorMessage
       )
@@ -49,12 +54,16 @@ const MoveNoteDialog = ({ open, setOpen }: DialogProps) => {
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Move note</DialogTitle>
       <DialogContent>
-        <Select id="notebook" defaultValue="Choose a location...">
+        <Select
+          id="notebook"
+          defaultValue="Choose a location..."
+          onChange={handleChange}
+        >
           <option value="Choose a location..." disabled>
             Choose a location...
           </option>
           {notebookIds.map((id) => (
-            <option key={id} value={id} disabled={id === currentNotebookId}>
+            <option key={id} value={id} disabled={id === note.notebookId}>
               {notebooks[id].name}
             </option>
           ))}

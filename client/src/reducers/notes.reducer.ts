@@ -40,9 +40,9 @@ const noteReducer = (
     case NOTE_ACTIONS.DELETE_NOTE: {
       const { [action.payload.noteId]: _, ...rest } = state.entities;
       return {
+        ...state,
         ids: state.ids.filter((id) => id !== action.payload.noteId),
         entities: rest,
-        activeId: action.payload.nextNoteId,
       };
     }
     case NOTE_ACTIONS.MOVE_NOTE: {

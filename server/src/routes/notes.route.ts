@@ -1,6 +1,6 @@
 import { Router } from "express";
 import NotesController from "../controllers/notes.controller";
-import { NoteCreateDto, NoteUpdateDto } from "../dtos/notes.dto";
+import { NoteCreateDto, NoteMoveDto, NoteUpdateDto } from "../dtos/notes.dto";
 import { Routes } from "../interfaces/routes.interface";
 import validationMiddleware from "../middlewares/validation.middleware";
 import passport from "passport";
@@ -22,6 +22,11 @@ class NotesRoute implements Routes {
       `${this.path}`,
       validationMiddleware(NoteCreateDto, "body"),
       this.notesController.createNote
+    );
+    this.router.put(
+      `${this.path}/:id/move`,
+      validationMiddleware(NoteMoveDto, "body", true),
+      this.notesController.moveNote
     );
     this.router.put(
       `${this.path}/:id`,

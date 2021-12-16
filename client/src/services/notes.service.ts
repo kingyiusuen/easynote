@@ -11,12 +11,13 @@ export const create = async (noteData: NoteCreateDto) => {
   return await axios.post(`${baseURL}/`, noteData);
 };
 
-type MergedUpdateDto = NoteUpdateDto | NoteMoveDto;
-
-export const update = async (noteId: string, noteData: MergedUpdateDto) => {
+export const update = async (noteId: string, noteData: NoteUpdateDto) => {
   return await axios.put(`${baseURL}/${noteId}`, noteData);
 };
 
+export const move = async (noteId: string, noteData: NoteMoveDto) => {
+  return await axios.put(`${baseURL}/${noteId}/move`, noteData);
+};
 export const remove = async (noteId: string) => {
   return await axios.delete(`${baseURL}/${noteId}`);
 };

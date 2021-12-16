@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Repository, getRepository } from "typeorm";
 import { Note } from "../entities/Note";
-import { NoteCreateDto, NoteUpdateDto } from "../dtos/notes.dto";
+import { NoteCreateDto, NoteMoveDto, NoteUpdateDto } from "../dtos/notes.dto";
 import { HttpException } from "../exceptions/HttpException";
 
 class NotesController {
@@ -73,6 +73,25 @@ class NotesController {
         .createQueryBuilder()
         .update(Note)
         .set({ ...noteData, updatedAt: new Date() })
+        .where("id = :id", { id: noteId })
+        .returning("*")
+        .execute()
+        .then((response) => response.raw[0]);
+
+      res.status(200).json(updateNoteData);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public moveNote = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const noteId = req.params.id;
+      const noteData = req.body as NoteMoveDto;
+      const updateNoteData = await this.noteRepository
+        .createQueryBuilder()
+        .update(Note)
+        .set(noteData)
         .where("id = :id", { id: noteId })
         .returning("*")
         .execute()

@@ -8,7 +8,7 @@ import {
   setCurrentUser,
 } from "./actions/session.action";
 import type { RootState } from "./store";
-import { IParams } from "./types";
+import { IParams, Note } from "./types";
 
 export const useReduxSelector: TypedUseSelectorHook<RootState> = useSelector;
 
@@ -59,4 +59,19 @@ export const useGetActiveNotebook = () => {
   }
 
   return useReduxSelector((state) => state.notebook.entities[notebookId]);
+};
+
+export const useFindNextNoteId = (note: Note) => {
+  const notebook = useReduxSelector(
+    (state) => state.notebook.entities[note.notebookId]
+  );
+  const currentNoteIdIndex = notebook.noteIds.findIndex(
+    (noteId) => noteId === note.id
+  );
+  const nextNoteIdIndex = (currentNoteIdIndex + 1) % notebook.noteIds.length;
+  const nextNoteId =
+    nextNoteIdIndex !== currentNoteIdIndex
+      ? notebook.noteIds[nextNoteIdIndex]
+      : "";
+  return nextNoteId;
 };

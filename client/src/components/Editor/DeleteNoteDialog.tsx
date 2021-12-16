@@ -11,7 +11,7 @@ import ErrorMessage from "../shared/ErrorMessage";
 import { deleteNote } from "../../actions/notes.action";
 import { baseButton } from "../../styles/mixins";
 import { Note } from "../../types";
-import { useReduxSelector } from "../../hooks";
+import { useFindNextNoteId } from "../../hooks";
 
 interface DialogProps {
   note: Note;
@@ -28,15 +28,7 @@ const DeleteNoteDialog = ({ note, open, setOpen }: DialogProps) => {
     setOpen(false);
   };
 
-  // Set the next note in note list to active after deleting current note
-  const notebook = useReduxSelector(
-    (state) => state.notebook.entities[note.notebookId]
-  );
-  const currentNoteIdIndex = notebook.noteIds.findIndex(
-    (noteId) => noteId === note.id
-  );
-  const nextNoteIdIndex = (currentNoteIdIndex + 1) % notebook.noteIds.length;
-  const nextNoteId = notebook.noteIds[nextNoteIdIndex] || "";
+  const nextNoteId = useFindNextNoteId(note);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();

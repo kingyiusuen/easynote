@@ -129,6 +129,7 @@ const Editor = () => {
             setOpen={setIsDeleteNoteDialogOpen}
           />
           <MoveNoteDialog
+            note={note}
             open={isMoveNoteDialogOpen}
             setOpen={setIsMoveNoteDialogOpen}
           />
