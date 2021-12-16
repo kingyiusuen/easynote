@@ -18,9 +18,11 @@ interface DialogProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+const defaultValue = "Choose a location...";
+
 const MoveNoteDialog = ({ note, open, setOpen }: DialogProps) => {
   const dispatch = useDispatch();
-  const [targetNotebookId, setTargetNotebookId] = useState("");
+  const [targetNotebookId, setTargetNotebookId] = useState(defaultValue);
   const [errorMessage, setErrorMessage] = useState("");
   const notebookIds = useReduxSelector((state) => state.notebook.ids);
   const notebooks = useReduxSelector((state) => state.notebook.entities);
@@ -56,10 +58,10 @@ const MoveNoteDialog = ({ note, open, setOpen }: DialogProps) => {
       <DialogContent>
         <Select
           id="notebook"
-          defaultValue="Choose a location..."
+          defaultValue={defaultValue}
           onChange={handleChange}
         >
-          <option value="Choose a location..." disabled>
+          <option value={defaultValue} disabled>
             Choose a location...
           </option>
           {notebookIds.map((id) => (
@@ -74,7 +76,11 @@ const MoveNoteDialog = ({ note, open, setOpen }: DialogProps) => {
         <OutlinedButton type="button" onClick={handleClose}>
           Cancel
         </OutlinedButton>
-        <ContainedButton type="submit" onClick={handleSubmit}>
+        <ContainedButton
+          type="submit"
+          onClick={handleSubmit}
+          disabled={targetNotebookId === defaultValue}
+        >
           Move
         </ContainedButton>
       </DialogActions>
