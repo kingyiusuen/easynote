@@ -9,11 +9,11 @@ import {
 } from "../actions/session.action";
 import Input from "../components/shared/Input";
 import ErrorMessage from "../components/shared/ErrorMessage";
-import Footer from "../components/AuthPage/Footer";
-import Form from "../components/AuthPage/Form";
-import Header from "../components/AuthPage/Header";
-import SubmitButton from "../components/AuthPage/SubmitButton";
-import PageContainer from "../components/AuthPage/PageContainer";
+import Footer from "../components/SessionPage/Footer";
+import Form from "../components/SessionPage/Form";
+import Header from "../components/SessionPage/Header";
+import SubmitButton from "../components/SessionPage/SubmitButton";
+import PageContainer from "../components/SessionPage/PageContainer";
 import { useReduxSelector } from "../hooks";
 
 const Signup = () => {
