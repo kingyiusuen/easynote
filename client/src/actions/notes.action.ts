@@ -1,8 +1,8 @@
+import axios from "axios";
 import { Dispatch } from "redux";
 import * as noteService from "../services/notes.service";
 import { AppThunk } from "../store";
 import { Note, NoteIdEntityMap } from "../types";
-import axios from "axios";
 
 /* Action names */
 export enum NOTE_ACTIONS {
@@ -123,19 +123,18 @@ export const deleteNote =
   (
     noteId: string,
     notebookId: string,
-    nextNoteId: string,
     callbackOnSuccess: () => void,
     callbackOnFailure: React.Dispatch<React.SetStateAction<string>>
   ): AppThunk =>
   async (dispatch: Dispatch) => {
     try {
       await noteService.remove(noteId);
-      dispatch(setActiveNoteId(nextNoteId));
+      callbackOnSuccess();
       dispatch({
         type: NOTE_ACTIONS.DELETE_NOTE,
         payload: { noteId, notebookId },
       });
-      callbackOnSuccess();
+      dispatch(setActiveNoteId(""));
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data?.message) {
         callbackOnFailure(error.response.data.message);
@@ -150,13 +149,13 @@ export const moveNote =
     noteId: string,
     currentNotebookId: string,
     targetNotebookId: string,
-    nextNoteId: string,
     callbackOnSuccess: () => void,
     callbackOnFailure: React.Dispatch<React.SetStateAction<string>>
   ): AppThunk =>
   async (dispatch: Dispatch) => {
     try {
       await noteService.move(noteId, { notebookId: targetNotebookId });
+      callbackOnSuccess();
       dispatch({
         type: NOTE_ACTIONS.MOVE_NOTE,
         payload: {
@@ -165,8 +164,7 @@ export const moveNote =
           targetNotebookId,
         },
       });
-      callbackOnSuccess();
-      dispatch(setActiveNoteId(nextNoteId));
+      dispatch(setActiveNoteId(""));
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data?.message) {
         callbackOnFailure(error.response.data.message);

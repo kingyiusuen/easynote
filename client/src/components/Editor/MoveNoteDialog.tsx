@@ -5,11 +5,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
+import { moveNote } from "../../actions/notes.action";
 import OutlinedButton from "../shared/OutlinedButton";
 import ContainedButton from "../shared/ContainedButton";
 import ErrorMessage from "../shared/ErrorMessage";
-import { moveNote } from "../../actions/notes.action";
-import { useFindNextNoteId, useReduxSelector } from "../../hooks";
+import { useReduxSelector } from "../../hooks";
 import { Note } from "../../types";
 
 interface DialogProps {
@@ -27,8 +27,6 @@ const MoveNoteDialog = ({ note, open, setOpen }: DialogProps) => {
   const notebookIds = useReduxSelector((state) => state.notebook.ids);
   const notebooks = useReduxSelector((state) => state.notebook.entities);
 
-  const nextNoteId = useFindNextNoteId(note);
-
   const handleClose = () => {
     setErrorMessage("");
     setOpen(false);
@@ -45,7 +43,6 @@ const MoveNoteDialog = ({ note, open, setOpen }: DialogProps) => {
         note.id,
         note.notebookId,
         targetNotebookId,
-        nextNoteId,
         handleClose,
         setErrorMessage
       )

@@ -9,7 +9,7 @@ import {
   setCurrentUser,
 } from "./actions/session.action";
 import type { RootState } from "./store";
-import { UrlParams, Note } from "./types";
+import { UrlParams } from "./types";
 
 export const useReduxSelector: TypedUseSelectorHook<RootState> = useSelector;
 
@@ -43,17 +43,6 @@ export const useGetActiveNotebook = () => {
   const notebookId = useGetActiveNotebookId();
 
   if (notebookId === "all") {
-    // const noteStore = useReduxSelector((state) => state.note);
-
-    // Sort based on createdAt in descending order
-    // const sortedIds = noteStore.ids
-    //   .slice()
-    //   .sort(
-    //     (i, j) =>
-    //       Date.parse(noteStore.entities[j].createdAt) -
-    //       Date.parse(noteStore.entities[i].createdAt)
-    //   );
-
     return {
       id: "all",
       name: "All Notes",
@@ -65,21 +54,6 @@ export const useGetActiveNotebook = () => {
   }
 
   return useReduxSelector((state) => state.notebook.entities[notebookId]);
-};
-
-export const useFindNextNoteId = (note: Note) => {
-  const notebook = useReduxSelector(
-    (state) => state.notebook.entities[note.notebookId]
-  );
-  const currentNoteIdIndex = notebook.noteIds.findIndex(
-    (noteId) => noteId === note.id
-  );
-  const nextNoteIdIndex = (currentNoteIdIndex + 1) % notebook.noteIds.length;
-  const nextNoteId =
-    nextNoteIdIndex !== currentNoteIdIndex
-      ? notebook.noteIds[nextNoteIdIndex]
-      : "";
-  return nextNoteId;
 };
 
 export const useToggleItem = (defaultValue = false): [boolean, () => void] => {

@@ -11,7 +11,6 @@ import ErrorMessage from "../shared/ErrorMessage";
 import { deleteNote } from "../../actions/notes.action";
 import { baseButton } from "../../styles/mixins";
 import { Note } from "../../types";
-import { useFindNextNoteId } from "../../hooks";
 
 interface DialogProps {
   note: Note;
@@ -28,18 +27,10 @@ const DeleteNoteDialog = ({ note, open, setOpen }: DialogProps) => {
     setOpen(false);
   };
 
-  const nextNoteId = useFindNextNoteId(note);
-
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     dispatch(
-      deleteNote(
-        note.id,
-        note.notebookId,
-        nextNoteId,
-        handleClose,
-        setErrorMessage
-      )
+      deleteNote(note.id, note.notebookId, handleClose, setErrorMessage)
     );
   };
 
