@@ -10,20 +10,21 @@ import OutlinedButton from "../shared/OutlinedButton";
 import Input from "../shared/Input";
 import ErrorMessage from "../shared/ErrorMessage";
 import { renameNotebook } from "../../actions/notebooks.action";
-import { useGetActiveNotebookId, useReduxSelector } from "../../hooks";
+import { useReduxSelector } from "../../hooks";
+import { Notebook } from "../../types";
 
 interface DialogProps {
+  notebook: Notebook;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const RenameNotebookDialog = ({ open, setOpen }: DialogProps) => {
+const RenameNotebookDialog = ({ notebook, open, setOpen }: DialogProps) => {
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState("");
   const [inputValue, setInputValue] = useState("");
 
   const user = useReduxSelector((state) => state.session.user);
-  const activeNotebookId = useGetActiveNotebookId();
 
   const handleClose = () => {
     setInputValue("");
@@ -40,7 +41,7 @@ const RenameNotebookDialog = ({ open, setOpen }: DialogProps) => {
     if (user) {
       dispatch(
         renameNotebook(
-          activeNotebookId,
+          notebook.id,
           { name: inputValue },
           handleClose,
           setErrorMessage
@@ -54,7 +55,11 @@ const RenameNotebookDialog = ({ open, setOpen }: DialogProps) => {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Rename notebook</DialogTitle>
         <DialogContent>
-          <Input placeholder="Notebook name" onChange={handleChange} />
+          <Input
+            placeholder="Notebook name"
+            defaultValue={notebook.name}
+            onChange={handleChange}
+          />
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         </DialogContent>
         <DialogActions>
@@ -63,7 +68,7 @@ const RenameNotebookDialog = ({ open, setOpen }: DialogProps) => {
           </OutlinedButton>
           <ContainedButton
             type="submit"
-            disabled={inputValue === ""}
+            disabled={inputValue === "" || inputValue === notebook.name}
             onClick={handleSubmit}
           >
             Continue

@@ -100,10 +100,12 @@ const Header = ({ notebook }: HeaderProps) => {
       </StyledMenu>
       <InvisibleDiv>
         <RenameNotebookDialog
+          notebook={notebook}
           open={isRenameNotebookDialogOpen}
           setOpen={setIsRenameNotebookDialogOpen}
         />
         <DeleteNotebookDialog
+          notebook={notebook}
           open={isDeleteNotebookDialogOpen}
           setOpen={setIsDeleteNotebookDialogOpen}
         />

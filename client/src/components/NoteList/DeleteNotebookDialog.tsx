@@ -8,22 +8,21 @@ import styled from "styled-components";
 import OutlinedButton from "../shared/OutlinedButton";
 import ErrorMessage from "../shared/ErrorMessage";
 import { deleteNotebook } from "../../actions/notebooks.action";
-import { useGetActiveNotebookId } from "../../hooks";
 import DialogContentText from "@mui/material/DialogContentText";
 import { baseButton } from "../../styles/mixins";
 import { useNavigate } from "react-router-dom";
+import { Notebook } from "../../types";
 
 interface DialogProps {
+  notebook: Notebook;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DeleteNotebookDialog = ({ open, setOpen }: DialogProps) => {
+const DeleteNotebookDialog = ({ notebook, open, setOpen }: DialogProps) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
-
-  const activeNotebookId = useGetActiveNotebookId();
 
   const handleClose = () => {
     setErrorMessage("");
@@ -36,9 +35,7 @@ const DeleteNotebookDialog = ({ open, setOpen }: DialogProps) => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    dispatch(
-      deleteNotebook(activeNotebookId, callbackOnSuccess, setErrorMessage)
-    );
+    dispatch(deleteNotebook(notebook.id, callbackOnSuccess, setErrorMessage));
   };
 
   return (
