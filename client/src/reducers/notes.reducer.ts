@@ -16,19 +16,20 @@ const initialState = {
 const noteReducer = (
   state: NoteStore = initialState,
   action: NoteActionType
-) => {
+): NoteStore => {
   switch (action.type) {
-    case NOTE_ACTIONS.INITIALIZE_NOTES:
+    case NOTE_ACTIONS.INITIALIZE_NOTES: {
       return {
         ...state,
         ids: action.payload.ids,
         entities: action.payload.entities,
       };
+    }
     case NOTE_ACTIONS.CREATE_NOTE: {
       return {
+        ...state,
         ids: [action.payload.id, ...state.ids],
         entities: { ...state.entities, [action.payload.id]: action.payload },
-        activeId: action.payload.id,
       };
     }
     case NOTE_ACTIONS.UPDATE_NOTE: {

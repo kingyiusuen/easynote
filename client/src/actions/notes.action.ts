@@ -89,6 +89,10 @@ export const createNote =
         type: NOTE_ACTIONS.CREATE_NOTE,
         payload: response.data,
       });
+      dispatch({
+        type: NOTE_ACTIONS.SET_ACTIVE_NOTE_ID,
+        payload: { id: response.data.id },
+      });
     } catch (error) {
       console.log(error);
     }
@@ -126,12 +130,12 @@ export const deleteNote =
   async (dispatch: Dispatch) => {
     try {
       await noteService.remove(noteId);
+      dispatch(setActiveNoteId(nextNoteId));
       dispatch({
         type: NOTE_ACTIONS.DELETE_NOTE,
         payload: { noteId, notebookId },
       });
       callbackOnSuccess();
-      dispatch(setActiveNoteId(nextNoteId));
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data?.message) {
         callbackOnFailure(error.response.data.message);

@@ -25,7 +25,7 @@ const Home = () => {
       dispatch(fetchUserNotebooks(user.id));
       setTimeout(() => setIsLoading(false), 500);
     }
-  }, []);
+  }, [user]);
 
   // Redirect when notebook id in URL does not exist in database
   const notebook = useGetActiveNotebook();
@@ -68,10 +68,10 @@ export default Home;
 const Container = styled.div`
   display: grid;
   grid-template-rows: 100vh;
-  grid-template-columns: 1fr;
+  grid-template-columns: 100vw;
 
-  @media (min-width: 700px) {
-    grid-template-columns: 300px calc(100vw - 300px);
+  @media (min-width: 810px) {
+    grid-template-columns: 340px calc(100vw - 340px);
   }
 
   @media (min-width: 1200px) {

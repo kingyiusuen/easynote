@@ -6,7 +6,6 @@ import { Note } from "../../types";
 import { truncatedText } from "../../styles/mixins";
 import { setActiveNoteId } from "../../actions/notes.action";
 import { stripHtml } from "string-strip-html";
-import { SortCriterion } from "./NoteList";
 import { UIContext } from "../../contexts";
 
 interface ContainerProps {
@@ -15,11 +14,10 @@ interface ContainerProps {
 
 interface ComponentProps {
   note: Note;
-  sortCriterion: SortCriterion;
   $active: boolean;
 }
 
-const NoteListItem = ({ note, sortCriterion, $active }: ComponentProps) => {
+const NoteListItem = ({ note, $active }: ComponentProps) => {
   const { toggleNoteList } = useContext(UIContext);
   const dispatch = useDispatch();
   const handleClick = () => {
@@ -31,11 +29,7 @@ const NoteListItem = ({ note, sortCriterion, $active }: ComponentProps) => {
     <Container onClick={handleClick} $active={$active}>
       <Title>{note.title ? note.title : "Untitled"}</Title>
       <Content>{stripHtml(note.content).result}</Content>
-      <Timestamp>
-        {sortCriterion === "createdAt"
-          ? timeago.format(note.createdAt)
-          : timeago.format(note.updatedAt)}
-      </Timestamp>
+      <Timestamp>{timeago.format(note.updatedAt)}</Timestamp>
     </Container>
   );
 };
@@ -60,6 +54,7 @@ const Title = styled.div`
   font-weight: 500;
   color: #282a2c;
   margin-bottom: 8px;
+  ${truncatedText}
 `;
 
 const Content = styled.div`

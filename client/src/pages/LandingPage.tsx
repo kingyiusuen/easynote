@@ -44,9 +44,10 @@ const LandingPage = () => {
             <MdArrowForwardIos />
           </ActionButtonContainer>
         </ActionButton>
-        <ActionText>
-          <Link to="/signup">Already have an account? Log in</Link>
-        </ActionText>
+        <ActionText>(No login required)</ActionText>
+        <HeroImages>
+          <img src="macbook_mockup.png" className="macbook-mockup" />
+        </HeroImages>
       </Content>
       <Footer>
         <FooterColumn>
@@ -59,13 +60,13 @@ const LandingPage = () => {
           <FooterHeading>Contact</FooterHeading>
           <FooterList>
             <FooterListItem>
-              <a href="https://github.com/kingyiusuen">GitHub</a>
+              <a href="mailto:kingyiusuen@gmail.com">Email</a>
             </FooterListItem>
             <FooterListItem>
               <a href="https://linkedin.com/in/kingyiusuen">Linkedin</a>
             </FooterListItem>
             <FooterListItem>
-              <a href="mailto:kingyiusuen@gmail.com">Email</a>
+              <a href="https://github.com/kingyiusuen">GitHub</a>
             </FooterListItem>
           </FooterList>
         </FooterColumn>
@@ -95,6 +96,14 @@ const Container = styled.div`
   padding: 0 24px;
   max-width: 1200px;
   margin: 0 auto;
+  overflow-x: hidden;
+`;
+
+const HeroImages = styled.div`
+  & > img {
+    width: 900px;
+    max-width: 100%;
+  }
 `;
 
 const NavBar = styled.nav`
@@ -128,7 +137,7 @@ const NavLinkItem = styled.li`
 `;
 
 const Content = styled.main`
-  padding: 60px 0 40px 0;
+  padding: 60px 0;
   text-align: center;
 `;
 
@@ -136,7 +145,7 @@ const Heading = styled.h1`
   font-size: 48px;
   line-height: 1.5;
 
-  @media only screen and (min-width: 768px) {
+  @media only screen and (min-width: 810px) {
     font-size: 64px;
   }
 `;
@@ -169,13 +178,8 @@ const ActionButtonContainer = styled.div`
 `;
 
 const ActionText = styled.p`
-  font-size: 18px;
-  text-decoration: underline;
-  margin-top: 20px;
-
-  & > a:hover {
-    color: #7380a7;
-  }
+  font-size: 16px;
+  margin: 14px 0 40px 0;
 `;
 
 const Footer = styled.footer`

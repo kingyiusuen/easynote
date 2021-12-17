@@ -1,62 +1,39 @@
 import React, { useContext, useState } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Divider from "@mui/material/Divider";
 import Fade from "@mui/material/Fade";
 import { BiRename } from "react-icons/bi";
-import {
-  HiDotsHorizontal,
-  HiMenu,
-  HiOutlinePencilAlt,
-  HiSortAscending,
-  HiSortDescending,
-} from "react-icons/hi";
+import { HiDotsHorizontal, HiMenu, HiOutlinePencilAlt } from "react-icons/hi";
 import { MdDeleteForever } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { createNote } from "../../actions/notes.action";
-import { baseIconButton } from "../../styles/mixins";
+import { baseIconButton, flexCenter, truncatedText } from "../../styles/mixins";
 import RenameNotebookDialog from "./RenameNotebookDialog";
 import DeleteNotebookDialog from "./DeleteNotebookDialog";
 import ArrowTooltip from "../shared/ArrowTooltip";
 import { Notebook } from "../../types";
-import { SortCriterion } from "./NoteList";
 import { UIContext } from "../../contexts";
-
-interface SortIconProps {
-  ascendingOrder: boolean;
-}
-
-const SortIcon = ({ ascendingOrder }: SortIconProps) => {
-  return ascendingOrder ? <HiSortAscending /> : <HiSortDescending />;
-};
 
 interface HeaderProps {
   notebook: Notebook;
-  sortCriterion: SortCriterion;
-  setSortCriterion: React.Dispatch<React.SetStateAction<SortCriterion>>;
-  ascendingOrder: boolean;
-  setAscendingOrder: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Header = ({
-  notebook,
-  sortCriterion,
-  setSortCriterion,
-  ascendingOrder,
-  setAscendingOrder,
-}: HeaderProps) => {
+const Header = ({ notebook }: HeaderProps) => {
   const dispatch = useDispatch();
-  const [isRenameNotebookDialogOpen, setIsRenameNotebookDialogOpen] =
-    useState(false);
-  const [isDeleteNotebookDialogOpen, setIsDeleteNotebookDialogOpen] =
-    useState(false);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const [isRenameNotebookDialogOpen, setIsRenameNotebookDialogOpen] =
+    useState(false);
+
+  const [isDeleteNotebookDialogOpen, setIsDeleteNotebookDialogOpen] =
+    useState(false);
+
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
@@ -75,46 +52,31 @@ const Header = ({
     setIsDeleteNotebookDialogOpen(true);
   };
 
-  const handleSortByDateCreatedClick = () => {
-    if (sortCriterion === "createdAt") {
-      setAscendingOrder(!ascendingOrder);
-    } else {
-      setSortCriterion("createdAt");
-    }
-    handleCloseMenu();
-  };
-
-  const handleSortByDateUpdatedClick = () => {
-    if (sortCriterion === "updatedAt") {
-      setAscendingOrder(!ascendingOrder);
-    } else {
-      setSortCriterion("updatedAt");
-    }
-    handleCloseMenu();
-  };
-
+  // Responsive layout
   const { toggleSidebar } = useContext(UIContext);
 
   return (
     <Container>
-      <HamburgerButton onClick={toggleSidebar}>
-        <HiMenu />
-      </HamburgerButton>
-      <Heading>{notebook.name}</Heading>
-      <ButtonGroup>
-        {notebook.id !== "all" && (
+      <HeaderLeft>
+        <HamburgerButton onClick={toggleSidebar}>
+          <HiMenu />
+        </HamburgerButton>
+        <Heading>{notebook.name}</Heading>
+      </HeaderLeft>
+      {notebook.id !== "all" && (
+        <ButtonGroup>
           <ArrowTooltip title="Add new note" placement="bottom">
             <IconButton onClick={handleCreateNoteClick}>
               <HiOutlinePencilAlt />
             </IconButton>
           </ArrowTooltip>
-        )}
-        <ArrowTooltip title="More actions" placement="bottom">
-          <IconButton onClick={handleClick}>
-            <HiDotsHorizontal />
-          </IconButton>
-        </ArrowTooltip>
-      </ButtonGroup>
+          <ArrowTooltip title="More actions" placement="bottom">
+            <IconButton onClick={handleClick}>
+              <HiDotsHorizontal />
+            </IconButton>
+          </ArrowTooltip>
+        </ButtonGroup>
+      )}
       <StyledMenu
         id="fade-menu"
         MenuListProps={{ "aria-labelledby": "fade-button" }}
@@ -133,38 +95,8 @@ const Header = ({
               <MdDeleteForever />
               Delete notebook
             </MenuItem>
-            <Divider sx={{ my: 0.5 }} />{" "}
           </div>
         )}
-        <MenuItem disabled>Sort by</MenuItem>
-        <MenuItem
-          onClick={handleSortByDateCreatedClick}
-          disableRipple
-          classes={{
-            root: sortCriterion === "createdAt" ? "active" : undefined,
-          }}
-        >
-          {sortCriterion === "createdAt" ? (
-            <SortIcon ascendingOrder={ascendingOrder} />
-          ) : (
-            <EmptyDiv></EmptyDiv>
-          )}
-          Date created
-        </MenuItem>
-        <MenuItem
-          onClick={handleSortByDateUpdatedClick}
-          disableRipple
-          classes={{
-            root: sortCriterion === "updatedAt" ? "active" : undefined,
-          }}
-        >
-          {sortCriterion === "updatedAt" ? (
-            <SortIcon ascendingOrder={ascendingOrder} />
-          ) : (
-            <EmptyDiv></EmptyDiv>
-          )}
-          Date updated
-        </MenuItem>
       </StyledMenu>
       <InvisibleDiv>
         <RenameNotebookDialog
@@ -184,15 +116,22 @@ export default Header;
 
 const Container = styled.div`
   padding: 0 16px;
-  height: 54px;
+  height: 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid var(--border-color);
+`;
+
+const HeaderLeft = styled.div`
+  ${flexCenter}
+  gap: 8px;
 `;
 
 const Heading = styled.h2`
   font-weight: 400;
   font-size: 22px;
+  ${truncatedText}
 `;
 
 const ButtonGroup = styled.div`
@@ -212,10 +151,10 @@ const IconButton = styled.button`
 `;
 
 const HamburgerButton = styled(IconButton)`
-  visibility: visible;
+  display: flex;
 
   @media (min-width: 1200px) {
-    visibility: hidden;
+    display: none;
   }
 `;
 
@@ -236,10 +175,4 @@ const StyledMenu = styled(Menu)`
 
 const InvisibleDiv = styled.div`
   display: none;
-`;
-
-const EmptyDiv = styled.div`
-  width: 18px;
-  height: 18px;
-  margin-right: 6px;
 `;

@@ -66,7 +66,7 @@ class AuthController {
         username: findUser.username,
       };
       const secretKey = process.env.JWT_SECRET;
-      const expiresIn = 60 * 60;
+      const expiresIn = 60 * 60 * 6;
       const token = jwt.sign(dataStoredInToken, secretKey, { expiresIn });
 
       const user = { id: findUser.id, username: findUser.username };

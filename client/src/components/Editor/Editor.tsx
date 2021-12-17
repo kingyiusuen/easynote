@@ -35,29 +35,30 @@ const modules = {
 const AUTOSAVE_INTERVAL = 500;
 
 const Editor = () => {
+  const dispatch = useDispatch();
   const note = useReduxSelector(
     (state) => state.note.entities[state.note.activeId]
   );
-  const [syncStatus, setSyncStatus] = useState("All changes saved");
-  const [noteForm, setNoteForm] = useState({
-    title: "",
-    content: "",
-  });
-  const [isFirstRun, setIsFirstRun] = useState(false);
+
+  // Record title and content changes
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
   const handleTitleChange = (event: React.FormEvent<HTMLInputElement>) => {
-    setNoteForm({ ...noteForm, title: event.currentTarget.value });
+    setTitle(event.currentTarget.value);
   };
 
   const handleContentChange = (content: string) => {
-    setNoteForm({ ...noteForm, content });
+    setContent(content);
   };
 
   // Autosaving
-  const dispatch = useDispatch();
+  const [isFirstRun, setIsFirstRun] = useState(false);
+  const [syncStatus, setSyncStatus] = useState("All changes saved");
 
   useEffect(() => {
-    setNoteForm({ title: note.title, content: note.content });
+    setTitle(note.title);
+    setContent(note.content);
     setIsFirstRun(true);
   }, [note.id]);
 
@@ -67,14 +68,14 @@ const Editor = () => {
       setIsFirstRun(false);
     } else {
       timer = setTimeout(() => {
-        dispatch(updateNote(note.id, noteForm, setSyncStatus));
+        dispatch(updateNote(note.id, { title, content }, setSyncStatus));
       }, AUTOSAVE_INTERVAL);
     }
 
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [noteForm]);
+  }, [title, content]);
 
   // Full screen
   const [fullScreen, setFullScreen] = useState(false);
@@ -123,8 +124,8 @@ const Editor = () => {
         <TitleInput
           type="text"
           placeholder="Title"
-          value={noteForm.title}
-          onChange={(event) => handleTitleChange(event)}
+          value={title}
+          onChange={handleTitleChange}
         />
         <CenteredDiv>
           <ArrowTooltip title="More actions">
@@ -166,7 +167,7 @@ const Editor = () => {
       <QuillEditor
         modules={modules}
         placeholder="Start writing here"
-        value={noteForm.content}
+        value={content}
         onChange={handleContentChange}
       />
       <Footer>{syncStatus}</Footer>
@@ -180,7 +181,7 @@ const Container = styled.div<ContainerProps>`
   background-color: white;
   display: ${({ $isNoteListOpen }) => ($isNoteListOpen ? "none" : "display")};
 
-  @media (min-width: 700px) {
+  @media (min-width: 810px) {
     display: block;
     ${({ $fullScreen }) =>
       $fullScreen &&
@@ -207,20 +208,19 @@ const QuillEditor = styled(ReactQuill)`
 
   .ql-toolbar.ql-snow {
     border: none;
-    overflow-x: hidden;
     white-space: nowrap;
 
     .ql-formats {
       margin-right: 0;
   
-      @media (min-width: 768px) {
+      @media (min-width: 810px) {
         margin-right: 15px;
       }
     }
   }
 
   .ql-container.ql-snow {
-    height: calc(100vh - 54px - 40px - 40px); // Minus heights of header, toolbar and footer
+    height: calc(100vh - 60px - 40px - 40px); // Minus heights of header, toolbar and footer
     border: none;
     font-size: 16px !important;
   }
@@ -236,7 +236,7 @@ const QuillEditor = styled(ReactQuill)`
 `;
 
 const Header = styled.div`
-  height: 54px;
+  height: 60px;
   display: flex;
   padding: 0 15px;
   gap: 16px;
@@ -290,7 +290,7 @@ interface CenterDivProps {
 const showInDesktopStyle = css`
   display: none;
 
-  @media (min-width: 700px) {
+  @media (min-width: 810px) {
     display: flex;
   }
 `;
@@ -298,7 +298,7 @@ const showInDesktopStyle = css`
 const hideInDesktopStyle = css`
   display: flex;
 
-  @media (min-width: 700px) {
+  @media (min-width: 810px) {
     display: none;
   }
 `;

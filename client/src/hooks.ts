@@ -9,7 +9,7 @@ import {
   setCurrentUser,
 } from "./actions/session.action";
 import type { RootState } from "./store";
-import { IParams, Note } from "./types";
+import { UrlParams, Note } from "./types";
 
 export const useReduxSelector: TypedUseSelectorHook<RootState> = useSelector;
 
@@ -34,7 +34,7 @@ export const useRestoreSession = () => {
 
 /* Get notebookId from URL */
 export const useGetActiveNotebookId = () => {
-  const params = useParams<keyof IParams>() as IParams;
+  const params = useParams<keyof UrlParams>() as UrlParams;
   return params.notebookId;
 };
 
@@ -43,11 +43,16 @@ export const useGetActiveNotebook = () => {
   const notebookId = useGetActiveNotebookId();
 
   if (notebookId === "all") {
-    const noteIds = Array.prototype.concat(
-      ...useReduxSelector((state) =>
-        state.notebook.ids.map((id) => state.notebook.entities[id].noteIds)
-      )
-    );
+    // const noteStore = useReduxSelector((state) => state.note);
+
+    // Sort based on createdAt in descending order
+    // const sortedIds = noteStore.ids
+    //   .slice()
+    //   .sort(
+    //     (i, j) =>
+    //       Date.parse(noteStore.entities[j].createdAt) -
+    //       Date.parse(noteStore.entities[i].createdAt)
+    //   );
 
     return {
       id: "all",
@@ -55,7 +60,7 @@ export const useGetActiveNotebook = () => {
       userId: "",
       createdAt: "",
       updatedAt: "",
-      noteIds,
+      noteIds: useReduxSelector((state) => state.note.ids),
     };
   }
 

@@ -8,17 +8,19 @@ import { NotebookIdEntityMap } from "../types";
 interface NotebookStore {
   ids: string[];
   entities: NotebookIdEntityMap;
+  activeId: string;
 }
 
 const initialState = {
   ids: [],
   entities: {},
+  activeId: "",
 };
 
 const notebookReducer = (
   state: NotebookStore = initialState,
   action: NotebookActionType
-) => {
+): NotebookStore => {
   switch (action.type) {
     case NOTEBOOK_ACTIONS.INITIALIZE_NOTEBOOKS:
       return {
@@ -29,7 +31,10 @@ const notebookReducer = (
     case NOTEBOOK_ACTIONS.CREATE_NOTEBOOK:
       return {
         ids: [...state.ids, action.payload.id],
-        entities: { ...state.entities, [action.payload.id]: action.payload },
+        entities: {
+          ...state.entities,
+          [action.payload.id]: { ...action.payload, noteIds: [] },
+        },
         activeId: action.payload.id,
       };
     case NOTEBOOK_ACTIONS.RENAME_NOTEBOOK:
@@ -49,6 +54,7 @@ const notebookReducer = (
       return {
         ids: state.ids.filter((id) => id !== action.payload.id),
         entities: rest,
+        activeId: "all",
       };
     }
     case NOTE_ACTIONS.CREATE_NOTE:
@@ -103,7 +109,6 @@ const notebookReducer = (
         },
       };
     }
-
     default:
       return state;
   }

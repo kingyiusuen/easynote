@@ -24,6 +24,6 @@ export interface NotebookIdEntityMap {
   [notebookId: string]: Notebook;
 }
 
-export interface IParams {
+export interface UrlParams {
   notebookId: string;
 }
