@@ -29,5 +29,6 @@ const Container = styled.div`
 
   @media (min-width: 600px) {
     width: 350px;
+    height: unset;
   }
 `;
