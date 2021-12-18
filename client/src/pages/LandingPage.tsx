@@ -46,7 +46,11 @@ const LandingPage = () => {
         </ActionButton>
         <ActionText>(No login required)</ActionText>
         <HeroImages>
-          <img src="macbook_mockup.png" className="macbook-mockup" />
+          <img
+            src="macbook_mockup.png"
+            alt="screenshot"
+            className="macbook-mockup"
+          />
         </HeroImages>
       </Content>
       <Footer>
