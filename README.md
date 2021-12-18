@@ -2,7 +2,7 @@
 
 Easynote is a single-page note-taking application that features a rich text editor.
 
-(Live Demo:)
+(Live Demo: [https://easynote-ksuen.herokuapp.com/](https://easynote-ksuen.herokuapp.com/))
 
 ![](assets/screenshot.png)
 
@@ -81,7 +81,7 @@ Create a new Heroku app.
 heroku create <YOUR_APP_NAME>
 ```
 
-Setup Heroku Postgres Database. This should return a DATABASE_URL.
+Setup Heroku Postgres Database. This should return a `DATABASE_URL`.
 
 ```
 heroku addons:create heroku-postgresql:hobby-dev --app <YOUR_APP_NAME>
@@ -93,8 +93,8 @@ By default, Heroku will strip out the packages declared under devDependencies be
 heroku config:set NPM_CONFIG_PRODUCTION=false
 ```
 
-Add JWT secret key
+Add JWT secret key as an environment variable
 
 ```
-config:set JWT_SECRET=<YOUR_SECRET_KEY>
+heroku config:set JWT_SECRET=<YOUR_SECRET_KEY>
 ```
