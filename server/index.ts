@@ -13,7 +13,10 @@ import { Note } from "./entities/Note";
 const main = async () => {
   await createConnection({
     type: "postgres",
-    host: "localhost",
+    host:
+      process.env.NODE_ENV === "production"
+        ? process.env.DATABASE_URL
+        : "localhost",
     port: 5432,
     username: "postgres",
     password: "postgres",

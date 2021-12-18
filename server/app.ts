@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { getRepository } from "typeorm";
 import passport from "passport";
+import path from "path";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { Routes } from "./interfaces/routes.interface";
 import { DataStoredInToken } from "./interfaces/auth.interface";
@@ -23,6 +24,9 @@ class App {
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
     this.initializeErrorHandling();
+    if (process.env.NODE_ENV === "production") {
+      this.serveFrontend();
+    }
   }
 
   public listen() {
@@ -75,6 +79,14 @@ class App {
 
   private initializeErrorHandling() {
     this.app.use(errorMiddleware);
+  }
+
+  private serveFrontend() {
+    const buildPath = path.resolve(__dirname, "../client/build");
+    this.app.use(express.static(buildPath));
+    this.app.get("*", (_req, res) => {
+      res.sendFile("index.html", { root: buildPath });
+    });
   }
 }
 

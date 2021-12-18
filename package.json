@@ -24,6 +24,7 @@
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
+    "concurrently": "^6.4.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
@@ -35,9 +36,16 @@
     "typeorm": "0.2.41"
   },
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "dev": "nodemon src/index.ts",
+    "start": "node dist/index.js",
+    "client": "cd client && npm start",
+    "server": "nodemon server/index.ts",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
     "lint": "eslint --ext .ts .",
-    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
+    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
+    "postinstall": "tsc",
+    "heroku-postbuild": "cd client && npm install --production --no-shrinkwrap && npm run build"
+  },
+  "engines": {
+    "node": "16.x"
   }
 }
