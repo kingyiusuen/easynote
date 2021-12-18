@@ -4,7 +4,7 @@ import {
   NotebookRenameDto,
 } from "../actions/notebooks.action";
 
-const baseURL = "/notebooks";
+const baseURL = "/api/notebooks";
 
 export const create = async (notebookData: NotebookCreateDto) => {
   return await axios.post(`${baseURL}/`, notebookData);

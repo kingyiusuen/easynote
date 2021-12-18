@@ -5,7 +5,7 @@ import {
   NoteMoveDto,
 } from "../actions/notes.action";
 
-const baseURL = "/notes";
+const baseURL = "/api/notes";
 
 export const create = async (noteData: NoteCreateDto) => {
   return await axios.post(`${baseURL}/`, noteData);

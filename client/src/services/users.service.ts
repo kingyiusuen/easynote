@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "/users";
+const baseURL = "/api/users";
 
 export const getUserNotebooks = async (userId: string) => {
   return await axios.get(`${baseURL}/${userId}/notebooks`);

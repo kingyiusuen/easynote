@@ -78,17 +78,23 @@ heroku login
 Create a new Heroku app.
 
 ```
-heroku create YOUR_APP_NAME
+heroku create <YOUR_APP_NAME>
 ```
 
 Setup Heroku Postgres Database. This should return a DATABASE_URL.
 
 ```
-heroku addons:create heroku-postgresql:hobby-dev --app YOUR_APP_NAME
+heroku addons:create heroku-postgresql:hobby-dev --app <YOUR_APP_NAME>
 ```
 
 By default, Heroku will strip out the packages declared under devDependencies before deploying the application. However, Heroku will need the type definition packages `@types/*` to build the app with the `tsc` TypeScript compiler, so we need to disable this option.
 
 ```
 heroku config:set NPM_CONFIG_PRODUCTION=false
+```
+
+Add JWT secret key
+
+```
+config:set JWT_SECRET=<YOUR_SECRET_KEY>
 ```
