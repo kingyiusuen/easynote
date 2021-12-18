@@ -6,24 +6,10 @@ import UsersRoute from "./routes/users.route";
 import NotebooksRoute from "./routes/notebooks.route";
 import NotesRoute from "./routes/notes.route";
 import App from "./app";
-import { User } from "./entities/User";
-import { Notebook } from "./entities/Notebook";
-import { Note } from "./entities/Note";
+import dbOptions from "./db/options";
 
 const main = async () => {
-  await createConnection({
-    type: "postgres",
-    host:
-      process.env.NODE_ENV === "production"
-        ? process.env.DATABASE_URL
-        : "localhost",
-    port: 5432,
-    username: "postgres",
-    password: "postgres",
-    database: "easynote",
-    synchronize: true,
-    entities: [User, Notebook, Note],
-  });
+  await createConnection(dbOptions);
   console.log("Database connected");
 
   const app = new App();

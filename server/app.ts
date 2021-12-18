@@ -8,6 +8,7 @@ import { Routes } from "./interfaces/routes.interface";
 import { DataStoredInToken } from "./interfaces/auth.interface";
 import errorMiddleware from "./middlewares/error.middleware";
 import { User } from "./entities/User";
+import { isProduction } from "./constants";
 
 class App {
   public app: express.Application;
@@ -24,7 +25,7 @@ class App {
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
     this.initializeErrorHandling();
-    if (process.env.NODE_ENV === "production") {
+    if (isProduction) {
       this.serveFrontend();
     }
   }
