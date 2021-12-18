@@ -20,6 +20,7 @@ const prodOptions: ConnectionOptions = {
   url: process.env.DATABASE_URL,
   database: "easynote",
   synchronize: true,
+  extra: { ssl: true },
   entities: [User, Notebook, Note],
 };
 
