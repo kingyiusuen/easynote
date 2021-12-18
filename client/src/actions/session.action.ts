@@ -71,7 +71,6 @@ export interface FetchUserNotebooksResponse {
   userId: string;
   notes: Note[];
 }
-[];
 
 /* Action creators */
 export const signup =

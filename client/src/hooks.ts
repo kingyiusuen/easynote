@@ -41,19 +41,20 @@ export const useGetActiveNotebookId = () => {
 /* Get notebook from URL */
 export const useGetActiveNotebook = () => {
   const notebookId = useGetActiveNotebookId();
-
-  if (notebookId === "all") {
-    return {
-      id: "all",
-      name: "All Notes",
-      userId: "",
-      createdAt: "",
-      updatedAt: "",
-      noteIds: useReduxSelector((state) => state.note.ids),
-    };
-  }
-
-  return useReduxSelector((state) => state.notebook.entities[notebookId]);
+  return useReduxSelector((state) => {
+    if (notebookId === "all") {
+      return {
+        id: "all",
+        name: "All Notes",
+        userId: "",
+        createdAt: "",
+        updatedAt: "",
+        noteIds: state.note.ids,
+      };
+    } else {
+      return state.notebook.entities[notebookId];
+    }
+  });
 };
 
 export const useToggleItem = (defaultValue = false): [boolean, () => void] => {
