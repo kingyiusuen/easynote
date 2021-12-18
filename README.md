@@ -1,5 +1,7 @@
 # Easynote
 
+[![License](https://img.shields.io/github/license/kingyiusuen/easynote)](https://github.com/kingyiusuen/easynote/blob/master/LICENSE)
+
 Easynote is a single-page note-taking application that features a rich text editor.
 
 (Live Demo: [https://easynote-ksuen.herokuapp.com/](https://easynote-ksuen.herokuapp.com/))
@@ -64,6 +66,18 @@ When a user is logged in, the server will send a JWT token to the client. The to
 - Refresh token
 
 ## Installation
+
+- Clone the repo.
+- Run `npm install` to install dependencies for the server.
+- Run `cd client` and then `npm install` to install dependencies for the client.
+
+## Local Development
+
+- Install PostgreSQL.
+- Create a `.env` file. Put in a secret key following the format of `.env.example`.
+- Run `npm run client` to start the client.
+- Run `npm run server` to start the server.
+- Run `npm run dev` to start the client and the server concurrently.
 
 ## Deploy to Heroku
 
