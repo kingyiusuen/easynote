@@ -24,7 +24,7 @@ Easynote is a single-page note-taking application that features a rich text edit
 
 ### Notebooks
 
-<img src="assets/notebook.gif" width="400px" />
+<img src="assets/notebook.gif" width="600px" />
 
 Users can organize their notes with notebooks. To create a new notebook, click the "+" button in the sidebar. To view the notes within a notebook, click the notebook name in the sidebar. The notes are sorted by last updated time in descending order. To rename and delete a noteobok, click the "more action" button (shown as three dots) in the header of the note list.
 
@@ -32,7 +32,7 @@ Users can organize their notes with notebooks. To create a new notebook, click t
 
 ### Notes
 
-<img src="assets/note.gif" width="400px" />
+<img src="assets/note.gif" width="600px" />
 
 Easynote features a rich text editor powered by [Quill](https://quilljs.com/), which allows users to use different heading levels, font sizes and colors, etc. Notes are autosaved as soon as the user stops typing. There is a sync indicator in the bottom right corner of the editor.
 
