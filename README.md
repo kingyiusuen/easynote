@@ -4,8 +4,6 @@
 
 Easynote is a single-page note-taking application that features a rich text editor.
 
-(Live Demo: [https://easynote-ksuen.herokuapp.com/](https://easynote-ksuen.herokuapp.com/))
-
 ![](assets/screenshot.png)
 
 ## Technologies
